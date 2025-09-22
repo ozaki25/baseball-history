@@ -1,7 +1,31 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Static Site Generation for Vercel deployment
+  output: 'export',
+  
+  // Enable trailing slashes for consistent routing
+  trailingSlash: true,
+  
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true
+  },
+  
+  // PWA configuration
+  async headers() {
+    return [
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+        ],
+      },
+    ]
+  },
 };
 
 export default nextConfig;
