@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "観戦履歴",
   description: "北海道日本ハムファイターズの観戦履歴管理アプリ",
   manifest: "/manifest.json",
-  themeColor: "#1e3a8a",
+  themeColor: "#006298",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   appleWebApp: {
     capable: true,
@@ -33,9 +33,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-fs-white text-fs-black min-h-screen`}
       >
-        {children}
+        <div className="flex flex-col min-h-screen">
+          {children}
+        </div>
       </body>
     </html>
   );
