@@ -1,12 +1,25 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import GameTable from '@/components/GameTable';
+import StatsCards from '@/components/StatsCards';
+import YearSelector from '@/components/YearSelector';
+import { calculateStats, getAvailableYears, sortGamesByDate } from '@/lib/gameUtils';
+import { YearData } from '@/types/game';
+import datesData from '../../data/dates.json';
 
 export default function Home() {
+  const yearData: YearData = datesData as YearData;
+  const availableYears = getAvailableYears(yearData);
+  const currentYear = availableYears[0] || '2024';
+  const currentGames = yearData[currentYear] || [];
+  const sortedGames = sortGamesByDate(currentGames);
+  const stats = calculateStats(currentGames);
+
   return (
     <>
       <Header />
       
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <section className="text-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-fs-primary mb-4">
@@ -17,36 +30,21 @@ export default function Home() {
             </p>
           </section>
 
-          <section className="bg-fs-blue-50 rounded-lg p-6 border border-fs-blue-200">
-            <h3 className="text-xl font-bold text-fs-primary mb-4">
-              🏟️ 今シーズンの観戦履歴
-            </h3>
-            <div className="text-center text-fs-gray-600">
-              <p>データを読み込み中...</p>
-            </div>
-          </section>
+          <StatsCards stats={stats} />
 
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-fs-white border border-fs-gray-200 rounded-lg p-6 text-center shadow-sm">
-              <h4 className="text-lg font-semibold text-fs-primary mb-2">
-                総観戦数
-              </h4>
-              <p className="text-3xl font-bold text-fs-black">--</p>
+          <section className="bg-fs-blue-50 rounded-lg p-6 border border-fs-blue-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+              <h3 className="text-xl font-bold text-fs-primary">
+                🏟️ 観戦履歴
+              </h3>
+              <YearSelector
+                availableYears={availableYears}
+                selectedYear={currentYear}
+                onYearChange={() => {}}
+              />
             </div>
             
-            <div className="bg-fs-white border border-fs-gray-200 rounded-lg p-6 text-center shadow-sm">
-              <h4 className="text-lg font-semibold text-result-win mb-2">
-                勝利数
-              </h4>
-              <p className="text-3xl font-bold text-result-win">--</p>
-            </div>
-            
-            <div className="bg-fs-white border border-fs-gray-200 rounded-lg p-6 text-center shadow-sm">
-              <h4 className="text-lg font-semibold text-fs-primary mb-2">
-                勝率
-              </h4>
-              <p className="text-3xl font-bold text-fs-primary">--%</p>
-            </div>
+            <GameTable games={sortedGames} />
           </section>
         </div>
       </main>
