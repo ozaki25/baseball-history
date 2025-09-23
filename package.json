@@ -4,11 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "npx tsx scripts/generate-data.ts",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "generate-data": "npx tsx scripts/generate-data.ts"
+    "build": "next build",
+    "serve": "npx serve out",
+    "lint": "next lint"
   },
   "dependencies": {
     "react": "19.1.0",
