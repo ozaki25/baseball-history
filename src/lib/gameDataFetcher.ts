@@ -50,25 +50,30 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 function parseGameHTML(html: string, date: string): GameResult | null {
   try {
     // 日本ハム公式サイトの構造に合わせたパース処理
-    // スコアの抽出パターン（例: "5-3" や "日本ハム 5 - 3 楽天"）
-    const scorePattern = /(\d+)\s*[-－]\s*(\d+)/;
-    const scoreMatch = html.match(scorePattern);
-    
     // 対戦相手の抽出（球団名パターン）
-    const teamPattern = /(楽天|ロッテ|西武|オリックス|ソフトバンク)/;
+    const teamPattern = /(楽天|ロッテ|西武|オリックス|ソフトバンク|巨人|阪神|中日|広島|ヤクルト)/;
     const teamMatch = html.match(teamPattern);
     
-    // 球場名の抽出
-    const venuePattern = /(ES CON FIELD|札幌ドーム|東京ドーム|PayPayドーム|京セラドーム|楽天生命パーク|ZOZOマリン|ベルーナドーム)/;
+    // スコアの抽出パターン（数字のみに限定してより正確に）
+    const scorePattern = /(\d{1,2})\s*[-－]\s*(\d{1,2})/;
+    const scoreMatch = html.match(scorePattern);
+    
+    // 球場名の抽出（より幅広いパターンを含む）
+    const venuePattern = /(ES CON FIELD HOKKAIDO|札幌ドーム|東京ドーム|PayPayドーム|京セラドーム大阪|楽天生命パーク宮城|ZOZOマリンスタジアム|ベルーナドーム|バンテリンドーム|マツダスタジアム|神宮球場)/;
     const venueMatch = html.match(venuePattern);
     
-    if (scoreMatch && teamMatch) {
-      const [, score1, score2] = scoreMatch;
+    if (teamMatch && scoreMatch) {
       const opponent = teamMatch[1];
+      const [, score1, score2] = scoreMatch;
       const location = venueMatch ? venueMatch[1] : 'スタジアム';
       
       const fightersScore = parseInt(score1, 10);
       const opponentScore = parseInt(score2, 10);
+      
+      // スコアが有効な範囲内かチェック
+      if (fightersScore < 0 || fightersScore > 30 || opponentScore < 0 || opponentScore > 30) {
+        return null;
+      }
       
       let result: 'win' | 'lose' | 'draw';
       if (fightersScore > opponentScore) {
@@ -106,8 +111,7 @@ function getFallbackGameData(year: string, date: string): GameResult | null {
         opponent: '楽天',
         result: 'win',
         score: { fighters: 5, opponent: 3 },
-        location: 'ES CON FIELD HOKKAIDO',
-        notes: '2024年開幕戦勝利'
+        location: 'ES CON FIELD HOKKAIDO'
       },
       '0412': {
         date: '0412',
@@ -149,8 +153,7 @@ function getFallbackGameData(year: string, date: string): GameResult | null {
         opponent: 'ソフトバンク',
         result: 'lose',
         score: { fighters: 1, opponent: 5 },
-        location: 'PayPayドーム',
-        notes: '正確な対戦相手に修正済み'
+        location: 'PayPayドーム'
       }
     },
     '2023': {
@@ -159,8 +162,7 @@ function getFallbackGameData(year: string, date: string): GameResult | null {
         opponent: 'ロッテ',
         result: 'win',
         score: { fighters: 3, opponent: 1 },
-        location: 'ES CON FIELD HOKKAIDO',
-        notes: '新球場での感動的勝利'
+        location: 'ES CON FIELD HOKKAIDO'
       },
       '1022': {
         date: '1022',
@@ -174,8 +176,7 @@ function getFallbackGameData(year: string, date: string): GameResult | null {
         opponent: 'オリックス',
         result: 'win',
         score: { fighters: 8, opponent: 3 },
-        location: '京セラドーム大阪',
-        notes: 'シーズン終了間近の大勝'
+        location: '京セラドーム大阪'
       }
     }
   };

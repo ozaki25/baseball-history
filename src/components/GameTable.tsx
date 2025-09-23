@@ -45,9 +45,6 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
               <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 球場
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
-                メモ
-              </th>
               <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
                 詳細
               </th>
@@ -69,13 +66,10 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center text-sm text-gray-900">
-                  {game.score ? formatScore(game.score.fighters, game.score.opponent) : '-'}
+                  {formatScore(game.score.fighters, game.score.opponent)}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
-                  <span className="truncate block max-w-32">{game.location || '-'}</span>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-600">
-                  <span className="truncate block max-w-40">{game.notes || '-'}</span>
+                  <span className="truncate block max-w-32">{game.location}</span>
                 </td>
                 <td className="px-4 py-3 text-center">
                   <a 
@@ -116,28 +110,17 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                 >
                   {getResultText(game.result)}
                 </span>
-                {game.score && (
-                  <p className="text-sm text-gray-600 mt-1">
-                    {formatScore(game.score.fighters, game.score.opponent)}
-                  </p>
-                )}
+                <p className="text-sm text-gray-600 mt-1">
+                  {formatScore(game.score.fighters, game.score.opponent)}
+                </p>
               </div>
             </div>
             
-            {(game.location || game.notes) && (
-              <div className="pt-3 border-t border-fs-gray-100 space-y-1">
-                {game.location && (
-                  <p className="text-xs text-gray-600">
-                    <span className="font-medium">球場:</span> {game.location}
-                  </p>
-                )}
-                {game.notes && (
-                  <p className="text-xs text-gray-600">
-                    <span className="font-medium">メモ:</span> {game.notes}
-                  </p>
-                )}
-              </div>
-            )}
+            <div className="pt-3 border-t border-fs-gray-100">
+              <p className="text-xs text-gray-600">
+                <span className="font-medium">球場:</span> {game.location}
+              </p>
+            </div>
             
             <div className="pt-3 mt-3 border-t border-gray-100">
               <a 

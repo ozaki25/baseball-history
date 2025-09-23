@@ -2,12 +2,11 @@ export interface GameResult {
   date: string; // MMDD形式
   opponent: string;
   result: 'win' | 'lose' | 'draw';
-  score?: {
+  score: {
     fighters: number;
     opponent: number;
   };
-  location?: string;
-  notes?: string;
+  location: string;
 }
 
 // 要件通りの観戦日データ構造（年単位 + MMDD形式）

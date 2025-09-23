@@ -27,49 +27,6 @@ export async function generateGameDataFromDates(datesData: DatesData): Promise<Y
   return result;
 }
 
-/**
- * 正確なサンプルデータ：実際の試合結果に基づく
- * 本来は公式サイトから取得するが、開発用に正確なデータを提供
- */
-export function generateAccurateGameData(datesData: DatesData): YearData {
-  // 実際の2024年と2023年の試合結果データ
-  const accurateGameData: Record<string, Record<string, Partial<GameResult>>> = {
-    '2024': {
-      '0405': { opponent: '楽天', result: 'win', score: { fighters: 5, opponent: 3 }, location: 'ES CON FIELD HOKKAIDO', notes: '2024年開幕戦' },
-      '0412': { opponent: 'ロッテ', result: 'lose', score: { fighters: 2, opponent: 4 }, location: 'ES CON FIELD HOKKAIDO' },
-      '0520': { opponent: 'オリックス', result: 'win', score: { fighters: 7, opponent: 1 }, location: '京セラドーム大阪' },
-      '0628': { opponent: 'ソフトバンク', result: 'draw', score: { fighters: 3, opponent: 3 }, location: 'PayPayドーム' },
-      '0715': { opponent: '西武', result: 'win', score: { fighters: 6, opponent: 2 }, location: 'ベルーナドーム' },
-      '0823': { opponent: '楽天', result: 'win', score: { fighters: 4, opponent: 1 }, location: 'ES CON FIELD HOKKAIDO' },
-      '0904': { opponent: 'ロッテ', result: 'lose', score: { fighters: 1, opponent: 5 }, location: 'ZOZOマリンスタジアム' }
-    },
-    '2023': {
-      '0915': { opponent: 'ロッテ', result: 'win', score: { fighters: 3, opponent: 1 }, location: 'ES CON FIELD HOKKAIDO' },
-      '1022': { opponent: '楽天', result: 'lose', score: { fighters: 2, opponent: 6 }, location: '楽天生命パーク宮城' },
-      '1105': { opponent: 'オリックス', result: 'win', score: { fighters: 8, opponent: 3 }, location: '京セラドーム大阪', notes: 'シーズン終了間近の大勝' }
-    }
-  };
-  
-  const result: YearData = {};
-  
-  for (const [year, dates] of Object.entries(datesData)) {
-    result[year] = dates.map((date) => {
-      const gameInfo = accurateGameData[year]?.[date];
-      
-      return {
-        date,
-        opponent: gameInfo?.opponent || 'unknown',
-        result: gameInfo?.result || 'lose',
-        score: gameInfo?.score,
-        location: gameInfo?.location || 'unknown',
-        notes: gameInfo?.notes
-      };
-    });
-  }
-  
-  return result;
-}
-
 export function calculateStats(games: GameResult[]): GameStats {
   const total = games.length;
   const wins = games.filter(game => game.result === 'win').length;
