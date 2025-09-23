@@ -1,5 +1,11 @@
 import { GameResult } from '@/types/game';
-import { formatDate, formatScore, getResultColor, getResultText, getOfficialGameUrl } from '@/lib/gameUtils';
+import {
+  formatDate,
+  formatScore,
+  getResultColor,
+  getResultText,
+  getOfficialGameUrl,
+} from '@/lib/gameUtils';
 
 interface GameTableProps {
   games: GameResult[];
@@ -13,9 +19,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
       <div className={`text-center py-12 ${className}`}>
         <div className="text-fs-gray-400 text-6xl mb-4">⚾</div>
         <p className="text-fs-gray-600 text-lg font-medium">観戦記録がありません</p>
-        <p className="text-fs-gray-500 text-sm mt-2">
-          試合を観戦したら記録を追加しましょう
-        </p>
+        <p className="text-fs-gray-500 text-sm mt-2">試合を観戦したら記録を追加しましょう</p>
       </div>
     );
   }
@@ -24,7 +28,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
     <div className={className}>
       {/* デスクトップ版テーブル */}
       <div className="hidden md:block overflow-x-auto">
-        <table 
+        <table
           className="w-full bg-white border border-gray-200 rounded-lg shadow-sm"
           aria-label="観戦履歴一覧"
         >
@@ -36,30 +40,39 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
               <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 対戦相手
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
+              <th
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                scope="col"
+              >
                 結果
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
+              <th
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                scope="col"
+              >
                 スコア
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 球場
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
+              <th
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                scope="col"
+              >
                 詳細
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {games.map((game, index) => (
-              <tr 
+              <tr
                 key={`${game.date}-${index}`}
                 className="hover:bg-gray-50 transition-colors duration-200"
               >
                 <td className="px-4 py-3 text-sm text-gray-900">{formatDate(game.date)}</td>
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">vs {game.opponent}</td>
                 <td className="px-4 py-3 text-center">
-                  <span 
+                  <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getResultColor(game.result)} bg-opacity-10`}
                   >
                     {getResultText(game.result)}
@@ -72,7 +85,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                   <span className="truncate block max-w-32">{game.location}</span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <a 
+                  <a
                     href={getOfficialGameUrl(selectedYear, game.date)}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -91,21 +104,17 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
       {/* モバイル版カードレイアウト */}
       <div className="md:hidden space-y-4">
         {games.map((game, index) => (
-          <div 
+          <div
             key={`${game.date}-${index}`}
             className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {formatDate(game.date)}
-                </p>
-                <p className="text-lg font-bold text-fs-primary">
-                  vs {game.opponent}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{formatDate(game.date)}</p>
+                <p className="text-lg font-bold text-fs-primary">vs {game.opponent}</p>
               </div>
               <div className="text-right">
-                <span 
+                <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getResultColor(game.result)} bg-opacity-10`}
                 >
                   {getResultText(game.result)}
@@ -115,15 +124,15 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                 </p>
               </div>
             </div>
-            
+
             <div className="pt-3 border-t border-fs-gray-100">
               <p className="text-xs text-gray-600">
                 <span className="font-medium">球場:</span> {game.location}
               </p>
             </div>
-            
+
             <div className="pt-3 mt-3 border-t border-gray-100">
-              <a 
+              <a
                 href={getOfficialGameUrl(selectedYear, game.date)}
                 target="_blank"
                 rel="noopener noreferrer"

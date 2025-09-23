@@ -6,11 +6,9 @@ export default function Footer() {
           <div className="mb-2 sm:mb-0">
             <p>&copy; 2024 観戦履歴アプリ</p>
           </div>
-          
+
           <div className="flex items-center space-x-4">
-            <span className="text-fs-gold font-medium">
-              北海道日本ハムファイターズ
-            </span>
+            <span className="text-fs-gold font-medium">北海道日本ハムファイターズ</span>
           </div>
         </div>
       </div>

@@ -39,7 +39,8 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
   } catch (error) {
     console.error(`❌ データ取得失敗: ${year}/${date}`, error);
     // 要件に従いビルドを異常終了
-    throw new Error(`Build failed: データ取得失敗 ${year}/${date} - ${error}`);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Build failed: データ取得失敗 ${year}/${date} - ${errorMessage}`);
   }
 }
 
@@ -96,14 +97,11 @@ function parseGameHTML(html: string, date: string): GameResult | null {
     
     // どちらがファイターズのスコアかを判定
     // 通常、ホーム・アウェイの順番で表示されることが多い
-    let fightersScore: number;
-    let opponentScore: number;
-    let result: 'win' | 'lose' | 'draw';
-    
     // より正確な判定ロジックが必要だが、とりあえず最初を日ハムとして処理
-    fightersScore = score1;
-    opponentScore = score2;
+    const fightersScore = score1;
+    const opponentScore = score2;
     
+    let result: 'win' | 'lose' | 'draw';
     if (fightersScore > opponentScore) {
       result = 'win';
     } else if (fightersScore < opponentScore) {

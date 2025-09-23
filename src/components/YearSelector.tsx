@@ -5,18 +5,15 @@ interface YearSelectorProps {
   className?: string;
 }
 
-export default function YearSelector({ 
-  availableYears, 
-  selectedYear, 
-  onYearChange, 
-  className = '' 
+export default function YearSelector({
+  availableYears,
+  selectedYear,
+  onYearChange,
+  className = '',
 }: YearSelectorProps) {
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      <label 
-        htmlFor="year-select"
-        className="text-sm font-medium text-gray-700"
-      >
+      <label htmlFor="year-select" className="text-sm font-medium text-gray-700">
         年度選択:
       </label>
       <select

@@ -6,10 +6,10 @@ import { fetchGameData, generateOfficialGameUrl } from './gameDataFetcher';
  */
 export async function generateGameDataFromDates(datesData: DatesData): Promise<YearData> {
   const result: YearData = {};
-  
+
   for (const [year, dates] of Object.entries(datesData)) {
     result[year] = [];
-    
+
     for (const date of dates) {
       try {
         const gameData = await fetchGameData(year, date);
@@ -26,15 +26,15 @@ export async function generateGameDataFromDates(datesData: DatesData): Promise<Y
       }
     }
   }
-  
+
   return result;
 }
 
 export function calculateStats(games: GameResult[]): GameStats {
   const total = games.length;
-  const wins = games.filter(game => game.result === 'win').length;
-  const losses = games.filter(game => game.result === 'lose').length;
-  const draws = games.filter(game => game.result === 'draw').length;
+  const wins = games.filter((game) => game.result === 'win').length;
+  const losses = games.filter((game) => game.result === 'lose').length;
+  const draws = games.filter((game) => game.result === 'draw').length;
   const winRate = total > 0 ? Math.round((wins / total) * 100 * 10) / 10 : 0;
 
   return {
@@ -42,7 +42,7 @@ export function calculateStats(games: GameResult[]): GameStats {
     wins,
     losses,
     draws,
-    winRate
+    winRate,
   };
 }
 

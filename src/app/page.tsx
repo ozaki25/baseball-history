@@ -6,13 +6,13 @@ import datesData from '../../data/dates.json';
 // Server Component: ビルド時にデータ取得
 export default async function Home() {
   const dates: DatesData = datesData as DatesData;
-  
+
   // ビルド時にスクレイピング実行
   const yearData: YearData = {};
-  
+
   for (const [year, dateArray] of Object.entries(dates)) {
     yearData[year] = [];
-    
+
     for (const date of dateArray) {
       try {
         const gameData = await fetchGameData(year, date);

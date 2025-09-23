@@ -1,34 +1,34 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "観戦履歴",
-  description: "北海道日本ハムファイターズの観戦履歴管理アプリ",
-  manifest: "/manifest.json",
+  title: '観戦履歴',
+  description: '北海道日本ハムファイターズの観戦履歴管理アプリ',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: "観戦履歴"
-  }
+    statusBarStyle: 'default',
+    title: '観戦履歴',
+  },
 };
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#006298'
+  themeColor: '#006298',
 };
 
 export default function RootLayout({
@@ -42,9 +42,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 min-h-screen`}
       >
         <ServiceWorkerRegistration />
-        <div className="flex flex-col min-h-screen">
-          {children}
-        </div>
+        <div className="flex flex-col min-h-screen">{children}</div>
       </body>
     </html>
   );
