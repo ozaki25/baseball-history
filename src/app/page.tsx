@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GameTable from '@/components/GameTable';
@@ -10,10 +13,15 @@ import datesData from '../../data/dates.json';
 export default function Home() {
   const yearData: YearData = datesData as YearData;
   const availableYears = getAvailableYears(yearData);
-  const currentYear = availableYears[0] || '2024';
-  const currentGames = yearData[currentYear] || [];
+  const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2024');
+  
+  const currentGames = yearData[selectedYear] || [];
   const sortedGames = sortGamesByDate(currentGames);
   const stats = calculateStats(currentGames);
+
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+  };
 
   return (
     <>
@@ -35,12 +43,12 @@ export default function Home() {
           <section className="bg-fs-blue-50 rounded-lg p-6 border border-fs-blue-200">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
               <h3 className="text-xl font-bold text-fs-primary">
-                🏟️ 観戦履歴
+                🏟️ {selectedYear}年 観戦履歴
               </h3>
               <YearSelector
                 availableYears={availableYears}
-                selectedYear={currentYear}
-                onYearChange={() => {}}
+                selectedYear={selectedYear}
+                onYearChange={handleYearChange}
               />
             </div>
             
