@@ -35,7 +35,7 @@ export function getResultColor(result: 'win' | 'lose' | 'draw'): string {
     case 'draw':
       return 'text-result-draw';
     default:
-      return 'text-fs-gray-500';
+      return 'text-gray-500';
   }
 }
 

@@ -1,25 +1,31 @@
 import { GameHistory, YearData, GameResult } from '@/types/game';
 
-export function validateGameResult(data: any): data is GameResult {
+export function validateGameResult(data: unknown): data is GameResult {
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  
+  const obj = data as Record<string, unknown>;
+  
   return (
-    typeof data === 'object' &&
-    typeof data.date === 'string' &&
-    data.date.length === 4 &&
-    /^\d{4}$/.test(data.date) &&
-    typeof data.opponent === 'string' &&
-    data.opponent.length > 0 &&
-    ['win', 'lose', 'draw'].includes(data.result) &&
-    (data.score === undefined || (
-      typeof data.score === 'object' &&
-      typeof data.score.fighters === 'number' &&
-      typeof data.score.opponent === 'number'
+    typeof obj.date === 'string' &&
+    obj.date.length === 4 &&
+    /^\d{4}$/.test(obj.date) &&
+    typeof obj.opponent === 'string' &&
+    obj.opponent.length > 0 &&
+    ['win', 'lose', 'draw'].includes(obj.result as string) &&
+    (obj.score === undefined || (
+      typeof obj.score === 'object' &&
+      obj.score !== null &&
+      typeof (obj.score as Record<string, unknown>).fighters === 'number' &&
+      typeof (obj.score as Record<string, unknown>).opponent === 'number'
     )) &&
-    (data.location === undefined || typeof data.location === 'string') &&
-    (data.notes === undefined || typeof data.notes === 'string')
+    (obj.location === undefined || typeof obj.location === 'string') &&
+    (obj.notes === undefined || typeof obj.notes === 'string')
   );
 }
 
-export function validateYearData(data: any): data is YearData {
+export function validateYearData(data: unknown): data is YearData {
   if (typeof data !== 'object' || data === null) {
     return false;
   }
@@ -43,12 +49,16 @@ export function validateYearData(data: any): data is YearData {
   return true;
 }
 
-export function validateGameHistory(data: any): data is GameHistory {
+export function validateGameHistory(data: unknown): data is GameHistory {
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  
+  const obj = data as Record<string, unknown>;
+  
   return (
-    typeof data === 'object' &&
-    data !== null &&
-    validateYearData(data.data) &&
-    typeof data.lastUpdated === 'string'
+    validateYearData(obj.data) &&
+    typeof obj.lastUpdated === 'string'
   );
 }
 
