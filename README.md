@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 観戦履歴アプリ
 
-## Getting Started
+北海道日本ハムファイターズの観戦記録を管理するPWA（Progressive Web App）です。
 
-First, run the development server:
+## 🏟️ 機能
+
+- **観戦履歴管理**: 試合日程、対戦相手、結果、スコア、球場、メモを記録
+- **年度別フィルタリング**: 年度を選択して観戦履歴を絞り込み
+- **統計表示**: 総観戦数、勝利数、敗戦数、勝率を表示
+- **レスポンシブデザイン**: モバイル・タブレット・デスクトップに最適化
+- **PWA対応**: デスクトップにインストール可能、オフライン対応
+- **アクセシビリティ**: WCAG 2.1 AA準拠、スクリーンリーダー対応
+
+## 🎨 デザイン
+
+- **ファイターズカラー**: 公式ブランドカラーを使用
+  - プライマリブルー: `#006298`
+  - ゴールド: `#b3a369` 
+  - ブラック: `#010101`
+  - ホワイト: `#ffffff`
+
+## 🛠️ 技術スタック
+
+- **フレームワーク**: Next.js 15 (App Router)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS
+- **PWA**: Service Worker、Web App Manifest
+- **アクセシビリティ**: ARIA、セマンティックHTML
+- **デプロイ**: Vercel
+
+## 📱 PWA機能
+
+- **インストール**: ブラウザから直接アプリをインストール
+- **オフライン対応**: インターネット接続なしでも基本機能を利用可能
+- **ネイティブ風UI**: モバイルアプリのような操作感
+
+## 🚀 開発
 
 ```bash
+# 依存関係をインストール
+npm install
+
+# 開発サーバーを起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# プロダクションビルド
+npm run build
+
+# プロダクションサーバーを起動
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📂 プロジェクト構造
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+  app/           # Next.js App Router
+  components/    # Reactコンポーネント
+  lib/          # ユーティリティ関数
+  types/        # TypeScript型定義
+data/           # JSONデータファイル
+public/         # 静的ファイル、PWA関連
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎯 主要コンポーネント
 
-## Learn More
+- **GameTable**: 観戦履歴テーブル（デスクトップ）・カード（モバイル）
+- **StatsCards**: 統計情報カード
+- **YearSelector**: 年度選択プルダウン
+- **Header/Footer**: ナビゲーションとフッター
 
-To learn more about Next.js, take a look at the following resources:
+## ♿ アクセシビリティ対応
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **WCAG 2.1 AA準拠**: コントラスト比、フォーカス管理
+- **キーボードナビゲーション**: タブキーでの操作
+- **スクリーンリーダー**: ARIA属性、セマンティックHTML
+- **多言語対応**: 日本語UI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📄 ライセンス
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT License
