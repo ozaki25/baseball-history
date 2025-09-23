@@ -15,11 +15,14 @@ export async function generateGameDataFromDates(datesData: DatesData): Promise<Y
         const gameData = await fetchGameData(year, date);
         if (gameData) {
           result[year].push(gameData);
+        } else {
+          // 要件：データ取得失敗時はビルドを異常終了
+          throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${date}`);
         }
       } catch (error) {
         console.error(`Failed to fetch game data for ${year}/${date}:`, error);
         // 要件：データ取得失敗時はビルドを異常終了
-        throw new Error(`Build failed: Could not fetch game data for ${year}/${date}`);
+        throw error;
       }
     }
   }

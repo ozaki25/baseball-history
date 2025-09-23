@@ -18,10 +18,14 @@ export default async function Home() {
         const gameData = await fetchGameData(year, date);
         if (gameData) {
           yearData[year].push(gameData);
+        } else {
+          // 要件に従い、データ取得失敗時はビルドを異常終了
+          throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${date}`);
         }
       } catch (error) {
-        console.warn(`ビルド時データ取得エラー: ${year}/${date}`, error);
-        // エラーでもビルド継続
+        console.error(`❌ ビルド失敗: ${year}/${date}`, error);
+        // 要件に従い、エラー時はビルド異常終了
+        throw error;
       }
     }
   }

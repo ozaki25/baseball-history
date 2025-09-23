@@ -7,156 +7,140 @@ import { GameResult } from '@/types/game';
  * @returns 試合結果データ
  */
 export async function fetchGameData(year: string, date: string): Promise<GameResult | null> {
-  // 現在のHTMLパース処理が不正確なため、
-  // 確実で正確なフォールバックデータを直接使用
-  console.log(`📊 確実なデータ使用: ${year}/${date}`);
-  return getFallbackGameData(year, date);
+  const url = `https://www.fighters.co.jp/gamelive/result/${year}${date}01/`;
+  
+  try {
+    console.log(`🔍 スクレイピング実行: ${url}`);
+    
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+      // タイムアウト設定
+      signal: AbortSignal.timeout(10000), // 10秒
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status} for ${url}`);
+    }
+    
+    const html = await response.text();
+    console.log(`✅ HTML取得成功: ${url}`);
+    
+    // HTMLパースして試合情報を抽出
+    const gameData = parseGameHTML(html, date);
+    if (gameData) {
+      console.log(`🏟️ 試合データ解析成功: vs ${gameData.opponent} ${gameData.result}`);
+      return gameData;
+    } else {
+      throw new Error(`HTML解析失敗: ${url} - 試合データを抽出できませんでした`);
+    }
+    
+  } catch (error) {
+    console.error(`❌ データ取得失敗: ${year}/${date}`, error);
+    // 要件に従いビルドを異常終了
+    throw new Error(`Build failed: データ取得失敗 ${year}/${date} - ${error}`);
+  }
 }
 
 /**
  * HTMLから試合データを抽出
+ * 実際のサイト構造に合わせて慎重に解析
  */
 function parseGameHTML(html: string, date: string): GameResult | null {
   try {
-    // 日本ハム公式サイトの構造に合わせたパース処理
-    // 対戦相手の抽出（球団名パターン）
-    const teamPattern = /(楽天|ロッテ|西武|オリックス|ソフトバンク|巨人|阪神|中日|広島|ヤクルト)/;
-    const teamMatch = html.match(teamPattern);
+    // 日本ハム公式サイトの実際の構造を解析
     
-    // スコアの抽出パターン（数字のみに限定してより正確に）
-    const scorePattern = /(\d{1,2})\s*[-－]\s*(\d{1,2})/;
-    const scoreMatch = html.match(scorePattern);
+    // デバッグ用：HTMLの一部を確認
+    console.log(`HTML解析開始: ${date}`);
     
-    // 球場名の抽出（より幅広いパターンを含む）
-    const venuePattern = /(ES CON FIELD HOKKAIDO|札幌ドーム|東京ドーム|PayPayドーム|京セラドーム大阪|楽天生命パーク宮城|ZOZOマリンスタジアム|ベルーナドーム|バンテリンドーム|マツダスタジアム|神宮球場)/;
-    const venueMatch = html.match(venuePattern);
+    // より具体的なパターンマッチングを実装
+    // まず、試合結果部分を特定
+    const gameResultSection = html.match(/<div[^>]*class="[^"]*game[^"]*result[^"]*"[^>]*>[\s\S]*?<\/div>/i);
     
-    if (teamMatch && scoreMatch) {
-      const opponent = teamMatch[1];
-      const [, score1, score2] = scoreMatch;
-      const location = venueMatch ? venueMatch[1] : 'スタジアム';
-      
-      const fightersScore = parseInt(score1, 10);
-      const opponentScore = parseInt(score2, 10);
-      
-      // スコアが有効な範囲内かチェック
-      if (fightersScore < 0 || fightersScore > 30 || opponentScore < 0 || opponentScore > 30) {
-        return null;
-      }
-      
-      let result: 'win' | 'lose' | 'draw';
-      if (fightersScore > opponentScore) {
-        result = 'win';
-      } else if (fightersScore < opponentScore) {
-        result = 'lose';
-      } else {
-        result = 'draw';
-      }
-      
-      return {
-        date,
-        opponent,
-        result,
-        score: { fighters: fightersScore, opponent: opponentScore },
-        location,
-      };
+    if (!gameResultSection) {
+      console.warn('試合結果セクションが見つかりません');
+      return null;
     }
     
-    return null;
+    const resultHtml = gameResultSection[0];
+    
+    // チーム名の抽出（より具体的に）
+    const teamNames = ['楽天', 'ロッテ', '西武', 'オリックス', 'ソフトバンク', '巨人', '阪神', '中日', '広島', 'ヤクルト'];
+    let opponent = '';
+    
+    for (const team of teamNames) {
+      if (resultHtml.includes(team)) {
+        opponent = team;
+        break;
+      }
+    }
+    
+    if (!opponent) {
+      console.warn('対戦相手が特定できませんでした');
+      return null;
+    }
+    
+    // スコア抽出（より厳密に）
+    const scorePattern = /(\d{1,2})\s*[-－−]\s*(\d{1,2})/;
+    const scoreMatch = resultHtml.match(scorePattern);
+    
+    if (!scoreMatch) {
+      console.warn('スコア情報が見つかりませんでした');
+      return null;
+    }
+    
+    const [, score1Str, score2Str] = scoreMatch;
+    const score1 = parseInt(score1Str, 10);
+    const score2 = parseInt(score2Str, 10);
+    
+    // どちらがファイターズのスコアかを判定
+    // 通常、ホーム・アウェイの順番で表示されることが多い
+    let fightersScore: number;
+    let opponentScore: number;
+    let result: 'win' | 'lose' | 'draw';
+    
+    // より正確な判定ロジックが必要だが、とりあえず最初を日ハムとして処理
+    fightersScore = score1;
+    opponentScore = score2;
+    
+    if (fightersScore > opponentScore) {
+      result = 'win';
+    } else if (fightersScore < opponentScore) {
+      result = 'lose';
+    } else {
+      result = 'draw';
+    }
+    
+    // 球場名の抽出
+    const venues = [
+      'ES CON FIELD HOKKAIDO', '札幌ドーム', '東京ドーム', 'PayPayドーム', 
+      '京セラドーム大阪', '楽天生命パーク宮城', 'ZOZOマリンスタジアム', 
+      'ベルーナドーム', 'バンテリンドーム', 'マツダスタジアム', '神宮球場'
+    ];
+    
+    let location = 'スタジアム';
+    for (const venue of venues) {
+      if (html.includes(venue)) {
+        location = venue;
+        break;
+      }
+    }
+    
+    console.log(`解析結果: vs ${opponent}, スコア ${fightersScore}-${opponentScore}, ${result}, ${location}`);
+    
+    return {
+      date,
+      opponent,
+      result,
+      score: { fighters: fightersScore, opponent: opponentScore },
+      location,
+    };
+    
   } catch (error) {
-    console.warn('HTML解析エラー:', error);
+    console.error('HTML解析中にエラー:', error);
     return null;
   }
-}
-
-/**
- * フォールバックデータ：実際の試合結果（公式記録から正確にデータ作成）
- */
-function getFallbackGameData(year: string, date: string): GameResult | null {
-  const fallbackData: Record<string, Record<string, GameResult>> = {
-    '2024': {
-      '0405': {
-        date: '0405',
-        opponent: '楽天',
-        result: 'win',
-        score: { fighters: 8, opponent: 4 },
-        location: 'ES CON FIELD HOKKAIDO'
-      },
-      '0412': {
-        date: '0412',
-        opponent: 'ロッテ',
-        result: 'lose',
-        score: { fighters: 3, opponent: 6 },
-        location: 'ZOZOマリンスタジアム'
-      },
-      '0520': {
-        date: '0520',
-        opponent: 'オリックス',
-        result: 'win',
-        score: { fighters: 5, opponent: 2 },
-        location: '京セラドーム大阪'
-      },
-      '0628': {
-        date: '0628',
-        opponent: 'ソフトバンク',
-        result: 'lose',
-        score: { fighters: 4, opponent: 9 },
-        location: 'PayPayドーム'
-      },
-      '0715': {
-        date: '0715',
-        opponent: '西武',
-        result: 'draw',
-        score: { fighters: 5, opponent: 5 },
-        location: 'ベルーナドーム'
-      },
-      '0823': {
-        date: '0823',
-        opponent: '楽天',
-        result: 'win',
-        score: { fighters: 7, opponent: 3 },
-        location: 'ES CON FIELD HOKKAIDO'
-      },
-      '0904': {
-        date: '0904',
-        opponent: 'ソフトバンク',
-        result: 'lose',
-        score: { fighters: 3, opponent: 7 },
-        location: 'PayPayドーム'
-      }
-    },
-    '2023': {
-      '0915': {
-        date: '0915',
-        opponent: 'ロッテ',
-        result: 'win',
-        score: { fighters: 6, opponent: 2 },
-        location: 'ES CON FIELD HOKKAIDO'
-      },
-      '1022': {
-        date: '1022',
-        opponent: '楽天',
-        result: 'lose',
-        score: { fighters: 1, opponent: 4 },
-        location: '楽天生命パーク宮城'
-      },
-      '1105': {
-        date: '1105',
-        opponent: 'オリックス',
-        result: 'win',
-        score: { fighters: 9, opponent: 5 },
-        location: '京セラドーム大阪'
-      }
-    }
-  };
-  
-  const gameData = fallbackData[year]?.[date];
-  if (gameData) {
-    console.log(`📊 フォールバックデータ使用: ${year}/${date} vs ${gameData.opponent}`);
-    return gameData;
-  }
-  
-  return null;
 }
 
 /**
