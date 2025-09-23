@@ -8,7 +8,7 @@ export default function Footer() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <span className="text-fighters-gold font-medium">
+            <span className="text-fs-gold font-medium">
               北海道日本ハムファイターズ
             </span>
           </div>

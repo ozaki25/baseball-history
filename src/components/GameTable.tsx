@@ -1,18 +1,19 @@
 import { GameResult } from '@/types/game';
-import { formatDate, formatScore, getResultColor, getResultText } from '@/lib/gameUtils';
+import { formatDate, formatScore, getResultColor, getResultText, getOfficialGameUrl } from '@/lib/gameUtils';
 
 interface GameTableProps {
   games: GameResult[];
+  selectedYear: string; // 年を追加して公式サイトリンク生成に使用
   className?: string;
 }
 
-export default function GameTable({ games, className = '' }: GameTableProps) {
+export default function GameTable({ games, selectedYear, className = '' }: GameTableProps) {
   if (!games || games.length === 0) {
     return (
       <div className={`text-center py-12 ${className}`}>
-        <div className="text-fighters-gray-400 text-6xl mb-4">⚾</div>
-        <p className="text-fighters-gray-600 text-lg font-medium">観戦記録がありません</p>
-        <p className="text-fighters-gray-500 text-sm mt-2">
+        <div className="text-fs-gray-400 text-6xl mb-4">⚾</div>
+        <p className="text-fs-gray-600 text-lg font-medium">観戦記録がありません</p>
+        <p className="text-fs-gray-500 text-sm mt-2">
           試合を観戦したら記録を追加しましょう
         </p>
       </div>
@@ -29,23 +30,26 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
         >
           <thead>
             <tr className="bg-blue-50 border-b border-blue-200">
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 日程
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 対戦相手
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
                 結果
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
                 スコア
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 球場
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fighters-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
                 メモ
+              </th>
+              <th className="px-4 py-3 text-center text-sm font-semibold text-fs-primary" scope="col">
+                詳細
               </th>
             </tr>
           </thead>
@@ -73,6 +77,17 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 <td className="px-4 py-3 text-sm text-gray-600">
                   <span className="truncate block max-w-40">{game.notes || '-'}</span>
                 </td>
+                <td className="px-4 py-3 text-center">
+                  <a 
+                    href={getOfficialGameUrl(selectedYear, game.date)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 rounded-md bg-fs-primary text-white text-xs font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
+                    aria-label={`${formatDate(game.date)}の試合詳細を公式サイトで見る`}
+                  >
+                    📊 詳細
+                  </a>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -91,7 +106,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 <p className="text-sm font-medium text-gray-900">
                   {formatDate(game.date)}
                 </p>
-                <p className="text-lg font-bold text-fighters-primary">
+                <p className="text-lg font-bold text-fs-primary">
                   vs {game.opponent}
                 </p>
               </div>
@@ -123,6 +138,18 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 )}
               </div>
             )}
+            
+            <div className="pt-3 mt-3 border-t border-gray-100">
+              <a 
+                href={getOfficialGameUrl(selectedYear, game.date)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center w-full px-4 py-2 rounded-md bg-fs-primary text-white text-sm font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
+                aria-label={`${formatDate(game.date)}の試合詳細を公式サイトで見る`}
+              >
+                📊 公式サイトで試合詳細を見る
+              </a>
+            </div>
           </div>
         ))}
       </div>

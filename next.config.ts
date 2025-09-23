@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Static Site Generation for Vercel deployment
-  output: 'export',
+  // Static Site Generation for Vercel deployment (comment out for npm start)
+  // output: 'export',
   
   // Enable trailing slashes for consistent routing
   trailingSlash: true,

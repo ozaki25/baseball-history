@@ -17,13 +17,18 @@ export const metadata: Metadata = {
   title: "観戦履歴",
   description: "北海道日本ハムファイターズの観戦履歴管理アプリ",
   manifest: "/manifest.json",
-  themeColor: "#006298",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "観戦履歴"
   }
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#006298'
 };
 
 export default function RootLayout({

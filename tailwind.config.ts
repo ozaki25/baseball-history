@@ -11,9 +11,13 @@ export default {
       colors: {
         fs: {
           primary: "#006298",
-          black: "#010101",
+          black: "#010101", 
           white: "#ffffff",
-          gold: "#b3a369",
+          gold: "#8b7a4d",  // より暗く（元 #b3a369 → アクセシビリティ向上）
+          
+          // アクセシビリティ対応色（WCAG AA準拠）
+          'primary-dark': "#004466",  // より暗いバージョン（コントラスト比向上）
+          'gold-light': "#b3a369",    // 元のゴールド（背景色として使用）
           
           blue: {
             50: "#eff6ff",
@@ -68,8 +72,8 @@ export default {
         mono: ['var(--font-geist-mono)', 'monospace'],
       },
       boxShadow: {
-        'fighters': '0 4px 6px -1px rgba(0, 98, 152, 0.1), 0 2px 4px -1px rgba(0, 98, 152, 0.06)',
-        'fighters-lg': '0 10px 15px -3px rgba(0, 98, 152, 0.1), 0 4px 6px -2px rgba(0, 98, 152, 0.05)',
+        'fs': '0 4px 6px -1px rgba(0, 98, 152, 0.1), 0 2px 4px -1px rgba(0, 98, 152, 0.06)',
+        'fs-lg': '0 10px 15px -3px rgba(0, 98, 152, 0.1), 0 4px 6px -2px rgba(0, 98, 152, 0.05)',
       },
       borderColor: {
         'fs-blue': '#006298',

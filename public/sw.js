@@ -2,8 +2,8 @@ const CACHE_NAME = 'fighters-history-v1';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/icon-192x192.png',
-  '/icon-512x512.png'
+  '/icon-192x192.svg',
+  '/icon-512x512.svg'
 ];
 
 self.addEventListener('install', (event) => {

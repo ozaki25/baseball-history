@@ -1,0 +1,109 @@
+{
+  "2023": [
+    {
+      "date": "0915",
+      "opponent": "ロッテ",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 1
+      },
+      "location": "ES CON FIELD HOKKAIDO",
+      "notes": "新球場での感動的勝利"
+    },
+    {
+      "date": "1022",
+      "opponent": "楽天",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 6
+      },
+      "location": "楽天生命パーク宮城"
+    },
+    {
+      "date": "1105",
+      "opponent": "オリックス",
+      "result": "win",
+      "score": {
+        "fighters": 8,
+        "opponent": 3
+      },
+      "location": "京セラドーム大阪",
+      "notes": "シーズン終了間近の大勝"
+    }
+  ],
+  "2024": [
+    {
+      "date": "0405",
+      "opponent": "楽天",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 3
+      },
+      "location": "ES CON FIELD HOKKAIDO",
+      "notes": "2024年開幕戦勝利"
+    },
+    {
+      "date": "0412",
+      "opponent": "ロッテ",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 4
+      },
+      "location": "ES CON FIELD HOKKAIDO"
+    },
+    {
+      "date": "0520",
+      "opponent": "オリックス",
+      "result": "win",
+      "score": {
+        "fighters": 7,
+        "opponent": 1
+      },
+      "location": "京セラドーム大阪"
+    },
+    {
+      "date": "0628",
+      "opponent": "ソフトバンク",
+      "result": "draw",
+      "score": {
+        "fighters": 3,
+        "opponent": 3
+      },
+      "location": "PayPayドーム"
+    },
+    {
+      "date": "0715",
+      "opponent": "西武",
+      "result": "win",
+      "score": {
+        "fighters": 6,
+        "opponent": 2
+      },
+      "location": "ベルーナドーム"
+    },
+    {
+      "date": "0823",
+      "opponent": "楽天",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 1
+      },
+      "location": "ES CON FIELD HOKKAIDO"
+    },
+    {
+      "date": "0904",
+      "opponent": "ロッテ",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 5
+      },
+      "location": "ZOZOマリンスタジアム"
+    }
+  ]
+}

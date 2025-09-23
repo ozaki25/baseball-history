@@ -10,6 +10,12 @@ export interface GameResult {
   notes?: string;
 }
 
+// 要件通りの観戦日データ構造（年単位 + MMDD形式）
+export interface DatesData {
+  [year: string]: string[]; // ["0405", "0412", "0503"] 形式
+}
+
+// 処理済みの年別ゲームデータ
 export interface YearData {
   [year: string]: GameResult[];
 }

@@ -9,7 +9,7 @@ export default function StatsCards({ stats, className = '' }: StatsCardsProps) {
   return (
     <section className={`grid grid-cols-1 md:grid-cols-4 gap-6 ${className}`} aria-label="観戦統計">
       <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-        <h4 className="text-lg font-semibold text-fighters-primary mb-2">
+        <h4 className="text-lg font-semibold text-fs-primary mb-2">
           総観戦数
         </h4>
         <p className="text-3xl font-bold text-gray-900" aria-label={`総観戦数 ${stats.total} 試合`}>
@@ -39,10 +39,10 @@ export default function StatsCards({ stats, className = '' }: StatsCardsProps) {
       </div>
       
       <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-        <h4 className="text-lg font-semibold text-fighters-primary mb-2">
+        <h4 className="text-lg font-semibold text-fs-primary mb-2">
           勝率
         </h4>
-        <p className="text-3xl font-bold text-fighters-primary" aria-label={`勝率 ${stats.winRate} パーセント`}>
+        <p className="text-3xl font-bold text-fs-primary" aria-label={`勝率 ${stats.winRate} パーセント`}>
           {stats.winRate}%
         </p>
         <p className="text-sm text-gray-500 mt-1">
