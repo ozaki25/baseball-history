@@ -70,7 +70,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                 className="hover:bg-gray-50 transition-colors duration-200"
               >
                 <td className="px-4 py-3 text-sm text-gray-900">{formatDate(game.date)}</td>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">vs {game.opponent}</td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">vs {game.vsTeam}</td>
                 <td className="px-4 py-3 text-center">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getResultColor(game.result)} bg-opacity-10`}
@@ -79,7 +79,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center text-sm text-gray-900">
-                  {formatScore(game.score.fighters, game.score.opponent)}
+                  {formatScore(game.score.my, game.score.vs)}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
                   <span className="truncate block max-w-32">{game.location}</span>
@@ -111,7 +111,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
             <div className="flex justify-between items-start mb-3">
               <div>
                 <p className="text-sm font-medium text-gray-900">{formatDate(game.date)}</p>
-                <p className="text-lg font-bold text-fs-primary">vs {game.opponent}</p>
+                <p className="text-lg font-bold text-fs-primary">vs {game.vsTeam}</p>
               </div>
               <div className="text-right">
                 <span
@@ -120,7 +120,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                   {getResultText(game.result)}
                 </span>
                 <p className="text-sm text-gray-600 mt-1">
-                  {formatScore(game.score.fighters, game.score.opponent)}
+                  {formatScore(game.score.my, game.score.vs)}
                 </p>
               </div>
             </div>
