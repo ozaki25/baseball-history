@@ -60,8 +60,8 @@ src/
     parsers/     # HTML解析モジュール（リファクタリング済み）
       teamExtractor.ts      # チーム情報抽出
       scoreExtractor.ts     # スコア情報抽出
-      venueExtractor.ts     # 会場情報抽出
-      homeVisitorDetector.ts # ホーム/ビジター判定
+      locationExtractor.ts  # 開催地情報抽出
+      homeDetector.ts       # ホーム/ビジター判定
       gameParser.ts         # メイン解析ロジック
       index.ts              # エクスポートまとめ
     gameDataFetcher.ts      # メインスクレイピング機能
@@ -88,8 +88,8 @@ HTMLからの試合データ抽出を大幅にリファクタリングし、保�
 
 - **`teamExtractor`**: 対戦相手チーム名とファイターズの位置検出
 - **`scoreExtractor`**: 試合スコアと勝敗判定、試合ステータス（中止/延期）検出
-- **`venueExtractor`**: 試合会場の抽出とホーム球場判定
-- **`homeVisitorDetector`**: 複数手法による信頼性の高いホーム/ビジター判定
+- **`locationExtractor`**: 試合開催地の抽出
+- **`homeDetector`**: ロゴ位置による信頼性の高いホーム/ビジター判定
 - **`gameParser`**: 全機能を統合したメイン解析エンジン
 
 ### 🛡️ エラーハンドリング戦略
