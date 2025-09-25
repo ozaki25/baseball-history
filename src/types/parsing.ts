@@ -15,7 +15,7 @@ export interface ScoreInfo {
   result: 'win' | 'loss' | 'draw' | 'postponed' | 'cancelled';
 }
 
-export interface VenueInfo {
+export interface LocationInfo {
   name: string;
   element?: Element;
 }

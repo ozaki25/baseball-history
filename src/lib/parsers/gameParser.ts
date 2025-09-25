@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 import { ParsedGameData, ParseError } from '@/types/parsing';
 import { extractVsTeam } from './teamExtractor';
 import { extractGameScore } from './scoreExtractor';
-import { extractGameVenue } from './venueExtractor';
+import { extractGameLocation } from './locationExtractor';
 import { detectIsHome } from './homeDetector';
 
 /**
@@ -14,7 +14,7 @@ export function parseGameHTML(html: string): ParsedGameData {
 
     // 各種情報を並列で抽出
     const opponent = extractVsTeam(html);
-    const venueInfo = extractGameVenue(html);
+    const locationInfo = extractGameLocation(html);
     const isHome = detectIsHome(html);
     const scoreInfo = extractGameScore(html, isHome);
 
@@ -30,7 +30,7 @@ export function parseGameHTML(html: string): ParsedGameData {
       opponent,
       myScore: scoreInfo.myScore,
       vsScore: scoreInfo.vsScore,
-      location: venueInfo.name,
+      location: locationInfo.name,
       isHomeGame: isHome,
       result,
     };

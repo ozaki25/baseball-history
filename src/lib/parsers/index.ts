@@ -10,7 +10,7 @@ export { parseGameHTML, validateGameHTML } from './gameParser';
 // 個別抽出器
 export { extractVsTeam, extractMyTeam } from './teamExtractor';
 export { extractGameScore } from './scoreExtractor';
-export { extractGameVenue, extractVenueLocationInfo } from './venueExtractor';
+export { extractGameLocation } from './locationExtractor';
 export { detectIsHome } from './homeDetector';
 
 // 型定義（削除予定の古い型は除外）
