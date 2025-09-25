@@ -56,6 +56,19 @@ export function formatScore(fighters: number, opponent: number): string {
   return `${fighters} - ${opponent}`;
 }
 
+/**
+ * スコアから試合結果を算出
+ */
+export function getGameResult(myScore: number, vsScore: number): 'win' | 'lose' | 'draw' {
+  if (myScore > vsScore) {
+    return 'win';
+  } else if (myScore < vsScore) {
+    return 'lose';
+  } else {
+    return 'draw';
+  }
+}
+
 export function getResultColor(result: 'win' | 'lose' | 'draw'): string {
   switch (result) {
     case 'win':

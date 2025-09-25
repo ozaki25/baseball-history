@@ -1,11 +1,11 @@
 import { JSDOM } from 'jsdom';
-import { LocationInfo, ParseError } from '@/types/parsing';
+import { ParseError } from '@/types/parsing';
 
 /**
  * 試合開催地を抽出
  * 構造: <div class="game-vs__text">エスコンフィールド</div>
  */
-export function extractGameLocation(html: string): LocationInfo {
+export function extractGameLocation(html: string): string {
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -19,8 +19,5 @@ export function extractGameLocation(html: string): LocationInfo {
     throw new ParseError('球場名が空です', 'extractGameLocation');
   }
 
-  return {
-    name: locationName,
-    element: locationElement,
-  };
+  return locationName;
 }

@@ -5,7 +5,7 @@
  */
 
 // メインパーサー
-export { parseGameHTML, validateGameHTML } from './gameParser';
+export { parseGameHTML } from './gameParser';
 
 // 個別抽出器
 export { extractVsTeam, extractMyTeam } from './teamExtractor';

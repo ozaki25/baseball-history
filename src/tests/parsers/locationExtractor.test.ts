@@ -9,7 +9,7 @@ describe('locationExtractor', () => {
       `;
 
       const result = extractGameLocation(html);
-      expect(result.name).toBe('札幌ドーム');
+      expect(result).toBe('札幌ドーム');
     });
 
     it('球場要素が見つからない場合はエラーを投げる', () => {

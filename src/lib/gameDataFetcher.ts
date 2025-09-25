@@ -1,6 +1,7 @@
 import { GameResult } from '@/types/game';
-import { parseGameHTML, validateGameHTML } from './parsers';
-import { ParsedGameData } from '@/types/parsing';
+import { parseGameHTML } from './parsers';
+import { GameInfo } from '@/types/parsing';
+import { getGameResult } from './gameUtils';
 
 /**
  * 日本ハム公式サイトから試合情報を取得
@@ -25,15 +26,9 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     const html = await response.text();
     console.log(`✅ HTML取得成功: ${url}`);
 
-    // HTMLの基本的な妥当性をチェック
-    const validation = validateGameHTML(html);
-    if (!validation.isValid) {
-      console.warn('HTML妥当性チェックで問題が検出されました:', validation.issues);
-    }
-
     // HTMLパースして試合情報を抽出
-    const parsedData = parseGameHTML(html);
-    const gameData = convertToGameResult(parsedData, date);
+    const gameInfo = parseGameHTML(html);
+    const gameData = convertToGameResult(gameInfo, date);
     console.log(`🏟️ 試合データ解析成功: vs ${gameData.vsTeam} ${gameData.result}`);
     return gameData;
   } catch (error) {
@@ -45,27 +40,20 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 }
 
 /**
- * ParsedGameDataをGameResult形式に変換
+ * GameInfoをGameResult形式に変換
  */
-function convertToGameResult(parsedData: ParsedGameData, date: string): GameResult {
-  let result: 'win' | 'lose' | 'draw';
-  if (parsedData.myScore > parsedData.vsScore) {
-    result = 'win';
-  } else if (parsedData.myScore < parsedData.vsScore) {
-    result = 'lose';
-  } else {
-    result = 'draw';
-  }
+function convertToGameResult(gameInfo: GameInfo, date: string): GameResult {
+  const result = getGameResult(gameInfo.myScore, gameInfo.vsScore);
 
   return {
     date,
-    vsTeam: parsedData.opponent,
+    vsTeam: gameInfo.vsTeam,
     result,
     score: {
-      my: parsedData.myScore,
-      vs: parsedData.vsScore,
+      my: gameInfo.myScore,
+      vs: gameInfo.vsScore,
     },
-    location: parsedData.location,
+    location: gameInfo.location,
   };
 }
 
