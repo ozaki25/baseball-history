@@ -6,10 +6,10 @@ describe('homeDetector', () => {
     it('自チームがホーム（index 0）の場合はtrueを返す', () => {
       const html = `
         <div class="game-vs-teams__team">
-          <img src="/images/logo_2004001.png" alt="自チーム">
+          <img data-src="/images/logo_2004001.png" alt="自チーム">
         </div>
         <div class="game-vs-teams__team">
-          <img src="/images/other_team.png" alt="相手チーム">
+          <img data-src="/images/other_team.png" alt="相手チーム">
         </div>
       `;
 
@@ -20,10 +20,10 @@ describe('homeDetector', () => {
     it('自チームがビジター（index 1）の場合はfalseを返す', () => {
       const html = `
         <div class="game-vs-teams__team">
-          <img src="/images/other_team.png" alt="相手チーム">
+          <img data-src="/images/other_team.png" alt="相手チーム">
         </div>
         <div class="game-vs-teams__team">
-          <img src="/images/logo_2004001.png" alt="自チーム">
+          <img data-src="/images/logo_2004001.png" alt="自チーム">
         </div>
       `;
 
@@ -34,10 +34,10 @@ describe('homeDetector', () => {
     it('logo_2004001が見つからない場合はエラーを投げる', () => {
       const html = `
         <div class="game-vs-teams__team">
-          <img src="/images/other_team1.png" alt="チーム1">
+          <img data-src="/images/other_team1.png" alt="チーム1">
         </div>
         <div class="game-vs-teams__team">
-          <img src="/images/other_team2.png" alt="チーム2">
+          <img data-src="/images/other_team2.png" alt="チーム2">
         </div>
       `;
 
@@ -47,7 +47,7 @@ describe('homeDetector', () => {
     it('チーム要素が2つ未満の場合はエラーを投げる', () => {
       const html = `
         <div class="game-vs-teams__team">
-          <img src="/images/logo_2004001.png" alt="自チーム">
+          <img data-src="/images/logo_2004001.png" alt="自チーム">
         </div>
       `;
 

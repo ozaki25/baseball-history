@@ -53,9 +53,12 @@ export function extractGameScore(
     const spanScore = parseInt(spanText.replace(/[^\d]/g, ''));
     const emScore = parseInt(emText.replace(/[^\d]/g, ''));
 
-    // 文書順で判断
-    const isSpanFirst =
-      spanElement.compareDocumentPosition(emElement) & Node.DOCUMENT_POSITION_FOLLOWING;
+    // 親要素の子要素として順序を確認
+    const parent = spanElement.parentElement;
+    const children = Array.from(parent?.children || []);
+    const spanIndex = children.indexOf(spanElement);
+    const emIndex = children.indexOf(emElement);
+    const isSpanFirst = spanIndex < emIndex;
 
     if (isSpanFirst) {
       homeScore = spanScore;

@@ -9,7 +9,7 @@ export function extractMyTeam(html: string, isHome: boolean): string {
   const document = dom.window.document;
 
   const headerElements = document.querySelectorAll('.c-game-detail__header-text');
-  if (headerElements.length !== 2) {
+  if (headerElements.length < 2) {
     throw new ParseError('チーム名要素が2つ見つかりません', 'extractMyTeam');
   }
 
@@ -31,7 +31,7 @@ export function extractVsTeam(html: string, isHome: boolean): string {
   const document = dom.window.document;
 
   const headerElements = document.querySelectorAll('.c-game-detail__header-text');
-  if (headerElements.length !== 2) {
+  if (headerElements.length < 2) {
     throw new ParseError('チーム名要素が2つ見つかりません', 'extractVsTeam');
   }
 

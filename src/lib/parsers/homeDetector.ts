@@ -10,8 +10,10 @@ export function detectIsHome(html: string): boolean {
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
-  // 自チームのロゴ要素を検索
-  const myTeamLogo = document.querySelector('img[src*="logo_2004001"]');
+  // 自チームのロゴ要素を検索（src と data-src 両方をサポート）
+  const myTeamLogo = document.querySelector(
+    'img[src*="logo_2004001"], img[data-src*="logo_2004001"]'
+  );
   if (!myTeamLogo) {
     throw new ParseError('自チームのロゴが見つかりません', 'detectIsHome');
   }
