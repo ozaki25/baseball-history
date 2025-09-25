@@ -56,11 +56,48 @@ npm start
 src/
   app/           # Next.js App Router
   components/    # Reactコンポーネント
-  lib/          # ユーティリティ関数
-  types/        # TypeScript型定義
+  lib/
+    parsers/     # HTML解析モジュール（リファクタリング済み）
+      teamExtractor.ts      # チーム情報抽出
+      scoreExtractor.ts     # スコア情報抽出
+      venueExtractor.ts     # 会場情報抽出
+      homeVisitorDetector.ts # ホーム/ビジター判定
+      gameParser.ts         # メイン解析ロジック
+      index.ts              # エクスポートまとめ
+    gameDataFetcher.ts      # メインスクレイピング機能
+  types/
+    game.ts               # ゲーム関連の型定義
+    parsing.ts            # HTML解析用の型定義
 data/           # JSONデータファイル
 public/         # 静的ファイル、PWA関連
 ```
+
+## 🔧 HTML解析システム（リファクタリング済み）
+
+HTMLからの試合データ抽出を大幅にリファクタリングし、保守性とテスタビリティを向上させました：
+
+### 📋 主要な改善点
+
+- **機能分割**: 抽出機能を責任ごとに個別モジュールに分離
+- **型安全性**: TypeScriptによる厳密な型定義
+- **エラーハンドリング**: 詳細なエラー情報とフォールバック戦略
+- **DOM解析**: 文字列検索からDOMベース解析に移行（JSDOM使用）
+- **複数判定方式**: チーム位置と会場情報による冗長なホーム/ビジター判定
+
+### 🎯 モジュール構成
+
+- **`teamExtractor`**: 対戦相手チーム名とファイターズの位置検出
+- **`scoreExtractor`**: 試合スコアと勝敗判定、試合ステータス（中止/延期）検出
+- **`venueExtractor`**: 試合会場の抽出とホーム球場判定
+- **`homeVisitorDetector`**: 複数手法による信頼性の高いホーム/ビジター判定
+- **`gameParser`**: 全機能を統合したメイン解析エンジン
+
+### 🛡️ エラーハンドリング戦略
+
+- **カスタムエラー**: `ParseError`クラスによる構造化エラー情報
+- **段階的フォールバック**: 一次手法失敗時の代替解析方法
+- **デフォルト値除去**: エラーの可視性向上のためデフォルト値を削除
+- **詳細ログ**: デバッグ用の詳細なコンソール出力
 
 ## 🎯 主要コンポーネント
 
