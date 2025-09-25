@@ -1,9 +1,9 @@
 import { JSDOM } from 'jsdom';
 import { ParsedGameData, ParseError } from '@/types/parsing';
 import { extractVsTeam } from './teamExtractor';
-import { extractGameScore, detectGameStatus } from './scoreExtractor';
+import { extractGameScore } from './scoreExtractor';
 import { extractGameVenue } from './venueExtractor';
-import { detectHomeVisitor } from './homeVisitorDetector';
+import { detectIsHome } from './homeDetector';
 
 /**
  * HTMLから試合データを抽出するメインパーサー
@@ -14,50 +14,30 @@ export function parseGameHTML(html: string): ParsedGameData {
 
     // 各種情報を並列で抽出
     const opponent = extractVsTeam(html);
-    const scoreInfo = extractGameScore(html);
     const venueInfo = extractGameVenue(html);
-    const homeVisitorInfo = detectHomeVisitor(html);
-    const gameStatus = detectGameStatus(html);
-
-    // ファイターズの視点でのスコア計算
-    let myScore: number;
-    let vsScore: number;
-
-    if (homeVisitorInfo.isHome) {
-      // ホームゲームの場合
-      myScore = scoreInfo.homeScore;
-      vsScore = scoreInfo.visitorScore;
-    } else {
-      // ビジターゲームの場合
-      myScore = scoreInfo.visitorScore;
-      vsScore = scoreInfo.homeScore;
-    }
+    const isHome = detectIsHome(html);
+    const scoreInfo = extractGameScore(html, isHome);
 
     // 勝敗判定
     let result: 'win' | 'lose' | 'draw' = 'draw';
-    if (gameStatus === 'completed') {
-      if (myScore > vsScore) {
-        result = 'win';
-      } else if (myScore < vsScore) {
-        result = 'lose';
-      }
-    } else {
-      // 中止・延期の場合は引き分け扱い
-      result = 'draw';
+    if (scoreInfo.myScore > scoreInfo.vsScore) {
+      result = 'win';
+    } else if (scoreInfo.myScore < scoreInfo.vsScore) {
+      result = 'lose';
     }
 
     const parsedData: ParsedGameData = {
       opponent,
-      myScore,
-      vsScore,
+      myScore: scoreInfo.myScore,
+      vsScore: scoreInfo.vsScore,
       location: venueInfo.name,
-      isHomeGame: homeVisitorInfo.isHome,
+      isHomeGame: isHome,
       result,
     };
 
     console.log('試合HTML解析完了:', parsedData);
-    console.log(`  判定詳細: 方法=${homeVisitorInfo.method}, 信頼度=${homeVisitorInfo.confidence}`);
-    console.log(`  試合状況: ${gameStatus}`);
+    console.log(`  ホーム/ビジター: ${isHome ? 'ホーム' : 'ビジター'}`);
+    console.log(`  試合結果: ${result}`);
 
     return parsedData;
   } catch (error) {

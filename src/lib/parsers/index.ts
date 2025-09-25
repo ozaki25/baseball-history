@@ -8,10 +8,9 @@
 export { parseGameHTML, validateGameHTML } from './gameParser';
 
 // 個別抽出器
-export { extractVsTeam, extractMyTeamName, detectMyTeamPosition } from './teamExtractor';
-export { extractGameScore, detectGameStatus } from './scoreExtractor';
+export { extractVsTeam, extractMyTeam } from './teamExtractor';
+export { extractGameScore } from './scoreExtractor';
 export { extractGameVenue, extractVenueLocationInfo } from './venueExtractor';
-export { detectHomeVisitor, isHomeGame } from './homeVisitorDetector';
+export { detectIsHome } from './homeDetector';
 
-// 型定義
-export type { HomeVisitorResult } from './homeVisitorDetector';
+// 型定義（削除予定の古い型は除外）

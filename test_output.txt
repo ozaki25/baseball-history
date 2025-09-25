@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/ozaki/app/baseball-history
+
+ ✓ src/tests/parsers/scoreExtractor.test.ts (7 tests) 25ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  16:55:10
+   Duration  337ms (transform 17ms, setup 0ms, collect 18ms, tests 25ms, environment 147ms, prepare 28ms)
+

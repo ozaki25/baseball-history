@@ -1,81 +1,83 @@
 import { describe, it, expect } from 'vitest';
-import { extractGameScore, detectGameStatus } from '@/lib/parsers/scoreExtractor';
+import { extractGameScore } from '@/lib/parsers/scoreExtractor';
 
 describe('scoreExtractor', () => {
   describe('extractGameScore', () => {
-    it('正常なスコア要素から抽出（サヨナラ勝ちのx付き）', () => {
+    it('ホーム時のスコア抽出（ファイターズ勝利）', () => {
       const html = `
         <div class="game-vs-teams__team-score">
           <em>6x</em><span>5</span>
         </div>
       `;
 
-      const result = extractGameScore(html);
-      expect(result.homeScore).toBe(6); // x付きは除去される
-      expect(result.visitorScore).toBe(5);
-      expect(result.total).toBe(11);
-      expect(result.result).toBe('win');
+      const result = extractGameScore(html, true);
+      expect(result.myScore).toBe(6); // ホーム（ファイターズ）= em = 6
+      expect(result.vsScore).toBe(5); // ビジター（相手） = span = 5
     });
 
-    it('引き分けの場合', () => {
+    it('ビジター時のスコア抽出（ファイターズ勝利）', () => {
       const html = `
         <div class="game-vs-teams__team-score">
-          <em>2</em><span>2</span>
+          <em>6</em><span>5x</span>
         </div>
       `;
 
-      const result = extractGameScore(html);
-      expect(result.homeScore).toBe(2);
-      expect(result.visitorScore).toBe(2);
-      expect(result.result).toBe('draw');
+      const result = extractGameScore(html, false);
+      expect(result.myScore).toBe(5); // ビジター（ファイターズ） = span = 5x
+      expect(result.vsScore).toBe(6); // ホーム（相手） = em = 6
     });
 
-    it('負けの場合', () => {
+    it('ホーム時のスコア抽出（ファイターズ敗戦）', () => {
       const html = `
         <div class="game-vs-teams__team-score">
-          <em>1</em><span>4</span>
+          <em>2</em><span>7</span>
         </div>
       `;
 
-      const result = extractGameScore(html);
-      expect(result.homeScore).toBe(1);
-      expect(result.visitorScore).toBe(4);
-      expect(result.result).toBe('loss');
-    });
-  });
-
-  describe('detectGameStatus', () => {
-    it('通常の試合（開催済み）の場合', () => {
-      const html = `
-        <div class="game-result">
-          <p>試合結果: ファイターズ 5-3 オリックス</p>
-        </div>
-      `;
-
-      const result = detectGameStatus(html);
-      expect(result).toBe('completed');
+      const result = extractGameScore(html, true);
+      expect(result.myScore).toBe(2); // ホーム（ファイターズ） = em = 2
+      expect(result.vsScore).toBe(7); // ビジター（相手） = span = 7
     });
 
-    it('中止の場合', () => {
+    it('ビジター時のスコア抽出（ファイターズ敗戦）', () => {
       const html = `
-        <div class="content">
-          <p>今日の試合は雨天のため中止となりました。</p>
+        <div class="game-vs-teams__team-score">
+          <em>7</em><span>2</span>
         </div>
       `;
 
-      const result = detectGameStatus(html);
-      expect(result).toBe('cancelled');
+      const result = extractGameScore(html, false);
+      expect(result.myScore).toBe(2); // ビジター（ファイターズ） = span = 2
+      expect(result.vsScore).toBe(7); // ホーム（相手） = em = 7
     });
 
-    it('延期の場合', () => {
+    it('引き分けの場合（ホーム）', () => {
       const html = `
-        <div class="content">
-          <p>試合延期のお知らせ</p>
+        <div class="game-vs-teams__team-score">
+          <span>3</span><i></i><span>3</span>
         </div>
       `;
 
-      const result = detectGameStatus(html);
-      expect(result).toBe('postponed');
+      const result = extractGameScore(html, true);
+      expect(result.myScore).toBe(3); // ホーム（ファイターズ） = 左のspan = 3
+      expect(result.vsScore).toBe(3); // ビジター（相手） = 右のspan = 3
+    });
+
+    it('引き分けの場合（ビジター）', () => {
+      const html = `
+        <div class="game-vs-teams__team-score">
+          <span>2</span><i></i><span>2</span>
+        </div>
+      `;
+
+      const result = extractGameScore(html, false);
+      expect(result.myScore).toBe(2); // ビジター（ファイターズ） = 右のspan = 2
+      expect(result.vsScore).toBe(2); // ホーム（相手） = 左のspan = 2
+    });
+
+    it('スコア要素が見つからない場合はエラーを投げる', () => {
+      const html = '<div>No score elements</div>';
+      expect(() => extractGameScore(html, true)).toThrow('スコア要素が見つかりません');
     });
   });
 });
