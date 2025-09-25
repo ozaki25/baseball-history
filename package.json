@@ -7,7 +7,7 @@
     "build": "next build",
     "serve": "npx serve out",
     "lint": "next lint",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:ui": "vitest --ui"
   },
   "dependencies": {
