@@ -5,7 +5,7 @@ import { join } from 'path';
  * テスト用HTMLファイルを読み込むヘルパー関数
  */
 export function loadTestHTML(filename: string): string {
-  const filePath = join(process.cwd(), filename);
+  const filePath = join(process.cwd(), 'src/tests/fixtures', filename);
   return readFileSync(filePath, 'utf-8');
 }
 
