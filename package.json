@@ -37,7 +37,11 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,json,md}": [
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,md}": [
       "prettier --write"
     ]
   }
