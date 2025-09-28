@@ -13,7 +13,7 @@ export function extractMyTeam(html: string, isHome: boolean): string {
     throw new ParseError('チーム名要素が2つ見つかりません', 'extractMyTeam');
   }
 
-  const myTeamIndex = isHome ? 0 : 1;
+  const myTeamIndex = isHome ? 1 : 0;
   const myTeamName = headerElements[myTeamIndex].textContent?.trim();
 
   if (!myTeamName) {
@@ -35,7 +35,7 @@ export function extractVsTeam(html: string, isHome: boolean): string {
     throw new ParseError('チーム名要素が2つ見つかりません', 'extractVsTeam');
   }
 
-  const vsTeamIndex = isHome ? 1 : 0;
+  const vsTeamIndex = isHome ? 0 : 1;
   const vsTeamName = headerElements[vsTeamIndex].textContent?.trim();
 
   if (!vsTeamName) {
