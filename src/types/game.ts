@@ -1,5 +1,6 @@
 export interface GameResult {
-  date: string; // MMDD形式
+  date: string; // MM/DD形式
+  myTeam: string;
   vsTeam: string;
   result: 'win' | 'lose' | 'draw';
   score: {
@@ -7,6 +8,7 @@ export interface GameResult {
     vs: number;
   };
   location: string;
+  gameUrl: string; // 該当試合のURL
 }
 
 // 要件通りの観戦日データ構造（年単位 + MMDD形式）

@@ -29,7 +29,7 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 
     // HTMLパースして試合情報を抽出
     const gameInfo = parseGameHTML(html);
-    const gameData = convertToGameResult(gameInfo, date);
+    const gameData = convertToGameResult(gameInfo, date, year);
     console.log(`🏟️ 試合データ解析成功: vs ${gameData.vsTeam} ${gameData.result}`);
 
     // サーバー負荷軽減のため100msスリープ
@@ -48,11 +48,15 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 /**
  * GameInfoをGameResult形式に変換
  */
-function convertToGameResult(gameInfo: GameInfo, date: string): GameResult {
+function convertToGameResult(gameInfo: GameInfo, date: string, year: string): GameResult {
   const result = getGameResult(gameInfo.myScore, gameInfo.vsScore);
 
+  // MMDD形式からMM/DD形式に変換
+  const formattedDate = `${date.slice(0, 2)}/${date.slice(2, 4)}`;
+
   return {
-    date,
+    date: formattedDate,
+    myTeam: gameInfo.myTeam,
     vsTeam: gameInfo.vsTeam,
     result,
     score: {
@@ -60,6 +64,7 @@ function convertToGameResult(gameInfo: GameInfo, date: string): GameResult {
       vs: gameInfo.vsScore,
     },
     location: gameInfo.location,
+    gameUrl: generateOfficialGameUrl(year, date),
   };
 }
 

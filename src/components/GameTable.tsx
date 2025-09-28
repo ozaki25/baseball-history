@@ -1,11 +1,5 @@
 import { GameResult } from '@/types/game';
-import {
-  formatDate,
-  formatScore,
-  getResultColor,
-  getResultText,
-  getOfficialGameUrl,
-} from '@/lib/gameUtils';
+import { formatDate, formatScore, getResultColor, getResultText } from '@/lib/gameUtils';
 
 interface GameTableProps {
   games: GameResult[];
@@ -86,7 +80,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
                 </td>
                 <td className="px-4 py-3 text-center">
                   <a
-                    href={getOfficialGameUrl(selectedYear, game.date)}
+                    href={game.gameUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-3 py-1 rounded-md bg-fs-primary text-white text-xs font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
@@ -133,7 +127,7 @@ export default function GameTable({ games, selectedYear, className = '' }: GameT
 
             <div className="pt-3 mt-3 border-t border-gray-100">
               <a
-                href={getOfficialGameUrl(selectedYear, game.date)}
+                href={game.gameUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-full px-4 py-2 rounded-md bg-fs-primary text-white text-sm font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
