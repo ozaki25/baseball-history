@@ -14,7 +14,7 @@ export function loadTestHTML(filename: string): string {
  */
 export const TEST_PATTERNS = {
   HOME_WIN: 'test-pattern1-home-win.html',
-  HOME_LOSE: 'test-pattern2-home-lose.html', 
+  HOME_LOSE: 'test-pattern2-home-lose.html',
   VISITOR_WIN: 'test-pattern3-visitor-win.html',
   VISITOR_LOSE: 'test-pattern4-visitor-lose.html',
   DRAW: 'test-pattern5-draw.html',

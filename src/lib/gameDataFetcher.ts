@@ -31,11 +31,11 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     const gameInfo = parseGameHTML(html);
     const gameData = convertToGameResult(gameInfo, date);
     console.log(`🏟️ 試合データ解析成功: vs ${gameData.vsTeam} ${gameData.result}`);
-    
+
     // サーバー負荷軽減のため100msスリープ
     console.log(`⏱️ サーバー負荷軽減のため${SCRAPING_DELAY_MS}ms待機...`);
     await sleep(SCRAPING_DELAY_MS);
-    
+
     return gameData;
   } catch (error) {
     console.error(`❌ データ取得失敗: ${year}/${date}`, error);
