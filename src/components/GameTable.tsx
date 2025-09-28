@@ -3,11 +3,10 @@ import { formatDate, formatScore, getResultColor, getResultText } from '@/lib/ga
 
 interface GameTableProps {
   games: GameResult[];
-  selectedYear: string; // 年を追加して公式サイトリンク生成に使用
   className?: string;
 }
 
-export default function GameTable({ games, selectedYear, className = '' }: GameTableProps) {
+export default function GameTable({ games, className = '' }: GameTableProps) {
   if (!games || games.length === 0) {
     return (
       <div className={`text-center py-12 ${className}`}>
