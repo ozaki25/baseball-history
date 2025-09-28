@@ -1,80 +1,53 @@
 import { describe, it, expect } from 'vitest';
 import { extractGameScore } from '@/lib/parsers/scoreExtractor';
+import { loadTestHTML, TEST_PATTERNS } from '@/tests/helpers/testHtmlLoader';
 
 describe('scoreExtractor', () => {
-  describe('extractGameScore', () => {
-    it('ホーム時のスコア抽出（ファイターズ勝利）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <em>6x</em><span>5</span>
-        </div>
-      `;
-
+  describe('extractGameScore with real HTML patterns', () => {
+    it('ホーム勝利時のスコア抽出（パターン1）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.HOME_WIN);
       const result = extractGameScore(html, true);
-      expect(result.myScore).toBe(6); // ホーム（ファイターズ）= em = 6
-      expect(result.vsScore).toBe(5); // ビジター（相手） = span = 5
+      expect(result.myScore).toBe(5); // ホーム（ファイターズ）勝利
+      expect(result.vsScore).toBe(1); // ビジター（千葉ロッテ）敗戦
     });
 
-    it('ビジター時のスコア抽出（ファイターズ勝利）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <em>6</em><span>5x</span>
-        </div>
-      `;
-
-      const result = extractGameScore(html, false);
-      expect(result.myScore).toBe(5); // ビジター（ファイターズ） = span = 5x
-      expect(result.vsScore).toBe(6); // ホーム（相手） = em = 6
-    });
-
-    it('ホーム時のスコア抽出（ファイターズ敗戦）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <em>2</em><span>7</span>
-        </div>
-      `;
-
+    it('ホーム敗戦時のスコア抽出（パターン2）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.HOME_LOSE);
       const result = extractGameScore(html, true);
-      expect(result.myScore).toBe(2); // ホーム（ファイターズ） = em = 2
-      expect(result.vsScore).toBe(7); // ビジター（相手） = span = 7
+      expect(result.myScore).toBe(1); // ホーム（ファイターズ）敗戦
+      expect(result.vsScore).toBe(5); // ビジター（千葉ロッテ）勝利
     });
 
-    it('ビジター時のスコア抽出（ファイターズ敗戦）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <em>7</em><span>2</span>
-        </div>
-      `;
-
+    it('ビジター勝利時のスコア抽出（パターン3）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.VISITOR_WIN);
       const result = extractGameScore(html, false);
-      expect(result.myScore).toBe(2); // ビジター（ファイターズ） = span = 2
-      expect(result.vsScore).toBe(7); // ホーム（相手） = em = 7
+      expect(result.myScore).toBe(1); // ビジター（ファイターズ）勝利
+      expect(result.vsScore).toBe(0); // ホーム（オリックス）敗戦
     });
 
-    it('引き分けの場合（ホーム）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <span>3</span><i></i><span>3</span>
-        </div>
-      `;
+    it('ビジター敗戦時のスコア抽出（パターン4）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.VISITOR_LOSE);
+      const result = extractGameScore(html, false);
+      expect(result.myScore).toBe(1); // ビジター（ファイターズ）敗戦
+      expect(result.vsScore).toBe(5); // ホーム（オリックス）勝利
+    });
 
+    it('引き分け時のスコア抽出（パターン5）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.DRAW);
       const result = extractGameScore(html, true);
-      expect(result.myScore).toBe(3); // ホーム（ファイターズ） = 左のspan = 3
-      expect(result.vsScore).toBe(3); // ビジター（相手） = 右のspan = 3
+      expect(result.myScore).toBe(4); // ホーム（ファイターズ）引き分け
+      expect(result.vsScore).toBe(4); // ビジター（福岡ソフトバンク）引き分け
     });
 
-    it('引き分けの場合（ビジター）', () => {
-      const html = `
-        <div class="game-vs-teams__team-score">
-          <span>2</span><i></i><span>2</span>
-        </div>
-      `;
-
-      const result = extractGameScore(html, false);
-      expect(result.myScore).toBe(2); // ビジター（ファイターズ） = 右のspan = 2
-      expect(result.vsScore).toBe(2); // ホーム（相手） = 左のspan = 2
+    it('サヨナラ勝利時のスコア抽出（パターン6）', () => {
+      const html = loadTestHTML(TEST_PATTERNS.SAYONARA_WIN);
+      const result = extractGameScore(html, true); // ホーム戦での勝利
+      expect(result.myScore).toBe(4); // ホーム（ファイターズ）サヨナラ勝ち
+      expect(result.vsScore).toBe(3); // ビジター（千葉ロッテ）敗戦
     });
+  });
 
+  describe('edge cases and error handling', () => {
     it('スコア要素が見つからない場合はエラーを投げる', () => {
       const html = '<div>No score elements</div>';
       expect(() => extractGameScore(html, true)).toThrow('スコア要素が見つかりません');
