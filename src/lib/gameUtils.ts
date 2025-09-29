@@ -1,5 +1,5 @@
-import { GameResult, GameStats, YearData, DatesData } from '@/types/game';
-import { fetchGameData, generateOfficialGameUrl } from './gameDataFetcher';
+import { YearData, DatesData } from '@/types/game';
+import { fetchGameData } from './gameDataFetcher';
 import dayjs from 'dayjs';
 
 /**
@@ -106,9 +106,4 @@ export function getResultText(result: 'win' | 'lose' | 'draw'): string {
   }
 }
 
-/**
- * 公式サイトのゲームページURLを生成
- */
-// NOTE: 一部のユーティリティ（年一覧、統計、ソート、公式URL生成ラッパー）は
-// 現在コードベースで参照されていないため削除しました。
-// 必要になった場合は履歴から復元してください。
+// end of utilities
