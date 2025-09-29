@@ -17,19 +17,16 @@ export default function StatsCards({ stats, className = '' }: StatsCardsProps) {
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-        <h4 className="text-lg font-semibold text-result-win mb-2">勝利数</h4>
-        <p className="text-3xl font-bold text-result-win" aria-label={`勝利数 ${stats.wins} 試合`}>
+        <h4 className="text-lg font-semibold text-gray-900 mb-2">勝利数</h4>
+        <p className="text-3xl font-bold text-gray-900" aria-label={`勝利数 ${stats.wins} 試合`}>
           {stats.wins}
         </p>
         <p className="text-sm text-gray-500 mt-1">勝</p>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-        <h4 className="text-lg font-semibold text-result-lose mb-2">敗戦数</h4>
-        <p
-          className="text-3xl font-bold text-result-lose"
-          aria-label={`敗戦数 ${stats.losses} 試合`}
-        >
+        <h4 className="text-lg font-semibold text-gray-900 mb-2">敗戦数</h4>
+        <p className="text-3xl font-bold text-gray-900" aria-label={`敗戦数 ${stats.losses} 試合`}>
           {stats.losses}
         </p>
         <p className="text-sm text-gray-500 mt-1">敗</p>

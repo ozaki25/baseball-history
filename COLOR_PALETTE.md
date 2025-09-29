@@ -23,9 +23,7 @@
 
 ### システムカラー
 
-- **勝利**: `#10b981` (result-win) - エメラルドグリーン
-- **敗北**: `#ef4444` (result-lose) - レッド
-- **引き分け**: `#6b7280` (result-draw) - グレー
+（勝敗を表す専用カラーは現在利用していません）
 
 ## アクセシビリティ対応
 
@@ -36,8 +34,8 @@
 - **ダークテキスト on ライト背景**: `text-fighters-black bg-fighters-white`
 - **ライトテキスト on ダーク背景**: `text-fighters-white bg-fighters-primary`
 - **アクセント**: `text-fighters-gold bg-fighters-blue-50`
-- **エラー状態**: `text-result-lose bg-red-50`
-- **成功状態**: `text-result-win bg-green-50`
+- **エラー状態**: `text-red-600 bg-red-50`
+- **成功状態**: `text-blue-600 bg-blue-50`
 
 ## 使用例
 
@@ -54,7 +52,7 @@
 ```tsx
 <table className="border-fighters-blue-200">
   <th className="bg-fighters-blue-50 text-fighters-primary">
-  <td className={result === 'win' ? 'text-result-win' : 'text-result-lose'}>
+  <td className={result === 'win' ? 'text-blue-600' : 'text-red-600'}>
 </table>
 ```
 

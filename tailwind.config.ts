@@ -59,11 +59,7 @@ export default {
             950: '#030712',
           },
         },
-        result: {
-          win: '#10b981',
-          lose: '#ef4444',
-          draw: '#6b7280',
-        },
+        // result colors removed (unused)
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },

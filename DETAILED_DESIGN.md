@@ -556,7 +556,7 @@ export default function StatsCards({ stats }: StatsCardsProps) {
         title="勝利"
         value={stats.wins}
         icon="🏆"
-        color="bg-green-50 text-green-700"
+        color="bg-blue-50 text-blue-700"
       />
 
       {/* Losses */}

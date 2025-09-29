@@ -1,5 +1,5 @@
 import { GameResult } from '@/types/game';
-import { formatScore, getResultColor, getResultText } from '@/lib/gameUtils';
+import { formatScore, getResultText } from '@/lib/gameUtils';
 
 interface GameTableProps {
   games: GameResult[];
@@ -65,9 +65,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 <td className="px-4 py-3 text-sm text-gray-900">{game.date}</td>
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">vs {game.vsTeam}</td>
                 <td className="px-4 py-3 text-center">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getResultColor(game.result)} bg-opacity-10`}
-                  >
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-gray-700 bg-opacity-10">
                     {getResultText(game.result)}
                   </span>
                 </td>
@@ -107,9 +105,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 <p className="text-lg font-bold text-fs-primary">vs {game.vsTeam}</p>
               </div>
               <div className="text-right">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getResultColor(game.result)} bg-opacity-10`}
-                >
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-gray-700 bg-opacity-10">
                   {getResultText(game.result)}
                 </span>
                 <p className="text-sm text-gray-600 mt-1">

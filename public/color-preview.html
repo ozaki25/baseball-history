@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Color Preview — 観戦履歴</title>
+    <style>
+      body {
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          'Helvetica Neue',
+          Arial,
+          sans-serif;
+        margin: 24px;
+        background: #f7fafc;
+        color: #0f172a;
+      }
+      h1 {
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 2px 6px rgba(2, 6, 23, 0.06);
+      }
+      .swatch {
+        height: 72px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+      .meta {
+        font-size: 12px;
+        color: #475569;
+        margin-top: 8px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .small {
+        height: 36px;
+        width: 36px;
+        border-radius: 6px;
+      }
+      .icon-preview {
+        height: 96px;
+        width: 96px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+        background: #006298;
+      }
+      code {
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Color Preview — 観戦履歴</h1>
+    <p class="meta">現在の Tailwind / ドキュメント値を簡易プレビューで確認できます。</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="swatch" style="background: #006298; color: #fff">
+          Primary<br /><small style="font-weight: 600">#006298</small>
+        </div>
+        <div class="meta">
+          Used: Tailwind `fs.primary`, manifest `theme_color` / `background_color`
+        </div>
+        <div class="row">
+          <div class="small" style="background: #004466"></div>
+          <div class="small" style="background: #005580"></div>
+          <div class="small" style="background: #006298"></div>
+          <div class="small" style="background: #60a5fa"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="swatch" style="background: #b3a369; color: #010101">
+          Gold (doc)<br /><small style="font-weight: 600">#b3a369</small>
+        </div>
+        <div class="meta">Document color (`COLOR_PALETTE.md`)</div>
+        <div class="row">
+          <div class="small" style="background: #fdfcf7"></div>
+          <div class="small" style="background: #faf7e8"></div>
+          <div class="small" style="background: #b3a369"></div>
+          <div class="small" style="background: #7a6c49"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="swatch" style="background: #8b7a4d; color: #fff">
+          Gold (implemented)<br /><small style="font-weight: 600">#8b7a4d</small>
+        </div>
+        <div class="meta">Tailwind `fs.gold` (darker for contrast)</div>
+        <div class="row">
+          <div class="small" style="background: #f4edc4"></div>
+          <div class="small" style="background: #e0d080"></div>
+          <div class="small" style="background: #8b7a4d"></div>
+          <div class="small" style="background: #67593e"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="swatch" style="background: #ffffff; color: #0f172a; border: 1px solid #e5e7eb">
+          Background<br /><small style="font-weight: 600">#ffffff</small>
+        </div>
+        <div class="meta">`--background` in `globals.css` (dark: #0a0a0a)</div>
+      </div>
+
+      <div class="card">
+        <div class="swatch" style="background: #010101; color: #fff">
+          Black<br /><small style="font-weight: 600">#010101</small>
+        </div>
+        <div class="meta">`fs.black`</div>
+      </div>
+
+      <!-- result colors removed (win/lose/draw) -->
+
+      <div class="card">
+        <div class="swatch" style="background: #006298; color: #fff">PWA Icon Preview</div>
+        <div class="icon-preview">
+          <!-- embed the generated SVG inline for preview -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="72"
+            height="72"
+            viewBox="0 0 192 192"
+            role="img"
+            aria-label="F icon"
+          >
+            <rect width="192" height="192" rx="24" fill="#006298" />
+            <g transform="translate(96,96)">
+              <circle r="64" fill="#ffffff" stroke="#b3a369" stroke-width="4" />
+              <text
+                x="0"
+                y="0"
+                dy="4"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-family="Inter, system-ui, -apple-system, 'Helvetica Neue', Arial"
+                font-size="64"
+                font-weight="700"
+                fill="#006298"
+              >
+                F
+              </text>
+            </g>
+          </svg>
+        </div>
+        <div class="meta">SVG: `public/icon-192x192.svg` content (scaled)</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 18px; color: #334155">
+      Tips: ドキュメントと実装値が違う色（Gold）は左の 2
+      つのカードで比較してください。変更する場合はどちらを正にするか教えてください。
+    </p>
+  </body>
+</html>

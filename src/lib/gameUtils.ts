@@ -80,18 +80,7 @@ export function getGameResult(myScore: number, vsScore: number): 'win' | 'lose' 
   }
 }
 
-export function getResultColor(result: 'win' | 'lose' | 'draw'): string {
-  switch (result) {
-    case 'win':
-      return 'text-green-600';
-    case 'lose':
-      return 'text-red-600';
-    case 'draw':
-      return 'text-gray-600';
-    default:
-      return 'text-gray-600';
-  }
-}
+// getResultColor removed: UI no longer applies result-specific colors
 
 export function getResultText(result: 'win' | 'lose' | 'draw'): string {
   switch (result) {
