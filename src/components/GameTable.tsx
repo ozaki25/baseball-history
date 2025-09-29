@@ -71,7 +71,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                     {getResultText(game.result)}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-center text-sm text-gray-900">
+                <td className="px-4 py-3 text-center text-sm text-gray-900 whitespace-nowrap">
                   {formatScore(game.score.my, game.score.vs)}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
@@ -113,7 +113,9 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                   {getResultText(game.result)}
                 </span>
                 <p className="text-sm text-gray-600 mt-1">
-                  {formatScore(game.score.my, game.score.vs)}
+                  <span className="whitespace-nowrap">
+                    {formatScore(game.score.my, game.score.vs)}
+                  </span>
                 </p>
               </div>
             </div>
