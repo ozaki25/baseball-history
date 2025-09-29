@@ -52,7 +52,7 @@ function convertToGameResult(gameInfo: GameInfo, date: string, year: string): Ga
   const result = getGameResult(gameInfo.myScore, gameInfo.vsScore);
 
   return {
-    date: formatDate(date), // dayjs使用のformatDate関数を使用
+    date: formatDate(date),
     myTeam: gameInfo.myTeam,
     vsTeam: gameInfo.vsTeam,
     result,
