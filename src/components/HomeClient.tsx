@@ -54,10 +54,11 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-3 py-2 text-left font-medium text-gray-700">日付</th>
-                      <th className="px-3 py-2 text-left font-medium text-gray-700">対戦相手</th>
-                      <th className="px-3 py-2 text-left font-medium text-gray-700">結果</th>
-                      <th className="px-3 py-2 text-left font-medium text-gray-700">スコア</th>
-                      <th className="px-3 py-2 text-left font-medium text-gray-700">会場</th>
+                      <th className="px-3 py-2 text-left font-medium text-gray-700">対戦チーム</th>
+                      <th className="px-3 py-2 text-left font-medium text-gray-700">球場</th>
+                      <th className="px-3 py-2 text-center font-medium text-gray-700">勝敗</th>
+                      <th className="px-3 py-2 text-center font-medium text-gray-700">スコア</th>
+                      <th className="px-3 py-2 text-center font-medium text-gray-700">リンク</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -65,27 +66,33 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-3 py-2 text-gray-900">{game.date}</td>
                         <td className="px-3 py-2 text-gray-900">{game.vsTeam}</td>
-                        <td className="px-3 py-2">
+                        <td className="px-3 py-2 text-gray-600">{game.location}</td>
+                        <td className="px-3 py-2 text-center">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            className={`text-lg font-bold ${
                               game.result === 'win'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'text-green-600'
                                 : game.result === 'lose'
-                                  ? 'bg-red-100 text-red-800'
-                                  : 'bg-gray-100 text-gray-800'
+                                  ? 'text-red-600'
+                                  : 'text-gray-600'
                             }`}
                           >
-                            {game.result === 'win'
-                              ? '勝利'
-                              : game.result === 'lose'
-                                ? '敗北'
-                                : '引分'}
+                            {game.result === 'win' ? '○' : game.result === 'lose' ? '●' : '△'}
                           </span>
                         </td>
-                        <td className="px-3 py-2 text-gray-900">
+                        <td className="px-3 py-2 text-center text-gray-900 font-medium">
                           {game.score.my} - {game.score.vs}
                         </td>
-                        <td className="px-3 py-2 text-gray-600">{game.location}</td>
+                        <td className="px-3 py-2 text-center">
+                          <a
+                            href={game.gameUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors duration-200"
+                          >
+                            詳細
+                          </a>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
