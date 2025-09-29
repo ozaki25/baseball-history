@@ -1,7 +1,7 @@
 import { GameResult } from '@/types/game';
 import { parseGameHTML } from './parsers';
 import { GameInfo } from '@/types/parsing';
-import { getGameResult } from './gameUtils';
+import { getGameResult, formatDate } from './gameUtils';
 import { sleep, SCRAPING_DELAY_MS } from './sleepUtils';
 
 /**
@@ -51,11 +51,8 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 function convertToGameResult(gameInfo: GameInfo, date: string, year: string): GameResult {
   const result = getGameResult(gameInfo.myScore, gameInfo.vsScore);
 
-  // MMDD形式からMM/DD形式に変換
-  const formattedDate = `${date.slice(0, 2)}/${date.slice(2, 4)}`;
-
   return {
-    date: formattedDate,
+    date: formatDate(date), // dayjs使用のformatDate関数を使用
     myTeam: gameInfo.myTeam,
     vsTeam: gameInfo.vsTeam,
     result,
