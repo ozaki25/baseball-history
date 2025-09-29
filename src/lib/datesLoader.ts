@@ -3,9 +3,9 @@ import { DatesData } from '@/types/game';
 import rawDates from '../../data/dates.json';
 
 /**
- * Load and validate dates.json at server-side ingestion.
- * Converts each MMDD string into a dayjs instance (validated) by combining with the year.
- * If any date is invalid, this function throws an Error with details.
+ * サーバー側の取り込み時に `data/dates.json` を読み込み、検証を行います。
+ * 各 MMDD 文字列は年（YYYY）と結合して dayjs オブジェクトに変換（厳密パース）します。
+ * 不正な日付が見つかった場合は詳細を含む Error を投げます。
  */
 export function loadAndValidateDates(): DatesData {
   const dates = rawDates as DatesData;
@@ -20,7 +20,7 @@ export function loadAndValidateDates(): DatesData {
         throw new Error(`Invalid MMDD entry for ${year}: ${mmdd} (must be 4 digits)`);
       }
 
-      const yyyyMMdd = `${year}${mmdd}`; // YYYYMMDD
+      const yyyyMMdd = `${year}${mmdd}`; // YYYYMMDD（年+月日）
       const parsed = dayjs(yyyyMMdd, 'YYYYMMDD', true);
       if (!parsed.isValid()) {
         throw new Error(
@@ -34,8 +34,8 @@ export function loadAndValidateDates(): DatesData {
 }
 
 /**
- * Load and validate dates, returning dayjs objects grouped by year.
- * Useful for server-side ingestion where we want a typed date object.
+ * 検証済みの日付を年ごとに dayjs オブジェクトの配列として返します。
+ * サーバー側で日付を dayjs 型として扱いたい場合に便利です。
  */
 export function loadAndValidateDatesAsDayjs(): Record<string, dayjs.Dayjs[]> {
   const dates = loadAndValidateDates();
@@ -44,7 +44,7 @@ export function loadAndValidateDatesAsDayjs(): Record<string, dayjs.Dayjs[]> {
   for (const [year, dateArray] of Object.entries(dates)) {
     result[year] = dateArray.map((mmdd) => {
       const parsed = dayjs(`${year}${mmdd}`, 'YYYYMMDD', true);
-      // parse was already validated in loadAndValidateDates, but extra safety:
+      // loadAndValidateDates ですでに検証済みですが、念のため再チェックします。
       if (!parsed.isValid()) {
         throw new Error(`Unexpected parse failure for ${year}/${mmdd}`);
       }
