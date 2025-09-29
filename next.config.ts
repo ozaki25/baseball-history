@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -15,7 +16,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration to avoid build errors and handle server-only modules
   webpack: (config: any, { isServer }: { isServer: boolean }) => {
     config.optimization.minimize = false;
-    
+
     // Exclude server-only modules from client bundle
     if (!isServer) {
       config.resolve.fallback = {
@@ -34,7 +35,7 @@ const nextConfig: NextConfig = {
         path: false,
       };
     }
-    
+
     return config;
   },
 };
