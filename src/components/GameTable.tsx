@@ -1,5 +1,5 @@
 import { GameResult } from '@/types/game';
-import { formatDate, formatScore, getResultColor, getResultText } from '@/lib/gameUtils';
+import { formatScore, getResultColor, getResultText } from '@/lib/gameUtils';
 
 interface GameTableProps {
   games: GameResult[];
@@ -62,7 +62,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 key={`${game.date}-${index}`}
                 className="hover:bg-gray-50 transition-colors duration-200"
               >
-                <td className="px-4 py-3 text-sm text-gray-900">{formatDate(game.date)}</td>
+                <td className="px-4 py-3 text-sm text-gray-900">{game.date}</td>
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">vs {game.vsTeam}</td>
                 <td className="px-4 py-3 text-center">
                   <span
@@ -83,7 +83,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-3 py-1 rounded-md bg-fs-primary text-white text-xs font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
-                    aria-label={`${formatDate(game.date)}の試合詳細を公式サイトで見る`}
+                    aria-label={`${game.date}の試合詳細を公式サイトで見る`}
                   >
                     📊 詳細
                   </a>
@@ -103,7 +103,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="text-sm font-medium text-gray-900">{formatDate(game.date)}</p>
+                <p className="text-sm font-medium text-gray-900">{game.date}</p>
                 <p className="text-lg font-bold text-fs-primary">vs {game.vsTeam}</p>
               </div>
               <div className="text-right">
@@ -130,7 +130,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-full px-4 py-2 rounded-md bg-fs-primary text-white text-sm font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
-                aria-label={`${formatDate(game.date)}の試合詳細を公式サイトで見る`}
+                aria-label={`${game.date}の試合詳細を公式サイトで見る`}
               >
                 📊 公式サイトで試合詳細を見る
               </a>

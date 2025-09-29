@@ -1,5 +1,6 @@
 import { GameResult, GameStats, YearData, DatesData } from '@/types/game';
 import { fetchGameData, generateOfficialGameUrl } from './gameDataFetcher';
+import dayjs from 'dayjs';
 
 /**
  * 観戦日データから試合データを生成（ビルド時）
@@ -46,11 +47,36 @@ export function calculateStats(games: GameResult[]): GameStats {
   };
 }
 
-export function formatDate(dateString: string): string {
-  // MMDD形式 → M/D形式に変換
-  const month = dateString.substring(0, 2);
-  const day = dateString.substring(2, 4);
-  return `${parseInt(month)}/${parseInt(day)}`;
+/**
+ * MMDD形式をM/D形式に変換
+ * @param mmddDate MMDD形式の日付（例: "0401" → "4/1"）
+ */
+export function formatDate(mmddDate: string | dayjs.Dayjs): string {
+  if (typeof mmddDate === 'string') {
+    if (mmddDate.length !== 4 || !/^\d{4}$/.test(mmddDate)) {
+      throw new Error(`Invalid MMDD format: expected 4 digits, got "${mmddDate}"`);
+    }
+
+    const month = mmddDate.substring(0, 2);
+    const day = mmddDate.substring(2, 4);
+    const monthNum = parseInt(month, 10);
+    const dayNum = parseInt(day, 10);
+
+    if (monthNum < 1 || monthNum > 12) {
+      throw new Error(`Invalid month: ${monthNum}`);
+    }
+    if (dayNum < 1 || dayNum > 31) {
+      throw new Error(`Invalid day: ${dayNum}`);
+    }
+
+    return `${monthNum}/${dayNum}`;
+  } else {
+    // dayjs input
+    if (!mmddDate.isValid()) {
+      throw new Error('Invalid dayjs date passed to formatDate');
+    }
+    return `${mmddDate.month() + 1}/${mmddDate.date()}`;
+  }
 }
 
 export function formatScore(fighters: number, opponent: number): string {

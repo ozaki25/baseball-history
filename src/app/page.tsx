@@ -1,26 +1,27 @@
 import HomeClient from '@/components/HomeClient';
 import { fetchGameData } from '@/lib/gameDataFetcher';
-import { DatesData, YearData } from '@/types/game';
-import datesData from '../../data/dates.json';
+import { YearData } from '@/types/game';
+import { loadAndValidateDatesAsDayjs } from '@/lib/datesLoader';
 
 export default async function Home() {
-  const dates: DatesData = datesData as DatesData;
+  const datesByYear = loadAndValidateDatesAsDayjs();
 
   const yearData: YearData = {};
 
-  for (const [year, dateArray] of Object.entries(dates)) {
+  for (const [year, dateArray] of Object.entries(datesByYear)) {
     yearData[year] = [];
 
-    for (const date of dateArray) {
+    for (const dateObj of dateArray) {
+      const mmdd = dateObj.format('MMDD');
       try {
-        const gameData = await fetchGameData(year, date);
+        const gameData = await fetchGameData(year, mmdd);
         if (gameData) {
           yearData[year].push(gameData);
         } else {
-          throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${date}`);
+          throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${mmdd}`);
         }
       } catch (error) {
-        console.error(`❌ ビルド失敗: ${year}/${date}`, error);
+        console.error(`❌ ビルド失敗: ${year}/${mmdd}`, error);
         throw error;
       }
     }
