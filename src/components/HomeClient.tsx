@@ -68,16 +68,8 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                         <td className="px-3 py-2 text-gray-900">{game.vsTeam}</td>
                         <td className="px-3 py-2 text-gray-600">{game.location}</td>
                         <td className="px-3 py-2 text-center">
-                          <span
-                            className={`text-lg font-bold ${
-                              game.result === 'win'
-                                ? 'text-green-600'
-                                : game.result === 'lose'
-                                  ? 'text-red-600'
-                                  : 'text-gray-600'
-                            }`}
-                          >
-                            {game.result === 'win' ? '○' : game.result === 'lose' ? '●' : '△'}
+                          <span className="text-2xl font-bold text-gray-800">
+                            {game.result === 'win' ? '◯' : game.result === 'lose' ? '●' : '△'}
                           </span>
                         </td>
                         <td className="px-3 py-2 text-center text-gray-900 font-medium">
