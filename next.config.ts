@@ -11,21 +11,6 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-
-  // PWA configuration
-  async headers() {
-    return [
-      {
-        source: '/manifest.json',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/manifest+json',
-          },
-        ],
-      },
-    ];
-  },
 };
 
 export default nextConfig;
