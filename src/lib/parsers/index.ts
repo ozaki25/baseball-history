@@ -7,10 +7,7 @@
 // メインパーサー
 export { parseGameHTML } from './gameParser';
 
-// 個別抽出器
 export { extractVsTeam, extractMyTeam } from './teamExtractor';
 export { extractGameScore } from './scoreExtractor';
 export { extractGameLocation } from './locationExtractor';
 export { detectIsHome } from './homeDetector';
-
-// 型定義（削除予定の古い型は除外）

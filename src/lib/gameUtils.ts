@@ -48,19 +48,15 @@ export function calculateStats(games: GameResult[]): GameStats {
 }
 
 export function formatDate(dateString: string): string {
-  // MM/DD形式 or MMDD形式を想定
   let month: string, day: string;
 
   if (dateString.includes('/')) {
-    // MM/DD形式の場合
     [month, day] = dateString.split('/');
   } else {
-    // MMDD形式の場合
     month = dateString.substring(0, 2);
     day = dateString.substring(2, 4);
   }
 
-  // dayjsを使用して適切にフォーマット
   const date = dayjs(`2024-${month}-${day}`);
   return date.format('M/D');
 }

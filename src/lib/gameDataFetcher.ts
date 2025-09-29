@@ -27,7 +27,6 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     const html = await response.text();
     console.log(`✅ HTML取得成功: ${url}`);
 
-    // HTMLパースして試合情報を抽出
     const gameInfo = parseGameHTML(html);
     const gameData = convertToGameResult(gameInfo, date, year);
     console.log(`🏟️ 試合データ解析成功: vs ${gameData.vsTeam} ${gameData.result}`);
