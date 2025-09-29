@@ -31,22 +31,6 @@ export async function generateGameDataFromDates(datesData: DatesData): Promise<Y
   return result;
 }
 
-export function calculateStats(games: GameResult[]): GameStats {
-  const total = games.length;
-  const wins = games.filter((game) => game.result === 'win').length;
-  const losses = games.filter((game) => game.result === 'lose').length;
-  const draws = games.filter((game) => game.result === 'draw').length;
-  const winRate = total > 0 ? Math.round((wins / total) * 100 * 10) / 10 : 0;
-
-  return {
-    total,
-    wins,
-    losses,
-    draws,
-    winRate,
-  };
-}
-
 /**
  * MMDD形式をM/D形式に変換
  * @param mmddDate MMDD形式の日付（例: "0401" → "4/1"）
@@ -122,21 +106,9 @@ export function getResultText(result: 'win' | 'lose' | 'draw'): string {
   }
 }
 
-export function getAvailableYears(yearData: YearData): string[] {
-  return Object.keys(yearData).sort((a, b) => parseInt(b) - parseInt(a));
-}
-
-export function sortGamesByDate(games: GameResult[]): GameResult[] {
-  return [...games].sort((a, b) => {
-    const dateA = parseInt(a.date);
-    const dateB = parseInt(b.date);
-    return dateB - dateA; // 降順（最新が上）
-  });
-}
-
 /**
  * 公式サイトのゲームページURLを生成
  */
-export function getOfficialGameUrl(year: string, date: string): string {
-  return generateOfficialGameUrl(year, date);
-}
+// NOTE: 一部のユーティリティ（年一覧、統計、ソート、公式URL生成ラッパー）は
+// 現在コードベースで参照されていないため削除しました。
+// 必要になった場合は履歴から復元してください。
