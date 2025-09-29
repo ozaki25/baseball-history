@@ -1,6 +1,7 @@
 'use client';
 
 import { YearData } from '@/types/game';
+import { formatDate } from '@/lib/gameUtils';
 
 export default function HomeClient({ yearData }: { yearData: YearData }) {
   return (
@@ -64,7 +65,7 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                   <tbody className="divide-y divide-gray-100">
                     {games.map((game, index) => (
                       <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-3 py-2 text-gray-900">{game.date}</td>
+                        <td className="px-3 py-2 text-gray-900">{formatDate(game.date)}</td>
                         <td className="px-3 py-2 text-gray-900">{game.vsTeam}</td>
                         <td className="px-3 py-2 text-gray-600">{game.location}</td>
                         <td className="px-3 py-2 text-center">
