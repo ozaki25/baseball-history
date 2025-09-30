@@ -1,3 +1,0 @@
-rm '.cleanup/git-add.out'
-rm '.cleanup/git-rm.out'
-rm 'public/REMOVED_ICON_PLACEHOLDER.md'

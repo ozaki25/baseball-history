@@ -1,0 +1,31 @@
+ D .cleanup/done.txt
+ D .cleanup/git-commit.out
+ D .cleanup/git-status.out
+ D .cleanup/public-list.out
+ D .cleanup2/done.txt
+ D .cleanup2/git-add.out
+ D .cleanup2/git-commit.out
+ D .cleanup2/git-rm.out
+ D .cleanup2/git-status.out
+ D .cleanup2/public-list.out
+ D .cleanup3/done.txt
+ D .cleanup3/git-add.out
+ D .cleanup3/git-commit.out
+ D .cleanup3/git-rm.out
+ D .cleanup3/git-status.out
+ D .cleanup3/public-list.out
+ D .cleanup4/git-add.out
+ D .cleanup4/git-rm.out
+?? .cleanup_remove.out
+.cleanup_remove.out
+---PUBLIC---
+total 56
+drwxr-xr-x@  9 ozaki  staff   288 Sep 30 09:56 .
+drwxr-xr-x@ 29 ozaki  staff   928 Sep 30 10:02 ..
+-rw-r--r--@  1 ozaki  staff  2077 Sep 30 09:24 globe.svg
+-rw-r--r--@  1 ozaki  staff   499 Sep 30 09:03 icon-192x192.svg
+-rw-r--r--@  1 ozaki  staff   505 Sep 30 09:03 icon-512x512.svg
+-rw-r--r--@  1 ozaki  staff   585 Sep 30 09:24 manifest.json
+-rw-r--r--@  1 ozaki  staff  1375 Sep 23 08:24 next.svg
+-rw-r--r--@  1 ozaki  staff   801 Sep 23 11:01 sw.js
+-rw-r--r--@  1 ozaki  staff   128 Sep 23 08:24 vercel.svg
