@@ -1,0 +1,11 @@
+total 64
+drwxr-xr-x@ 10 ozaki  staff   320 Sep 30 09:54 .
+drwxr-xr-x@ 30 ozaki  staff   960 Sep 30 09:54 ..
+-rw-r--r--@  1 ozaki  staff  2077 Sep 30 09:24 globe.svg
+-rw-r--r--@  1 ozaki  staff   499 Sep 30 09:03 icon-192x192.svg
+-rw-r--r--@  1 ozaki  staff   505 Sep 30 09:03 icon-512x512.svg
+-rw-r--r--@  1 ozaki  staff   585 Sep 30 09:24 manifest.json
+-rw-r--r--@  1 ozaki  staff  1375 Sep 23 08:24 next.svg
+-rw-r--r--@  1 ozaki  staff   801 Sep 23 11:01 sw.js
+-rw-r--r--@  1 ozaki  staff   128 Sep 23 08:24 vercel.svg
+-rw-r--r--@  1 ozaki  staff   388 Sep 30 09:24 window.svg
