@@ -14,8 +14,6 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
   const url = `https://www.fighters.co.jp/gamelive/result/${year}${date}01/`;
 
   try {
-    // 開発用デバッグログを除去
-
     const response = await fetch(url, {
       signal: AbortSignal.timeout(5000), // 5秒に短縮
     });
@@ -25,18 +23,14 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     }
 
     const html = await response.text();
-    // HTML取得成功
 
     const gameInfo = parseGameHTML(html);
     const gameData = convertToGameResult(gameInfo, date, year);
-    // 試合データ解析成功
 
-    // サーバー負荷軽減のためスリープ
     await sleep(SCRAPING_DELAY_MS);
 
     return gameData;
   } catch (error) {
-    // エラーは上位へ伝播（ビルド失敗を明示）
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Build failed: データ取得失敗 ${year}/${date} - ${errorMessage}`);
   }

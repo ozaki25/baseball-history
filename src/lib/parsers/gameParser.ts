@@ -9,8 +9,6 @@ import { detectIsHome } from './homeDetector';
  */
 export function parseGameHTML(html: string): GameInfo {
   try {
-    // 解析開始
-
     const isHome = detectIsHome(html);
     const myTeam = extractMyTeam(html, isHome);
     const vsTeam = extractVsTeam(html, isHome);
@@ -25,8 +23,6 @@ export function parseGameHTML(html: string): GameInfo {
       location,
       isHome,
     };
-
-    // 解析完了
 
     return gameInfo;
   } catch (error) {
