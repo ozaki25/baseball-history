@@ -16,8 +16,6 @@ export default {
           text: '#000000',
           link: '#959595',
         },
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],

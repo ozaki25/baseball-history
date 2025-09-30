@@ -19,21 +19,21 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
 
   if (!years || years.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-fs-altBackground p-8">
         <div className="max-w-6xl mx-auto text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">⚾</div>
-          <p className="text-gray-600 text-lg font-medium">観戦記録がありません</p>
+          <div className="text-fs-text text-6xl mb-4">⚾</div>
+          <p className="text-fs-text text-lg font-medium">観戦記録がありません</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-1 sm:px-8 py-3 sm:py-8">
+    <div className="min-h-screen bg-fs-altBackground px-1 sm:px-8 py-3 sm:py-8">
       <div className="max-w-full sm:max-w-6xl w-full mx-auto">
         {/* 年選択ドロップダウン */}
         <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-3 sm:gap-0">
-          <h2 className="text-xl font-semibold text-gray-800">観戦履歴</h2>
+          <h2 className="text-xl font-semibold text-fs-text">観戦履歴</h2>
           <div className="w-full sm:w-auto">
             <label htmlFor="year-select" className="sr-only">
               年を選択
@@ -42,7 +42,7 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
               id="year-select"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-fs-header focus:border-fs-header w-full sm:w-auto"
+              className="bg-fs-background border border-fs-header rounded-md px-2 py-1.5 text-sm text-fs-text shadow-sm focus:outline-none focus:ring-2 focus:ring-fs-header focus:border-fs-header w-full sm:w-auto"
             >
               {years.map((y) => (
                 <option key={y} value={y}>
@@ -61,40 +61,36 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-fs-altBackground">
                 <tr>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-gray-700">
-                    日付
-                  </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-gray-700">
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">日付</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">
                     対戦チーム
                   </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-gray-700">
-                    球場
-                  </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-gray-700">
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">球場</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
                     勝敗
                   </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-gray-700">
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
                     スコア
                   </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-gray-700">
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
                     リンク
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-fs-altBackground">
                 {selectedGames.map((game, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-1.5 py-1.5 sm:px-3 text-gray-900">{game.date}</td>
-                    <td className="px-1.5 py-1.5 sm:px-3 text-gray-900">{game.vsTeam}</td>
-                    <td className="px-1.5 py-1.5 sm:px-3 text-gray-600">{game.location}</td>
+                  <tr key={index} className="hover:bg-fs-altBackground">
+                    <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.date}</td>
+                    <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.vsTeam}</td>
+                    <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.location}</td>
                     <td className="px-1.5 py-1.5 sm:px-3 text-center">
-                      <span className="text-base font-bold text-gray-800">
+                      <span className="text-base font-bold text-fs-text">
                         {game.result === 'win' ? '⭕' : game.result === 'lose' ? '❌' : '△'}
                       </span>
                     </td>
-                    <td className="px-1.5 py-1.5 sm:px-3 text-center text-gray-900 font-medium whitespace-nowrap">
+                    <td className="px-1.5 py-1.5 sm:px-3 text-center text-fs-text font-medium whitespace-nowrap">
                       <span className="whitespace-nowrap">
                         {game.score.my} - {game.score.vs}
                       </span>
@@ -104,7 +100,7 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                         href={game.gameUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors duration-200"
+                        className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-fs-background text-fs-text hover:bg-fs-altBackground transition-colors duration-200"
                       >
                         詳細
                       </a>

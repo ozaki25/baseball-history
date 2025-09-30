@@ -38,9 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 min-h-screen`}
-      >
+      <body className="antialiased bg-fs-background text-fs-text min-h-screen">
         <ServiceWorkerRegistration />
         <div className="flex flex-col min-h-screen">{children}</div>
       </body>
