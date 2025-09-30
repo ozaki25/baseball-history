@@ -54,34 +54,26 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
         </div>
 
         {/* 選択された年のデータ詳細 */}
-        <section className="bg-white rounded-lg shadow p-4 sm:p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <section className="bg-fs-background rounded-lg shadow p-4 sm:p-6">
+          <h3 className="text-lg font-semibold text-fs-text mb-4">
             🏟️ {selectedYear}年 ({selectedGames.length}試合)
           </h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-fs-altBackground">
+              <thead className="bg-fs-header text-fs-text-invert font-bold">
                 <tr>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">日付</th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">
-                    対戦チーム
-                  </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-medium text-fs-text">球場</th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
-                    勝敗
-                  </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
-                    スコア
-                  </th>
-                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-medium text-fs-text">
-                    リンク
-                  </th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-bold">日付</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-bold">対戦チーム</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-left font-bold">球場</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-bold">勝敗</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-bold">スコア</th>
+                  <th className="px-1.5 py-1.5 sm:px-3 text-center font-bold">リンク</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-fs-altBackground">
                 {selectedGames.map((game, index) => (
-                  <tr key={index} className="hover:bg-fs-altBackground">
+                  <tr key={index}>
                     <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.date}</td>
                     <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.vsTeam}</td>
                     <td className="px-1.5 py-1.5 sm:px-3 text-fs-text">{game.location}</td>
@@ -100,7 +92,7 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
                         href={game.gameUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-fs-background text-fs-text hover:bg-fs-altBackground transition-colors duration-200"
+                        className="text-fs-link underline hover:text-fs-text transition-colors duration-200"
                       >
                         詳細
                       </a>

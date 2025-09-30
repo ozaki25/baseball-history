@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-fs-header: #016298;
+  --color-fs-background: #ffffff;
+  --color-fs-altBackground: #e5e5e5;
+  --color-fs-text: #000000;
+  --color-fs-text-invert: #ffffff;
+  --color-fs-link: #959595;
+
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  --box-shadow-fs: 0 4px 6px -1px rgba(0, 98, 152, 0.1), 0 2px 4px -1px rgba(0, 98, 152, 0.06);
+  --box-shadow-fs-lg: 0 10px 15px -3px rgba(0, 98, 152, 0.1), 0 4px 6px -2px rgba(0, 98, 152, 0.05);
+
+  --border-color-header: #016298;
+  --border-color-altBackground: #e5e5e5;
+}
