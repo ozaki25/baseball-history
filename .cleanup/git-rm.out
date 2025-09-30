@@ -1,0 +1,2 @@
+rm 'public/file.svg'
+rm 'public/icon-placeholder.md'
