@@ -9,7 +9,7 @@ import { detectIsHome } from './homeDetector';
  */
 export function parseGameHTML(html: string): GameInfo {
   try {
-    console.log('試合HTML解析を開始...');
+    // 解析開始
 
     const isHome = detectIsHome(html);
     const myTeam = extractMyTeam(html, isHome);
@@ -26,7 +26,7 @@ export function parseGameHTML(html: string): GameInfo {
       isHome,
     };
 
-    console.log('試合HTML解析完了:', gameInfo);
+    // 解析完了
 
     return gameInfo;
   } catch (error) {

@@ -21,8 +21,7 @@ export async function generateGameDataFromDates(datesData: DatesData): Promise<Y
           throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${date}`);
         }
       } catch (error) {
-        console.error(`Failed to fetch game data for ${year}/${date}:`, error);
-        // 要件：データ取得失敗時はビルドを異常終了
+        // エラーは上位へ伝播（ビルド失敗を明示）
         throw error;
       }
     }
