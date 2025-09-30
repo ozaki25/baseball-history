@@ -1,6 +1,6 @@
 import { GameResult } from '@/types/game';
-import { parseGameHTML } from './parsers';
 import { GameInfo } from '@/types/parsing';
+import { parseGameHTML } from './parsers/gameParser';
 import { getGameResult, formatDate } from './gameUtils';
 import { sleep, SCRAPING_DELAY_MS } from './sleepUtils';
 
