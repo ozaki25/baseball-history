@@ -80,8 +80,7 @@ export function getGameResult(myScore: number, vsScore: number): 'win' | 'lose' 
   }
 }
 
-// getResultColor removed: UI no longer applies result-specific colors
-
+// (no result-specific color helpers in UI)
 export function getResultText(result: 'win' | 'lose' | 'draw'): string {
   switch (result) {
     case 'win':
@@ -95,4 +94,4 @@ export function getResultText(result: 'win' | 'lose' | 'draw'): string {
   }
 }
 
-// end of utilities
+// utilities
