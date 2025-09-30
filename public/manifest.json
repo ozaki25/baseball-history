@@ -1,7 +1,7 @@
 {
   "name": "観戦履歴",
   "short_name": "観戦履歴",
-  "description": "北海道日本ハムファイターズの観戦履歴管理アプリ",
+  "description": "観戦履歴管理アプリ",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

@@ -1,34 +1,4 @@
-import { YearData, DatesData } from '@/types/game';
-import { fetchGameData } from './gameDataFetcher';
 import dayjs from 'dayjs';
-
-/**
- * 観戦日データから試合データを生成（ビルド時）
- */
-export async function generateGameDataFromDates(datesData: DatesData): Promise<YearData> {
-  const result: YearData = {};
-
-  for (const [year, dates] of Object.entries(datesData)) {
-    result[year] = [];
-
-    for (const date of dates) {
-      try {
-        const gameData = await fetchGameData(year, date);
-        if (gameData) {
-          result[year].push(gameData);
-        } else {
-          // 要件：データ取得失敗時はビルドを異常終了
-          throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${date}`);
-        }
-      } catch (error) {
-        // エラーは上位へ伝播（ビルド失敗を明示）
-        throw error;
-      }
-    }
-  }
-
-  return result;
-}
 
 /**
  * MMDD形式をM/D形式に変換
@@ -62,10 +32,6 @@ export function formatDate(mmddDate: string | dayjs.Dayjs): string {
   }
 }
 
-export function formatScore(fighters: number, opponent: number): string {
-  return `${fighters} - ${opponent}`;
-}
-
 /**
  * スコアから試合結果を算出
  */
@@ -78,19 +44,3 @@ export function getGameResult(myScore: number, vsScore: number): 'win' | 'lose' 
     return 'draw';
   }
 }
-
-// (no result-specific color helpers in UI)
-export function getResultText(result: 'win' | 'lose' | 'draw'): string {
-  switch (result) {
-    case 'win':
-      return '勝利';
-    case 'lose':
-      return '敗戦';
-    case 'draw':
-      return '引分';
-    default:
-      return '未定';
-  }
-}
-
-// utilities

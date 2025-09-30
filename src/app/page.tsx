@@ -21,7 +21,6 @@ export default async function Home() {
           throw new Error(`Build failed: 試合データが取得できませんでした ${year}/${mmdd}`);
         }
       } catch (error) {
-        // ビルド失敗は上位へ伝播
         throw error;
       }
     }

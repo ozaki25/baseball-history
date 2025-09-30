@@ -18,11 +18,3 @@ export interface DatesData {
 export interface YearData {
   [year: string]: GameResult[];
 }
-
-export interface GameStats {
-  total: number;
-  wins: number;
-  losses: number;
-  draws: number;
-  winRate: number;
-}

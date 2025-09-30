@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadAndValidateDates, loadAndValidateDatesAsDayjs } from './datesLoader';
+import { loadAndValidateDates, loadAndValidateDatesAsDayjs } from '@/lib/datesLoader';
 
 describe('datesLoader', () => {
   it('should load and validate existing dates.json without throwing', () => {

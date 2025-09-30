@@ -9,15 +9,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 最小限のカラーパレット — リポジトリの公式パレット（ユーザー提供）
         fs: {
-          header: '#016298', // テーブルヘッダーなどのアクセント
+          header: '#016298',
           background: '#FFFFFF',
           altBackground: '#E5E5E5',
           text: '#000000',
           link: '#959595',
         },
-        // 一部既存 CSS 変数との互換性を保持
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
@@ -31,7 +29,6 @@ export default {
       },
       borderColor: {
         // ボーダー用には公式パレットのヘッダー色や交互背景を参照してください
-        // 旧トークン（fs-blue/fs-gold）は廃止
         header: '#016298',
         altBackground: '#E5E5E5',
       },

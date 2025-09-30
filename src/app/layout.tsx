@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: '観戦履歴',
-  description: '北海道日本ハムファイターズの観戦履歴管理アプリ',
+  description: '観戦履歴管理アプリ',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

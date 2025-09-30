@@ -1,0 +1,46 @@
+ D .cleanup_remove.out
+ D .cleanup_remove2.out
+ D contrast-check.js
+ D public/globe.svg
+ M public/manifest.json
+ D public/next.svg
+ D public/vercel.svg
+ M src/app/globals.css
+ M src/app/layout.tsx
+ M src/app/page.tsx
+ D src/components/GameTable.tsx
+ D src/components/StatsCards.tsx
+ D src/components/YearSelector.tsx
+ D src/lib/datesLoader.test.ts
+ M src/lib/gameUtils.ts
+ D src/lib/parsers/index.ts
+ M src/types/game.ts
+ M tailwind.config.ts
+?? .cleanup_verify2.out
+?? src/tests/lib/datesLoader.test.ts
+---LINT---
+
+> baseball-history@0.1.0 lint
+> eslint . --ext ts,tsx
+
+---TEST---
+
+> baseball-history@0.1.0 test
+> vitest --run
+
+
+ RUN  v3.2.4 /Users/ozaki/app/baseball-history
+
+ ✓ src/tests/lib/datesLoader.test.ts (2 tests) 2ms
+ ✓ src/tests/lib/sleepUtils.test.ts (3 tests) 55ms
+ ✓ src/tests/parsers/scoreExtractor.test.ts (7 tests) 48ms
+ ✓ src/tests/parsers/locationExtractor.test.ts (8 tests) 55ms
+ ✓ src/tests/parsers/homeDetector.test.ts (8 tests) 55ms
+ ✓ src/tests/parsers/teamExtractor.test.ts (12 tests) 76ms
+ ✓ src/tests/parsers/gameParser.integration.test.ts (8 tests) 170ms
+
+ Test Files  7 passed (7)
+      Tests  48 passed (48)
+   Start at  10:17:54
+   Duration  782ms (transform 134ms, setup 0ms, collect 274ms, tests 462ms, environment 2.62s, prepare 459ms)
+
