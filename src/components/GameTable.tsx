@@ -10,9 +10,9 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
   if (!games || games.length === 0) {
     return (
       <div className={`text-center py-12 ${className}`}>
-        <div className="text-fs-gray-400 text-6xl mb-4">⚾</div>
-        <p className="text-fs-gray-600 text-lg font-medium">観戦記録がありません</p>
-        <p className="text-fs-gray-500 text-sm mt-2">試合を観戦したら記録を追加しましょう</p>
+        <div className="text-gray-400 text-6xl mb-4">⚾</div>
+        <p className="text-gray-600 text-lg font-medium">観戦記録がありません</p>
+        <p className="text-gray-500 text-sm mt-2">試合を観戦したら記録を追加しましょう</p>
       </div>
     );
   }
@@ -27,29 +27,29 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
         >
           <thead>
             <tr className="bg-blue-50 border-b border-blue-200">
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-header" scope="col">
                 日程
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-header" scope="col">
                 対戦相手
               </th>
               <th
-                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-header"
                 scope="col"
               >
                 結果
               </th>
               <th
-                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-header"
                 scope="col"
               >
                 スコア
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-primary" scope="col">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-fs-header" scope="col">
                 球場
               </th>
               <th
-                className="px-4 py-3 text-center text-sm font-semibold text-fs-primary"
+                className="px-4 py-3 text-center text-sm font-semibold text-fs-header"
                 scope="col"
               >
                 詳細
@@ -80,7 +80,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                     href={game.gameUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-3 py-1 rounded-md bg-fs-primary text-white text-xs font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
+                    className="inline-flex items-center px-3 py-1 rounded-md bg-fs-header text-white text-xs font-medium hover:opacity-90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-header focus:ring-offset-1"
                     aria-label={`${game.date}の試合詳細を公式サイトで見る`}
                   >
                     📊 詳細
@@ -102,7 +102,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
             <div className="flex justify-between items-start mb-3">
               <div>
                 <p className="text-sm font-medium text-gray-900">{game.date}</p>
-                <p className="text-lg font-bold text-fs-primary">vs {game.vsTeam}</p>
+                <p className="text-lg font-bold text-fs-header">vs {game.vsTeam}</p>
               </div>
               <div className="text-right">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-gray-700 bg-opacity-10">
@@ -116,7 +116,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-fs-gray-100">
+            <div className="pt-3 border-t border-gray-100">
               <p className="text-xs text-gray-600">
                 <span className="font-medium">球場:</span> {game.location}
               </p>
@@ -127,7 +127,7 @@ export default function GameTable({ games, className = '' }: GameTableProps) {
                 href={game.gameUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full px-4 py-2 rounded-md bg-fs-primary text-white text-sm font-medium hover:bg-fs-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:ring-offset-1"
+                className="inline-flex items-center justify-center w-full px-4 py-2 rounded-md bg-fs-header text-white text-sm font-medium hover:opacity-90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fs-header focus:ring-offset-1"
                 aria-label={`${game.date}の試合詳細を公式サイトで見る`}
               >
                 📊 公式サイトで試合詳細を見る

@@ -2,15 +2,11 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000; /* ユーザー指定の本文テキスト色と整合 */
+  --alt-background: #e5e5e5; /* 交互背景用 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* カスタム @theme ルールはサポートされていないため削除。必要であれば PostCSS プラグイン等で再導入してください */
 
 @media (prefers-color-scheme: dark) {
   :root {

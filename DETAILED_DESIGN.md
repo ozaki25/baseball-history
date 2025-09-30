@@ -338,7 +338,7 @@ export const metadata: Metadata = {
   title: '観戦履歴 | 北海道日本ハムファイターズ',
   description: 'ファイターズの観戦記録を管理するWebアプリケーション',
   manifest: '/manifest.json',
-  themeColor: '#1e3a8a',
+  themeColor: '#016298',
   viewport: 'width=device-width, initial-scale=1',
   // PWA関連メタデータ
   // OGP設定
@@ -969,13 +969,19 @@ function logScrapingEvent(log: ScrapingLog) {
 
 ```css
 /* プライマリカラー */
---fs-primary: #1e3a8a; /* ファイターズブルー */
---fs-gold: #8b7a4d; /* ファイターズゴールド (WCAG準拠) */
+--fs-primary: #016298; /* ヘッダー / アクセント */
+--fs-gold: #e5e5e5; /* ゴールド廃止：交互背景等の淡色 */
 
-/* セマンティックカラー */
---success: #22c55e; /* 勝利 */
---error: #ef4444; /* 敗戦 */
---neutral: #6b7280; /* 引分 */
+/* セマンティックカラーについて
+   勝敗ごとに色分けを行う（success/error/neutral）方針は採用しません。
+   UI 内で勝敗を示す際は色で情報を付加するのではなく、テキストやアイコン、
+   明確なラベル（例: '勝', '負', '引分'）を用いて表現してください。
+
+   色が必要な場合は、リポジトリの公式パレットを参照して中立的な色を使います。
+   例:
+     --fs-primary: #016298   /* アクセント */
+--fs-gold: #e5e5e5 /* 代替の淡色（交互背景等） */ --neutral (推奨): #959595
+  /* テキスト補助やメタ情報に使用 */ * /;
 ```
 
 #### レスポンシブ設計

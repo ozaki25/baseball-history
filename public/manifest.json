@@ -4,8 +4,8 @@
   "description": "北海道日本ハムファイターズの観戦履歴管理アプリ",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#006298",
-  "theme_color": "#006298",
+  "background_color": "#FFFFFF",
+  "theme_color": "#016298",
   "orientation": "portrait-primary",
   "icons": [
     {

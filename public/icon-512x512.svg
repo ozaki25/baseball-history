@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="F icon">
-  <rect width="512" height="512" rx="64" fill="#006298" />
+  <rect width="512" height="512" rx="64" fill="#016298" />
   <g transform="translate(256,256)">
-    <circle r="160" fill="#ffffff" stroke="#b3a369" stroke-width="12" />
-  <text x="0" y="0" dy="12" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, -apple-system, 'Helvetica Neue', Arial" font-size="224" font-weight="700" fill="#006298">F</text>
+  <circle r="160" fill="#ffffff" stroke="#E5E5E5" stroke-width="12" />
+  <text x="0" y="0" dy="12" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, -apple-system, 'Helvetica Neue', Arial" font-size="224" font-weight="700" fill="#016298">F</text>
   </g>
 </svg>

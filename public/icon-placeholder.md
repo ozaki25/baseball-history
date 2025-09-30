@@ -8,4 +8,4 @@
 
 #
 
-# Recommended: Use Fighters blue (#1e3a8a) background with baseball/F logo
+# Recommended: Use official header blue (#016298) background with baseball/F logo

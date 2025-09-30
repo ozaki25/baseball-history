@@ -20,7 +20,7 @@ export default function YearSelector({
         id="year-select"
         value={selectedYear}
         onChange={(e) => onYearChange(e.target.value)}
-        className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-fs-primary focus:border-fs-primary transition-colors duration-200"
+        className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-fs-header focus:border-fs-header transition-colors duration-200"
         aria-label="観戦履歴の年度を選択"
       >
         {availableYears.map((year) => (

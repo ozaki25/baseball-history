@@ -21,8 +21,8 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-6xl mx-auto text-center py-12">
-          <div className="text-fs-gray-400 text-6xl mb-4">⚾</div>
-          <p className="text-fs-gray-600 text-lg font-medium">観戦記録がありません</p>
+          <div className="text-gray-400 text-6xl mb-4">⚾</div>
+          <p className="text-gray-600 text-lg font-medium">観戦記録がありません</p>
         </div>
       </div>
     );
@@ -42,7 +42,7 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
               id="year-select"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-fs-primary w-full sm:w-auto"
+              className="bg-white border border-gray-300 rounded-md px-2 py-1.5 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-fs-header focus:border-fs-header w-full sm:w-auto"
             >
               {years.map((y) => (
                 <option key={y} value={y}>

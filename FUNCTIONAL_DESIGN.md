@@ -270,7 +270,7 @@ const filteredGames = games.filter((game) => {
      "start_url": "/",
      "display": "standalone",
      "background_color": "#ffffff",
-     "theme_color": "#1f2937"
+     "theme_color": "#016298"
    }
    ```
 
@@ -315,9 +315,11 @@ self.addEventListener('fetch', (event) => {
 **デザイン仕様**:
 
 1. **カラーパレット**
-   - プライマリ: `#1f2937` (ダークグレー)
-   - セカンダリ: `#3b82f6` (ブルー)
-   - エラー: `#ef4444` (レッド)
+   - プライマリ（ヘッダー / アクセント）: `#016298`
+   - 背景: `#FFFFFF`
+   - 交互背景（淡色）: `#E5E5E5`
+   - 本文テキスト: `#000000`
+   - 補助 / リンク色: `#959595`
 
 2. **タイポグラフィ**
    - フォント: システムフォント + Noto Sans JP
