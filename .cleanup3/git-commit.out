@@ -1,0 +1,11 @@
+→ lint-staged could not find any staged files matching configured tasks.
+[main 513c2f7] chore: remove unused public/window.svg
+ 8 files changed, 31 insertions(+), 1 deletion(-)
+ create mode 100644 .cleanup2/done.txt
+ create mode 100644 .cleanup2/git-commit.out
+ create mode 100644 .cleanup2/git-status.out
+ create mode 100644 .cleanup2/public-list.out
+ create mode 100644 .cleanup3/git-add.out
+ create mode 100644 .cleanup3/git-rm.out
+ create mode 100644 public/file.svg
+ delete mode 100644 public/window.svg
