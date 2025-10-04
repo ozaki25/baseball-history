@@ -1,7 +1,28 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { YearData } from '@/types/game';
+import { YearData, GameResult } from '@/types/game';
+
+// Utility function to calculate win-loss-draw statistics
+function calculateStats(games: GameResult[]) {
+  return games.reduce(
+    (stats, game) => {
+      switch (game.result) {
+        case 'win':
+          stats.wins++;
+          break;
+        case 'lose':
+          stats.losses++;
+          break;
+        case 'draw':
+          stats.draws++;
+          break;
+      }
+      return stats;
+    },
+    { wins: 0, losses: 0, draws: 0 }
+  );
+}
 
 export default function HomeClient({ yearData }: { yearData: YearData }) {
   const years = useMemo(() => {
@@ -15,7 +36,13 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
   const [selectedYear, setSelectedYear] = useState<string>(() => years[0] ?? '');
 
   // games for the selected year (empty array if none)
-  const selectedGames = (selectedYear && yearData[selectedYear]) || [];
+  const selectedGames = useMemo(
+    () => (selectedYear && yearData[selectedYear]) || [],
+    [selectedYear, yearData]
+  );
+
+  // calculate win-loss-draw statistics for the selected year
+  const stats = useMemo(() => calculateStats(selectedGames), [selectedGames]);
 
   if (!years || years.length === 0) {
     return (
@@ -56,7 +83,8 @@ export default function HomeClient({ yearData }: { yearData: YearData }) {
         {/* 選択された年のデータ詳細 */}
         <section className="bg-fs-background rounded-lg shadow p-4 sm:p-6">
           <h3 className="text-lg font-semibold text-fs-text mb-4">
-            🏟️ {selectedYear}年 ({selectedGames.length}試合)
+            🏟️ {selectedYear}年 ({selectedGames.length}試合) ({stats.wins}勝{stats.losses}敗
+            {stats.draws}分)
           </h3>
 
           <div className="overflow-x-auto">
