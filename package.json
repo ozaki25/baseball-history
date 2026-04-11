@@ -11,6 +11,7 @@
     "test:ui": "vitest --ui",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "add-date": "node scripts/add-date.mjs",
     "prepare": "husky"
   },
   "dependencies": {
