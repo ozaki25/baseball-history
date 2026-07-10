@@ -65,7 +65,7 @@ baseball-history/
 │  │  ├─ parsers/         # 既存パーサを移設・再利用（ingest から利用）
 │  │  ├─ stats.ts         # 集計ロジック（純関数・テスト対象）
 │  │  ├─ filters.ts       # 絞り込みロジック・URL スキーマ
-│  │  └─ masters.ts       # 球場/チーム 正規化マスタ
+│  │  └─ normalize.ts     # 最小限の正規化＋（必要時のみ）名寄せ対応表
 │  ├─ types/
 │  │  └─ game.ts          # Game 型ほか
 │  └─ styles/             # Tailwind エントリ・テーマ
@@ -105,11 +105,14 @@ interface Game {
 }
 ```
 
-### 4.2 正規化マスタ（`masters.ts`）
+### 4.2 正規化（`normalize.ts`）
 
-- 対戦相手: NPB 12 球団の正式名・略称・表記ゆれ → 正規化キーへ。
-- 球場: 主要球場の表記ゆれ（例: 「札幌ドーム」「エスコンフィールド HOKKAIDO」）を統一。
-- 絞り込みの選択肢は**実データに存在する値**から動的生成しつつ、表示名はマスタで整える。
+単一ソース（公式サイト）由来なので基本は表記が揃っている前提。過剰なマスタは作らない。
+
+- **標準は最小限の正規化のみ**: 前後空白の trim、全角/半角の統一、余分な装飾文字の除去。
+- チーム/球場の**名寄せマッピングはデータ駆動で後追い**: 一度 ingest して distinct 値を確認し、
+  20 年分の年代差などで実際に割れていた場合のみ、小さな対応表（`aliases`）を足す。
+- 絞り込みの選択肢は**実データに存在する値**から動的生成する。
 
 ## 5. 状態管理・URL 設計
 
@@ -185,7 +188,7 @@ interface Game {
 2. 既存 `games.json` があれば読み、**未取得（未成功）の試合のみ**対象にする（`--force` で全再取得）。
 3. 各試合の URL `https://www.fighters.co.jp/gamelive/result/{year}{MMDD}01/` を取得。
 4. 既存パーサ（teamExtractor / scoreExtractor / locationExtractor / homeDetector / gameParser）で解析。
-5. 正規化マスタで球場・相手名を整える。
+5. 最小限の正規化（trim・全半角）を適用。※ 末尾 `01`（第1試合）のみ対象。ダブルヘッダー第2試合は扱わない。
 6. `date` 昇順で `games.json` を書き出し（`generatedAt` 更新）。
 
 ### 7.2 エラー処理
