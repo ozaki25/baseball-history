@@ -11,8 +11,8 @@
 ┌────────────── オフライン処理（手動/オンデマンド実行）──────────────┐
 │  data/dates.json ──▶ scripts/ingest.mjs ──▶ 公式サイト取得・解析     │
 │                             │                                        │
-│  data/overrides.json ───────┼──(マージ)──▶  data/games.json          │
-└─────────────────────────────┼────────────────────────────────────────┘
+│                             └──────────────▶  data/games.json        │
+└─────────────────────────────┬────────────────────────────────────────┘
                               ▼
 ┌──────────────────── アプリ（静的・Vercel）───────────────────────────┐
 │  data/games.json ──▶ Vite ビルドで取り込み ──▶ TanStack で絞り込み/集計 │
@@ -20,8 +20,9 @@
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
+- **データ源はスクレイピングのみ**。手編集・override は行わない（`games.json` は取り込みの生成物）。
 - アプリはビルド時に `games.json` を読み込むだけ。外部サイトに非依存。
-- `games.json` は**コミット対象**（単一の信頼できるデータ源）。
+- `games.json` は**コミット対象**（ビルドをサイトから切り離すためのキャッシュ）。
 
 ## 2. 技術スタック
 
@@ -45,10 +46,9 @@
 baseball-history/
 ├─ data/
 │  ├─ dates.json          # 観戦日（取り込み入力・維持）
-│  ├─ overrides.json      # 手動補完（id をキーに上書き）
-│  └─ games.json          # 永続化された確定データ（アプリのソース・生成物）
+│  └─ games.json          # 取り込みの生成物（アプリのソース・コミット対象）
 ├─ scripts/
-│  ├─ ingest.mjs          # dates + 公式サイト → games.json 生成（overrides をマージ）
+│  ├─ ingest.mjs          # dates + 公式サイト → games.json 生成
 │  └─ add-date.mjs        # 観戦日追加（既存を維持）
 ├─ src/
 │  ├─ main.tsx            # エントリ
@@ -92,10 +92,10 @@ interface Game {
   homeAway: HomeAway;
   result: GameResult;
   score: { fighters: number | null; opponent: number | null }; // 中止時は null
-  note?: string;
-  source: 'ingest' | 'override' | 'ingest+override'; // 由来（デバッグ/表示用）
 }
 ```
+
+> 全項目がスクレイピング由来。手入力項目（メモ等）は持たない。
 
 ```jsonc
 // games.json
@@ -105,19 +105,7 @@ interface Game {
 }
 ```
 
-### 4.2 overrides（`overrides.json`）
-
-```jsonc
-{
-  // id をキーに、上書きしたいフィールドだけを部分指定
-  "2015-06-11": { "note": "延長サヨナラ", "stadium": "エスコンフィールド" }
-}
-```
-
-- ingest は「スクレイプ結果 ← overrides を deep-merge」して最終レコードを作る。
-- これにより**再取り込みしても手動修正が保持**される。
-
-### 4.3 正規化マスタ（`masters.ts`）
+### 4.2 正規化マスタ（`masters.ts`）
 
 - 対戦相手: NPB 12 球団の正式名・略称・表記ゆれ → 正規化キーへ。
 - 球場: 主要球場の表記ゆれ（例: 「札幌ドーム」「エスコンフィールド HOKKAIDO」）を統一。
@@ -194,15 +182,15 @@ interface Game {
 
 ### 7.1 フロー
 1. `dates.json` を読み、`{year, MMDD}` を列挙。
-2. 既存 `games.json` があれば読み、**未取得の試合のみ**対象にする（`--force` で全再取得）。
+2. 既存 `games.json` があれば読み、**未取得（未成功）の試合のみ**対象にする（`--force` で全再取得）。
 3. 各試合の URL `https://www.fighters.co.jp/gamelive/result/{year}{MMDD}01/` を取得。
 4. 既存パーサ（teamExtractor / scoreExtractor / locationExtractor / homeDetector / gameParser）で解析。
-5. `overrides.json` を deep-merge。
+5. 正規化マスタで球場・相手名を整える。
 6. `date` 昇順で `games.json` を書き出し（`generatedAt` 更新）。
 
 ### 7.2 エラー処理
-- 取得/解析失敗はレコードを捨てず、`result: 'cancelled'` 等ではなく**別途 `ingest-report.json`**（失敗一覧）に記録し、標準出力にサマリを出す。
-- 失敗分は手動補完（overrides）で補える。
+- 取得/解析失敗はレコードを捏造せず、**別途 `ingest-report.json`**（失敗一覧）に記録し、標準出力にサマリを出す。
+- 失敗分は次回実行時に自動でリトライ対象になる（手動補完は行わない）。
 - レート制御: リクエスト間 sleep（既存 `SCRAPING_DELAY_MS` 踏襲）。
 
 ### 7.3 実行
