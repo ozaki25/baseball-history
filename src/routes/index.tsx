@@ -7,6 +7,7 @@ import { applyFilters, deriveOptions, type GameFilter } from "#/lib/filters";
 import { StatsSummary } from "#/components/StatsSummary";
 import { ScheduledList } from "#/components/ScheduledList";
 import { Filters } from "#/components/Filters";
+import { YearFilter } from "#/components/YearFilter";
 import { CrossStats } from "#/components/CrossStats";
 import { GameTable } from "#/components/GameTable";
 import { ThemeToggle } from "#/components/ThemeToggle";
@@ -64,6 +65,12 @@ function Home() {
       <main className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-4 pb-20">
         {scheduled.length > 0 && <ScheduledList games={scheduled} />}
 
+        <YearFilter
+          years={FILTER_OPTIONS.years}
+          value={filter.year}
+          onChange={(year) => setFilter({ ...filter, year })}
+        />
+
         <StatsSummary games={attended} />
 
         <Filters filter={filter} options={FILTER_OPTIONS} onChange={setFilter} />
@@ -76,14 +83,8 @@ function Home() {
         </div>
         <GameTable games={attended} />
 
-        <details className="mt-2">
-          <summary className="cursor-pointer text-sm font-bold text-[var(--muted)]">
-            軸別集計
-          </summary>
-          <div className="mt-2">
-            <CrossStats games={attended} />
-          </div>
-        </details>
+        <h2 className="mt-2 text-sm font-bold text-[var(--muted)]">軸別集計</h2>
+        <CrossStats games={attended} />
       </main>
     </div>
   );

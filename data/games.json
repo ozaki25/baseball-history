@@ -5,7 +5,9 @@
       "id": "2006-06-02",
       "date": "2006-06-02",
       "opponent": "横浜",
+      "opponentId": "baystars",
       "stadium": "名護",
+      "stadiumId": "nago",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -17,7 +19,9 @@
       "id": "2009-04-08",
       "date": "2009-04-08",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -29,7 +33,9 @@
       "id": "2009-08-13",
       "date": "2009-08-13",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -41,7 +47,9 @@
       "id": "2009-11-05",
       "date": "2009-11-05",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -53,7 +61,9 @@
       "id": "2010-03-30",
       "date": "2010-03-30",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -65,7 +75,9 @@
       "id": "2010-08-19",
       "date": "2010-08-19",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -77,7 +89,9 @@
       "id": "2011-07-20",
       "date": "2011-07-20",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -89,7 +103,9 @@
       "id": "2011-09-14",
       "date": "2011-09-14",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -101,7 +117,9 @@
       "id": "2012-04-25",
       "date": "2012-04-25",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -113,7 +131,9 @@
       "id": "2012-04-26",
       "date": "2012-04-26",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -125,7 +145,9 @@
       "id": "2012-06-27",
       "date": "2012-06-27",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -137,7 +159,9 @@
       "id": "2012-09-04",
       "date": "2012-09-04",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -149,7 +173,9 @@
       "id": "2012-09-05",
       "date": "2012-09-05",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -161,7 +187,9 @@
       "id": "2012-10-27",
       "date": "2012-10-27",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -173,7 +201,9 @@
       "id": "2012-10-30",
       "date": "2012-10-30",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -185,7 +215,9 @@
       "id": "2012-10-31",
       "date": "2012-10-31",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -197,7 +229,9 @@
       "id": "2013-06-05",
       "date": "2013-06-05",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -209,7 +243,9 @@
       "id": "2013-06-25",
       "date": "2013-06-25",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -221,7 +257,9 @@
       "id": "2013-06-26",
       "date": "2013-06-26",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -233,7 +271,9 @@
       "id": "2013-08-07",
       "date": "2013-08-07",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "西武ドーム",
+      "stadiumId": "seibu-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -245,7 +285,9 @@
       "id": "2013-08-28",
       "date": "2013-08-28",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -257,7 +299,9 @@
       "id": "2013-08-29",
       "date": "2013-08-29",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -269,7 +313,9 @@
       "id": "2013-09-03",
       "date": "2013-09-03",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -281,7 +327,9 @@
       "id": "2013-09-04",
       "date": "2013-09-04",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -293,7 +341,9 @@
       "id": "2013-09-05",
       "date": "2013-09-05",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -305,7 +355,9 @@
       "id": "2014-04-22",
       "date": "2014-04-22",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -317,7 +369,9 @@
       "id": "2014-04-23",
       "date": "2014-04-23",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -329,7 +383,9 @@
       "id": "2014-05-26",
       "date": "2014-05-26",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -341,7 +397,9 @@
       "id": "2014-05-29",
       "date": "2014-05-29",
       "opponent": "東京ヤクルト",
+      "opponentId": "swallows",
       "stadium": "神宮",
+      "stadiumId": "jingu",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -353,7 +411,9 @@
       "id": "2014-06-25",
       "date": "2014-06-25",
       "opponent": "横浜DeNA",
+      "opponentId": "baystars",
       "stadium": "横浜",
+      "stadiumId": "yokohama-stadium",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -365,7 +425,9 @@
       "id": "2014-08-20",
       "date": "2014-08-20",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "旭川",
+      "stadiumId": "asahikawa",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -377,7 +439,9 @@
       "id": "2014-08-21",
       "date": "2014-08-21",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -389,7 +453,9 @@
       "id": "2014-08-22",
       "date": "2014-08-22",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -401,7 +467,9 @@
       "id": "2014-08-29",
       "date": "2014-08-29",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -413,7 +481,9 @@
       "id": "2014-08-30",
       "date": "2014-08-30",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -425,7 +495,9 @@
       "id": "2014-08-31",
       "date": "2014-08-31",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -437,7 +509,9 @@
       "id": "2014-09-09",
       "date": "2014-09-09",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -449,7 +523,9 @@
       "id": "2014-09-10",
       "date": "2014-09-10",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -461,7 +537,9 @@
       "id": "2014-09-11",
       "date": "2014-09-11",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -473,7 +551,9 @@
       "id": "2015-04-07",
       "date": "2015-04-07",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -485,7 +565,9 @@
       "id": "2015-04-08",
       "date": "2015-04-08",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -497,7 +579,9 @@
       "id": "2015-05-26",
       "date": "2015-05-26",
       "opponent": "東京ヤクルト",
+      "opponentId": "swallows",
       "stadium": "神宮",
+      "stadiumId": "jingu",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -509,7 +593,9 @@
       "id": "2015-05-28",
       "date": "2015-05-28",
       "opponent": "東京ヤクルト",
+      "opponentId": "swallows",
       "stadium": "神宮",
+      "stadiumId": "jingu",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -521,7 +607,9 @@
       "id": "2015-06-11",
       "date": "2015-06-11",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -533,7 +621,9 @@
       "id": "2015-06-12",
       "date": "2015-06-12",
       "opponent": "横浜DeNA",
+      "opponentId": "baystars",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -545,7 +635,9 @@
       "id": "2015-06-13",
       "date": "2015-06-13",
       "opponent": "横浜DeNA",
+      "opponentId": "baystars",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -557,7 +649,9 @@
       "id": "2015-06-14",
       "date": "2015-06-14",
       "opponent": "横浜DeNA",
+      "opponentId": "baystars",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -569,7 +663,9 @@
       "id": "2015-07-03",
       "date": "2015-07-03",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -581,7 +677,9 @@
       "id": "2015-08-12",
       "date": "2015-08-12",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "西武プリンス",
+      "stadiumId": "seibu-dome",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -593,7 +691,9 @@
       "id": "2015-08-21",
       "date": "2015-08-21",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -605,7 +705,9 @@
       "id": "2015-08-22",
       "date": "2015-08-22",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -617,7 +719,9 @@
       "id": "2015-08-23",
       "date": "2015-08-23",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -629,7 +733,9 @@
       "id": "2015-09-01",
       "date": "2015-09-01",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -641,7 +747,9 @@
       "id": "2015-09-02",
       "date": "2015-09-02",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -653,7 +761,9 @@
       "id": "2015-09-03",
       "date": "2015-09-03",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -665,7 +775,9 @@
       "id": "2015-09-19",
       "date": "2015-09-19",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -677,7 +789,9 @@
       "id": "2015-09-20",
       "date": "2015-09-20",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -689,7 +803,9 @@
       "id": "2015-09-21",
       "date": "2015-09-21",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -701,7 +817,9 @@
       "id": "2015-09-22",
       "date": "2015-09-22",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -713,7 +831,9 @@
       "id": "2016-04-02",
       "date": "2016-04-02",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -725,7 +845,9 @@
       "id": "2016-04-03",
       "date": "2016-04-03",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -737,7 +859,9 @@
       "id": "2016-05-06",
       "date": "2016-05-06",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "西武プリンス",
+      "stadiumId": "seibu-dome",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -749,7 +873,9 @@
       "id": "2016-05-10",
       "date": "2016-05-10",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -761,7 +887,9 @@
       "id": "2016-05-11",
       "date": "2016-05-11",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -773,7 +901,9 @@
       "id": "2016-06-03",
       "date": "2016-06-03",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -785,7 +915,9 @@
       "id": "2016-06-04",
       "date": "2016-06-04",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -797,7 +929,9 @@
       "id": "2016-06-09",
       "date": "2016-06-09",
       "opponent": "広島",
+      "opponentId": "carp",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -809,7 +943,9 @@
       "id": "2016-06-10",
       "date": "2016-06-10",
       "opponent": "阪神",
+      "opponentId": "tigers",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -821,7 +957,9 @@
       "id": "2016-06-11",
       "date": "2016-06-11",
       "opponent": "阪神",
+      "opponentId": "tigers",
       "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -833,7 +971,9 @@
       "id": "2016-08-30",
       "date": "2016-08-30",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -845,7 +985,9 @@
       "id": "2016-08-31",
       "date": "2016-08-31",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -857,7 +999,9 @@
       "id": "2016-09-01",
       "date": "2016-09-01",
       "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -869,7 +1013,9 @@
       "id": "2024-04-05",
       "date": "2024-04-05",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -881,7 +1027,9 @@
       "id": "2024-04-06",
       "date": "2024-04-06",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -893,7 +1041,9 @@
       "id": "2024-04-07",
       "date": "2024-04-07",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -905,7 +1055,9 @@
       "id": "2024-04-27",
       "date": "2024-04-27",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -917,7 +1069,9 @@
       "id": "2024-04-28",
       "date": "2024-04-28",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -929,7 +1083,9 @@
       "id": "2024-04-29",
       "date": "2024-04-29",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -941,7 +1097,9 @@
       "id": "2024-05-01",
       "date": "2024-05-01",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "ベルーナドーム",
+      "stadiumId": "seibu-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -953,7 +1111,9 @@
       "id": "2024-06-07",
       "date": "2024-06-07",
       "opponent": "東京ヤクルト",
+      "opponentId": "swallows",
       "stadium": "神宮",
+      "stadiumId": "jingu",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -965,7 +1125,9 @@
       "id": "2024-06-08",
       "date": "2024-06-08",
       "opponent": "東京ヤクルト",
+      "opponentId": "swallows",
       "stadium": "神宮",
+      "stadiumId": "jingu",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -977,7 +1139,9 @@
       "id": "2024-07-30",
       "date": "2024-07-30",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "draw",
       "score": {
@@ -989,7 +1153,9 @@
       "id": "2024-07-31",
       "date": "2024-07-31",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1001,7 +1167,9 @@
       "id": "2024-08-01",
       "date": "2024-08-01",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1013,7 +1181,9 @@
       "id": "2024-08-23",
       "date": "2024-08-23",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1025,7 +1195,9 @@
       "id": "2024-08-25",
       "date": "2024-08-25",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1037,7 +1209,9 @@
       "id": "2025-04-01",
       "date": "2025-04-01",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1049,7 +1223,9 @@
       "id": "2025-04-02",
       "date": "2025-04-02",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1061,7 +1237,9 @@
       "id": "2025-04-25",
       "date": "2025-04-25",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1073,7 +1251,9 @@
       "id": "2025-04-26",
       "date": "2025-04-26",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1085,7 +1265,9 @@
       "id": "2025-04-27",
       "date": "2025-04-27",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1097,7 +1279,9 @@
       "id": "2025-05-18",
       "date": "2025-05-18",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "ZOZOマリン",
+      "stadiumId": "marine",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -1109,7 +1293,9 @@
       "id": "2025-06-18",
       "date": "2025-06-18",
       "opponent": "巨人",
+      "opponentId": "giants",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -1121,7 +1307,9 @@
       "id": "2025-07-14",
       "date": "2025-07-14",
       "opponent": "埼玉西武",
+      "opponentId": "seibu",
       "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -1133,7 +1321,9 @@
       "id": "2025-07-26",
       "date": "2025-07-26",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1145,7 +1335,9 @@
       "id": "2025-07-27",
       "date": "2025-07-27",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1157,7 +1349,9 @@
       "id": "2025-08-19",
       "date": "2025-08-19",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1169,7 +1363,9 @@
       "id": "2025-08-20",
       "date": "2025-08-20",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1181,7 +1377,9 @@
       "id": "2025-08-21",
       "date": "2025-08-21",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1193,7 +1391,9 @@
       "id": "2025-08-22",
       "date": "2025-08-22",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1205,7 +1405,9 @@
       "id": "2025-08-23",
       "date": "2025-08-23",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1217,7 +1419,9 @@
       "id": "2025-08-24",
       "date": "2025-08-24",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1229,7 +1433,9 @@
       "id": "2025-09-28",
       "date": "2025-09-28",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "ZOZOマリン",
+      "stadiumId": "marine",
       "homeAway": "away",
       "result": "win",
       "score": {
@@ -1241,7 +1447,9 @@
       "id": "2025-10-04",
       "date": "2025-10-04",
       "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
       "stadium": "ZOZOマリン",
+      "stadiumId": "marine",
       "homeAway": "away",
       "result": "lose",
       "score": {
@@ -1253,7 +1461,9 @@
       "id": "2026-04-11",
       "date": "2026-04-11",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1265,7 +1475,9 @@
       "id": "2026-04-12",
       "date": "2026-04-12",
       "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1277,7 +1489,9 @@
       "id": "2026-05-01",
       "date": "2026-05-01",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1289,7 +1503,9 @@
       "id": "2026-05-02",
       "date": "2026-05-02",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {
@@ -1301,7 +1517,9 @@
       "id": "2026-05-03",
       "date": "2026-05-03",
       "opponent": "オリックス",
+      "opponentId": "orix",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1313,7 +1531,9 @@
       "id": "2026-06-11",
       "date": "2026-06-11",
       "opponent": "横浜DeNA",
+      "opponentId": "baystars",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1325,7 +1545,9 @@
       "id": "2026-06-12",
       "date": "2026-06-12",
       "opponent": "中日",
+      "opponentId": "dragons",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1337,7 +1559,9 @@
       "id": "2026-06-13",
       "date": "2026-06-13",
       "opponent": "中日",
+      "opponentId": "dragons",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "win",
       "score": {
@@ -1349,7 +1573,9 @@
       "id": "2026-06-14",
       "date": "2026-06-14",
       "opponent": "中日",
+      "opponentId": "dragons",
       "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
       "homeAway": "home",
       "result": "lose",
       "score": {

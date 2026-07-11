@@ -209,10 +209,10 @@ export function Filters({
               <Section title="球場">
                 {options.stadiums.map((s) => (
                   <Chip
-                    key={s}
-                    label={s}
-                    active={filter.stadiums.includes(s)}
-                    onClick={() => onChange({ ...filter, stadiums: toggle(filter.stadiums, s) })}
+                    key={s.id}
+                    label={s.label}
+                    active={filter.stadiums.includes(s.id)}
+                    onClick={() => onChange({ ...filter, stadiums: toggle(filter.stadiums, s.id) })}
                   />
                 ))}
               </Section>
@@ -220,10 +220,12 @@ export function Filters({
               <Section title="対戦相手">
                 {options.opponents.map((o) => (
                   <Chip
-                    key={o}
-                    label={o}
-                    active={filter.opponents.includes(o)}
-                    onClick={() => onChange({ ...filter, opponents: toggle(filter.opponents, o) })}
+                    key={o.id}
+                    label={o.label}
+                    active={filter.opponents.includes(o.id)}
+                    onClick={() =>
+                      onChange({ ...filter, opponents: toggle(filter.opponents, o.id) })
+                    }
                   />
                 ))}
               </Section>

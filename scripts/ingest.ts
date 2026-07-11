@@ -19,6 +19,7 @@ import {
   toIsoDate,
   isFutureDate,
   looksCancelled,
+  withResolvedIds,
 } from "#/lib/ingestCore";
 import { sleep, SCRAPING_DELAY_MS } from "#/lib/sleepUtils";
 
@@ -83,7 +84,7 @@ async function main() {
       for (const mmdd of list) {
         const id = toIsoDate(year, mmdd);
         const prev = existing.get(id);
-        if (prev) result.push(prev);
+        if (prev) result.push(withResolvedIds(prev));
       }
       continue;
     }
@@ -94,7 +95,7 @@ async function main() {
       const prev = existing.get(id);
 
       if (isConfirmed(prev)) {
-        result.push(prev!);
+        result.push(withResolvedIds(prev!));
         continue;
       }
 
@@ -114,7 +115,9 @@ async function main() {
               id,
               date: isoDate,
               opponent: "",
+              opponentId: "",
               stadium: "",
+              stadiumId: "",
               homeAway: null,
               result: "cancelled",
               score: { fighters: null, opponent: null },
@@ -128,7 +131,7 @@ async function main() {
         failures.push({ id, error: message });
         console.error(`  ✗ ${id}: ${message}`);
         // 失敗時は既存レコードを保持（データ消失を防ぐ）。新規で未取得なら次回リトライ。
-        if (prev) result.push(prev);
+        if (prev) result.push(withResolvedIds(prev));
       } finally {
         await sleep(SCRAPING_DELAY_MS);
       }

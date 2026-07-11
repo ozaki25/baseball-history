@@ -1,13 +1,18 @@
 import { describe, it, expect } from "vitest";
 import type { Game, GameResult } from "@/types/game";
 import { summarize, groupBy, formatWinRate } from "@/lib/stats";
+import { resolveTeam, resolveStadium } from "@/lib/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {
+  const opponent = partial.opponent ?? "オリックス";
+  const stadium = partial.stadium ?? "エスコンフィールド";
   return {
     id: partial.date,
     date: partial.date,
-    opponent: partial.opponent ?? "オリックス",
-    stadium: partial.stadium ?? "エスコンフィールド",
+    opponent,
+    opponentId: opponent ? resolveTeam(opponent).id : "",
+    stadium,
+    stadiumId: stadium ? resolveStadium(stadium).id : "",
     homeAway: partial.homeAway ?? "home",
     result: partial.result,
     score: partial.score ?? { fighters: null, opponent: null },
