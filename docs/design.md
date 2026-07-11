@@ -15,7 +15,7 @@
 └─────────────────────────────┬────────────────────────────────────────┘
                               ▼
 ┌──────────────────── アプリ（静的・Vercel）───────────────────────────┐
-│  data/games.json ──▶ Vite ビルドで取り込み ──▶ TanStack で絞り込み/集計 │
+│  data/games.json ──▶ ビルド時に読み込み ──▶ TanStack で絞り込み/集計   │
 │  （スクレイピングは一切しない）                                        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
@@ -27,44 +27,50 @@
 
 ## 2. 技術スタック
 
-| レイヤ | 採用 | 選定理由 |
-|---|---|---|
-| ビルド/開発 | **Vite + React + TypeScript** | 軽量・高速・シンプル。個人用静的アプリに最適 |
-| ルーティング/状態 | **TanStack Router** | 絞り込み条件を**型安全に URL（search params）へ保持**。フィルタ中心アプリと好相性 |
-| テーブル/集計 | **TanStack Table** | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装 |
-| スタイル | **Tailwind CSS** | 既存を踏襲。ファイターズカラーをトークン化 |
-| PWA | **vite-plugin-pwa** | Manifest + Service Worker を簡潔に。オフライン対応 |
-| テスト | **Vitest** | 既存を踏襲。パーサ/集計の単体テスト |
-| 解析 | **jsdom + 既存パーサ** | ingest 側で再利用（後述） |
-| デプロイ | **Vercel（静的）** | 既存を踏襲。ビルド出力 `dist` を配信 |
+> **バージョン方針**: 実装着手時に npm レジストリで最新を確認して採用する（知識ベースの古い選定をしない）。
+> 下表の版は 2026-07 時点の確認値。TypeScript 7 はネイティブコンパイラ世代の大型更新のため、
+> スキャフォールド時にツール互換を実地確認し、問題があれば 5 系へ退避可能とする。
 
-> TanStack を中核に据える方針。将来的に `@tanstack/react-query` や `@tanstack/react-form`
-> を導入する余地はあるが、初期スコープ（静的データ・編集UIなし）では必須ではない。
+| レイヤ | 採用 | 版(確認時) | 選定理由 |
+|---|---|---|---|
+| フレームワーク | **TanStack Start** | 1.168 | TanStack 一式（Router 基盤）を中核に。Vercel を公式サポート。今回は静的化(prerender)寄りで運用 |
+| ルーティング/状態 | **TanStack Router**（Start 内蔵） | 1.170 | 絞り込み条件を**型安全に URL（search params）へ保持**。ファイルベースルーティング |
+| テーブル/集計 | **TanStack Table** | 8.21 | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装 |
+| 言語 | **TypeScript** | 7.0 | strict。型は単一定義 |
+| スタイル | **Tailwind CSS** | 4.x | ファイターズカラーをトークン化 |
+| PWA | **vite-plugin-pwa** | 1.3 | Manifest + Service Worker。Start(Vite基盤)構成向けに設定 |
+| テスト | **Vitest** | 4.x | パーサ/集計の単体テスト |
+| 解析 | **jsdom + 既存パーサ** | — | ingest 側で再利用（後述） |
+| Lint | **oxlint** | 1.x | 高速。ESLint は使わない |
+| Format | **oxfmt**（oxc） | 0.x | oxc で統一（0.x のため整形挙動の変化に留意） |
+| パッケージ管理 | **pnpm** | 11.x | 高速・省ディスク。npm から移行 |
+| デプロイ | **Vercel** | — | TanStack Start の Vercel ターゲットを使用 |
+
+> Router は Start に内蔵。将来的に `@tanstack/react-query` / `react-form` を足す余地はあるが、
+> 初期スコープ（静的データ・編集 UI なし）では不要。
 
 ## 3. ディレクトリ構成（目標）
 
 ```
 baseball-history/
 ├─ data/
-│  ├─ dates.json          # 観戦日（取り込み入力・維持）
+│  ├─ dates.json          # 観戦日（取り込み入力・維持／事前登録もここ）
 │  └─ games.json          # 取り込みの生成物（アプリのソース・コミット対象）
 ├─ scripts/
-│  ├─ ingest.mjs          # dates + 公式サイト → games.json 生成
-│  └─ add-date.mjs        # 観戦日追加（既存を維持）
+│  ├─ ingest.mjs          # dates + 公式サイト → games.json 生成（既存パーサ利用）
+│  └─ add-date.mjs        # 観戦日追加（バリデーション・ソート。スキルから呼ぶ）
 ├─ src/
-│  ├─ main.tsx            # エントリ
-│  ├─ router.tsx          # TanStack Router 定義
-│  ├─ routes/
+│  ├─ routes/             # TanStack Start ファイルベースルーティング
+│  │  ├─ __root.tsx       # ルートレイアウト（Header / Footer）
 │  │  └─ index.tsx        # 一覧＋絞り込み＋集計（メイン画面）
 │  ├─ components/
 │  │  ├─ GameTable.tsx    # TanStack Table（PC テーブル / モバイルカード）
-│  │  ├─ Filters.tsx      # 5 軸の絞り込み UI
+│  │  ├─ Filters.tsx      # 5 軸の絞り込み UI（モバイル=ボトムシート）
 │  │  ├─ StatsSummary.tsx # 絞り込み連動の集計サマリ
-│  │  ├─ CrossStats.tsx   # 軸別クロス集計テーブル
-│  │  └─ layout/          # Header / Footer
+│  │  └─ CrossStats.tsx   # 軸別クロス集計テーブル
 │  ├─ lib/
 │  │  ├─ parsers/         # 既存パーサを移設・再利用（ingest から利用）
-│  │  ├─ stats.ts         # 集計ロジック（純関数・テスト対象）
+│  │  ├─ stats.ts         # 集計ロジック（純関数・テスト対象／scheduled は集計から除外）
 │  │  ├─ filters.ts       # 絞り込みロジック・URL スキーマ
 │  │  └─ normalize.ts     # 最小限の正規化＋（必要時のみ）名寄せ対応表
 │  ├─ types/
@@ -72,8 +78,9 @@ baseball-history/
 │  └─ styles/             # Tailwind エントリ・テーマ
 ├─ src/tests/             # Vitest（既存フィクスチャ流用）
 ├─ public/                # PWA アイコン・静的ファイル
-├─ vite.config.ts
-├─ tailwind.config / postcss.config
+├─ .claude/skills/add-date/  # 観戦日追加スキル（Claude 経由の登録口）
+├─ .github/workflows/     # ci.yml / ingest.yml
+├─ app.config.ts          # TanStack Start 設定
 └─ docs/                  # 本ドキュメント群
 ```
 
@@ -83,12 +90,13 @@ baseball-history/
 
 ```ts
 type HomeAway = 'home' | 'away';
-type GameResult = 'win' | 'lose' | 'draw' | 'cancelled';
+// scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される
+type GameResult = 'win' | 'lose' | 'draw' | 'cancelled' | 'scheduled';
 
 interface Game {
-  id: string;            // "2025-04-01"（ダブルヘッダーは §未決で確定）
+  id: string;            // "2025-04-01"
   date: string;          // ISO "YYYY-MM-DD"
-  opponent: string;      // 正規化済みチーム名
+  opponent: string;      // 正規化済みチーム名（scheduled 時は空になりうる）
   stadium: string;       // 正規化済み球場名
   homeAway: HomeAway;
   result: GameResult;
@@ -137,10 +145,12 @@ interface Game {
 ┌──────────────────────┐
 │ Header（タイトル）      │  ← コンパクトな固定ヘッダー
 ├──────────────────────┤
+│ 観戦予定（あれば）       │  ← scheduled を上部に小さく（次に行く試合）
+├──────────────────────┤
 │ StatsSummary          │  ← 観戦N / 勝W 敗L 分D / 勝率
 │  （常に見える要約）     │
 ├──────────────────────┤
-│ [ 🔎 絞り込み (n) ]     │  ← タップで下から絞り込みシートを開く
+│ [ 絞り込み (n) ]        │  ← タップで下から絞り込みシートを開く
 ├──────────────────────┤
 │ GameCard              │  ← 試合一覧はカード（縦積み）
 │ GameCard              │     日付・相手・H/V・結果・スコア・球場
@@ -155,8 +165,10 @@ interface Game {
 
 - 絞り込みは**ボトムシート/ドロワー**に格納し、一覧の縦スクロールを邪魔しない。
 - StatsSummary は常時見える位置に置き、絞り込み変更が即反映されるのが分かるようにする。
+- **観戦予定（`scheduled`）** は履歴とは別の扱いで上部に控えめに表示し、勝敗・勝率などの統計からは除外する。
 - クロス集計（球場別/相手別/年度別/H・V別）は**折りたたみ or タブ**で必要時に展開。
 - タップ領域は十分に確保（最小 44px 目安）。片手操作を意識し主要操作は画面下部寄り。
+- アイコンは**インライン SVG**（絵文字は使わない。§6.4）。
 
 ### 6.2 PC（拡張レイアウト）
 
@@ -182,19 +194,40 @@ interface Game {
 - Filters・Stats・Table/Card はすべて**同じ絞り込み状態（URL）に連動**。
 - アクセシビリティ: フィルタは適切なラベル/role、テーブルは `scope` 指定、ボトムシートはフォーカストラップ/`Esc` クローズ、キーボード操作対応。
 
+### 6.4 デザイン原則（AI 生成感を出さない）
+
+**鉄則: いわゆる「AI が作った風」の見た目にしない。** 具体的に次を避ける。
+
+- ❌ クリーム(#F4F1EA)＋セリフ見出し＋テラコッタのアクセント
+- ❌ 黒に近い背景＋アシッドグリーン/朱色のワンポイント
+- ❌ Inter / Space Grotesk を「無難だから」で採用
+- ❌ 絵文字を見出し・セクションマーカーに使う
+- ❌ 何でも中央寄せ、何でも `rounded-lg`、角丸カード＋左端アクセントバー
+- ❌ 紫→青のグラデーション hero
+
+代わりに、**題材（野球のスコアブック／球場の掲示・電光掲示板）に根ざした独自の世界観**で作る。
+
+- 数字が主役なので、**等幅・タブラー数字**を効かせた「記録簿」的なタイポグラフィ。
+- ファイターズブルーは**土台の1色**として使い、多用しない（勝敗などの意味色は別系統）。
+- 罫線・グリッド・整然としたテーブルで「スコアブック感」を出す。装飾より情報設計。
+- フォントは目的を持って選定（本文＝可読性の高い日本語ゴシック、数字＝等幅系）。CDN 直リンクはせず自己ホスト。
+- ライト/ダーク両対応。色はトークン化し、意味色（good/warning/critical）はアクセントと分離。
+
 ## 7. 取り込み（ingest）設計
 
 ### 7.1 フロー
 1. `dates.json` を読み、`{year, MMDD}` を列挙。
-2. 既存 `games.json` があれば読み、**未取得（未成功）の試合のみ**対象にする（`--force` で全再取得）。
-3. 各試合の URL `https://www.fighters.co.jp/gamelive/result/{year}{MMDD}01/` を取得。
-4. 既存パーサ（teamExtractor / scoreExtractor / locationExtractor / homeDetector / gameParser）で解析。
-5. 最小限の正規化（trim・全半角）を適用。※ 末尾 `01`（第1試合）のみ対象。ダブルヘッダー第2試合は扱わない。
-6. `date` 昇順で `games.json` を書き出し（`generatedAt` 更新）。
+2. 既存 `games.json` があれば読み、**未確定の試合のみ**対象にする（確定済み＝再取得しない。`scheduled` と未取得は対象。`--force` で全再取得）。
+3. **未来日 or 当日で結果未確定**なら、取得を試みず（または結果なしを検知して）`result: 'scheduled'` として記録（事前登録の受け皿）。
+4. 過去日は URL `https://www.fighters.co.jp/gamelive/result/{year}{MMDD}01/` を取得。
+5. 既存パーサ（teamExtractor / scoreExtractor / locationExtractor / homeDetector / gameParser）で解析。
+6. 最小限の正規化（trim・全半角）を適用。※ 末尾 `01`（第1試合）のみ対象。ダブルヘッダー第2試合は扱わない。
+7. `date` 昇順で `games.json` を書き出し（`generatedAt` 更新）。
 
-### 7.2 エラー処理
-- 取得/解析失敗はレコードを捏造せず、**別途 `ingest-report.json`**（失敗一覧）に記録し、標準出力にサマリを出す。
-- 失敗分は次回実行時に自動でリトライ対象になる（手動補完は行わない）。
+### 7.2 状態遷移とエラー処理
+- **事前登録**: 試合前の日は `scheduled` として保存。結果が出た後の実行で `win/lose/draw/cancelled` に**自動確定**（`scheduled` は毎回再取得対象なので放置でも次回実行で更新）。
+- 取得/解析失敗はレコードを捏造せず、**別途 `ingest-report.json`**（失敗一覧）に記録し、標準出力にサマリを出す。失敗分は次回実行で自動リトライ。
+- **再取得のトリガー**: 新しい観戦日を（スキル経由で）足して push すれば ingest が走り、その際に `scheduled`／失敗分も一緒に拾い直す。単独で確定させたい時は手動実行。
 - レート制御: リクエスト間 sleep（既存 `SCRAPING_DELAY_MS` 踏襲）。
 
 ### 7.3 実行方式（GitHub Actions）
@@ -224,17 +257,28 @@ npm run ingest -- --year 2026
 ## 8. 集計ロジック（`stats.ts`）
 
 - 純関数として実装（入力: `Game[]` → 出力: 集計オブジェクト）。テスト容易。
+- **`scheduled`（観戦予定）は集計対象から除外**（実績ではないため）。
 - 提供:
   - `summarize(games)` → `{ total, win, lose, draw, cancelled, winRate }`
-    （勝率は中止を除いた分母で算出）
+    （勝率は中止・予定を除いた分母で算出）
   - `groupBy(games, key)` → 軸別（球場/相手/年度/HV）の集計配列
 - 表示側は集計結果を受け取るだけ（ロジックと描画を分離）。
 
 ## 9. PWA 設計
 
-- `vite-plugin-pwa`（`registerType: 'autoUpdate'`）。
+- `vite-plugin-pwa`（`registerType: 'autoUpdate'`）を TanStack Start（Vite 基盤）構成に組み込む。
 - キャッシュ対象: アプリシェル一式 + `games.json`。
-- Manifest: 名称・アイコン（既存流用可）・テーマカラー `#016298`・`display: standalone`。
+- Manifest: 名称・**刷新した新アイコン**（フェーズ5作成）・テーマカラー `#016298`・`display: standalone`。
+
+## 9b. 観戦日の登録（Claude 経由スキル）
+
+観戦日の追加は**すべて Claude 経由**で行う。`.claude/skills/add-date/` にスキルを置く。
+
+- 役割: 引数（年・`MMDD` 複数可）を検証し、`data/dates.json` へ追記・ソート → commit & push。
+  push をトリガーに GitHub Actions(ingest) が走り、結果取得〜デプロイまで自動で流れる。
+- 実体は `scripts/add-date.mjs`（既存を流用・検証/重複スキップ/ソート済み）をスキルから呼ぶ形。
+- **事前登録に対応**: まだ試合前の日も登録可。取り込みでは `scheduled` として扱い、後日結果が出たら確定に更新される（§7）。
+- 利用イメージ: 「7/5 と 7/6 の観戦を登録して」→ スキルが dates.json 更新 & push → 自動取り込み。
 
 ## 10. パフォーマンス設計
 
@@ -246,4 +290,5 @@ npm run ingest -- --year 2026
 - 削除: `next.config.ts`・Next 関連依存・`src/app/*`・旧 `HomeClient` 等・旧設計ドキュメント
   （`PROJECT_REQUIREMENTS.md` / `FUNCTIONAL_DESIGN.md` / `DETAILED_DESIGN.md`）。
 - 流用: `src/lib/parsers/*`・`src/tests/fixtures/*`・`scripts/add-date.mjs`・`COLOR_PALETTE.md`。
-- 置換: ルーティング/エントリ（Next App Router → Vite + TanStack Router）。
+- 置換: ルーティング/エントリ（Next App Router → TanStack Start）、パッケージ管理（npm → pnpm）、Lint/Format（ESLint/Prettier → oxlint/oxfmt）。
+- アイコン: 旧アイコンは刷新（フェーズ5で新規作成）。
