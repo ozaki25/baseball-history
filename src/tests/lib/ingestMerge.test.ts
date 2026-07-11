@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { DatesData, Game } from "@/types/game";
+import type { Game } from "@/types/game";
 import { mergeIngest } from "@/lib/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "@/tests/helpers/testHtmlLoader";
 
@@ -36,7 +36,7 @@ function confirmed(id: string, extra: Partial<Game> = {}): Game {
 describe("mergeIngest", () => {
   it("未来日は fetch せず scheduled にする", async () => {
     const { fetchHtml, calls } = makeFetch({});
-    const r = await mergeIngest({ "2030": ["0101"] } as DatesData, new Map(), {
+    const r = await mergeIngest({ "2030": ["0101"] }, new Map(), {
       fetchHtml,
       now: NOW,
     });
@@ -47,7 +47,7 @@ describe("mergeIngest", () => {
 
   it("過去日は取得・解析して確定する", async () => {
     const { fetchHtml } = makeFetch({ "20250401": HOME_WIN });
-    const r = await mergeIngest({ "2025": ["0401"] } as DatesData, new Map(), {
+    const r = await mergeIngest({ "2025": ["0401"] }, new Map(), {
       fetchHtml,
       now: NOW,
     });
@@ -62,7 +62,7 @@ describe("mergeIngest", () => {
   it("確定済みは再取得せず、IDだけ現行マスタで再解決する", async () => {
     const { fetchHtml, calls } = makeFetch({ "20130807": HOME_WIN });
     const existing = new Map([["2013-08-07", confirmed("2013-08-07")]]);
-    const r = await mergeIngest({ "2013": ["0807"] } as DatesData, existing, {
+    const r = await mergeIngest({ "2013": ["0807"] }, existing, {
       fetchHtml,
       now: NOW,
     });
@@ -77,7 +77,7 @@ describe("mergeIngest", () => {
   it("--force なら確定済みも再取得する", async () => {
     const { fetchHtml, calls } = makeFetch({ "20130807": HOME_WIN });
     const existing = new Map([["2013-08-07", confirmed("2013-08-07")]]);
-    const r = await mergeIngest({ "2013": ["0807"] } as DatesData, existing, {
+    const r = await mergeIngest({ "2013": ["0807"] }, existing, {
       fetchHtml,
       now: NOW,
       force: true,
@@ -91,7 +91,7 @@ describe("mergeIngest", () => {
     const stale = { ...confirmed("2025-05-01"), result: "scheduled" as const };
     const { fetchHtml } = makeFetch({ "20250501": new Error("network") });
     const existing = new Map([["2025-05-01", stale]]);
-    const r = await mergeIngest({ "2025": ["0501"] } as DatesData, existing, {
+    const r = await mergeIngest({ "2025": ["0501"] }, existing, {
       fetchHtml,
       now: NOW,
     });
@@ -101,7 +101,7 @@ describe("mergeIngest", () => {
 
   it("取得失敗かつ既存なしは、消失ではなく失敗記録のみ", async () => {
     const { fetchHtml } = makeFetch({ "20250501": new Error("network") });
-    const r = await mergeIngest({ "2025": ["0501"] } as DatesData, new Map(), {
+    const r = await mergeIngest({ "2025": ["0501"] }, new Map(), {
       fetchHtml,
       now: NOW,
     });
@@ -111,7 +111,7 @@ describe("mergeIngest", () => {
 
   it("解析不能でも中止表記なら cancelled として保存", async () => {
     const { fetchHtml } = makeFetch({ "20250601": "<div>本日の試合は中止となりました</div>" });
-    const r = await mergeIngest({ "2025": ["0601"] } as DatesData, new Map(), {
+    const r = await mergeIngest({ "2025": ["0601"] }, new Map(), {
       fetchHtml,
       now: NOW,
     });
@@ -121,12 +121,23 @@ describe("mergeIngest", () => {
   it("--year 指定時、対象外の年は既存を維持しfetchしない", async () => {
     const { fetchHtml, calls } = makeFetch({ "20250401": HOME_WIN });
     const existing = new Map([["2024-04-05", confirmed("2024-04-05")]]);
-    const r = await mergeIngest({ "2024": ["0405"], "2025": ["0401"] } as DatesData, existing, {
+    const r = await mergeIngest({ "2024": ["0405"], "2025": ["0401"] }, existing, {
       fetchHtml,
       now: NOW,
       yearFilter: "2025",
     });
     expect(calls).toEqual(["20250401"]); // 2024はfetchされない
-    expect(r.games.map((g) => g.id).sort()).toEqual(["2024-04-05", "2025-04-01"]);
+    // mergeIngest は date 昇順で返す（呼び出し側でソートしない）
+    expect(r.games.map((g) => g.id)).toEqual(["2024-04-05", "2025-04-01"]);
+  });
+
+  it("既存の cancelled は再取得し、結果が出れば確定へ自己修復する", async () => {
+    const existing = new Map([
+      ["2025-06-01", { ...confirmed("2025-06-01"), result: "cancelled" as const }],
+    ]);
+    const { fetchHtml, calls } = makeFetch({ "20250601": HOME_WIN });
+    const r = await mergeIngest({ "2025": ["0601"] }, existing, { fetchHtml, now: NOW });
+    expect(calls).toEqual(["20250601"]); // cancelled は確定扱いしないので再取得
+    expect(r.games[0]).toMatchObject({ result: "win", opponent: "千葉ロッテ" });
   });
 });
