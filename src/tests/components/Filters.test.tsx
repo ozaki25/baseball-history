@@ -71,6 +71,20 @@ describe("Filters", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, homeAway: "away" });
   });
 
+  it("勝敗チップのクリックで results に追加する", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "勝" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, results: ["win"] });
+  });
+
+  it("対戦相手チップのクリックで opponentId を立てる", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "千葉ロッテ" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, opponents: ["lotte"] });
+  });
+
   it("選択済みチップは aria-pressed=true", async () => {
     const { user } = setup({ ...emptyFilter, opponents: ["lotte"] });
     const dialog = await openDialog(user);
@@ -99,10 +113,54 @@ describe("Filters", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith(emptyFilter);
   });
 
-  it("Escape でダイアログを閉じる", async () => {
+  it("Escape でダイアログを閉じ、トリガーへフォーカスを返す", async () => {
     const { user } = setup();
     await openDialog(user);
     await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("開くと閉じるボタンに初期フォーカスが当たる", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    expect(within(dialog).getByRole("button", { name: "閉じる" })).toHaveFocus();
+  });
+
+  it("Tab が先頭↔末尾で循環する（フォーカストラップ）", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    const closeBtn = within(dialog).getByRole("button", { name: "閉じる" });
+    const applyBtn = within(dialog).getByRole("button", { name: "この条件で見る" });
+
+    expect(closeBtn).toHaveFocus(); // 先頭
+    await user.tab({ shift: true }); // 先頭で Shift+Tab → 末尾へ
+    expect(applyBtn).toHaveFocus();
+    await user.tab(); // 末尾で Tab → 先頭へ
+    expect(closeBtn).toHaveFocus();
+  });
+
+  it("「この条件で見る」で閉じ、トリガーへフォーカスを返す", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "この条件で見る" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("X（閉じる）ボタンで閉じ、トリガーへフォーカスを返す", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "閉じる" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("背面(オーバーレイ)クリックで閉じる", async () => {
+    const { user } = setup();
+    await openDialog(user);
+    // backdrop は X ボタンと区別できる固有名を持つ（アクセシブル名で選択）
+    await user.click(screen.getByRole("button", { name: "閉じる（背景）" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 

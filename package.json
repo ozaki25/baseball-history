@@ -17,6 +17,7 @@
     "typecheck": "tsr generate && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "ingest": "tsx scripts/ingest.ts",
     "add-date": "node scripts/add-date.mjs",
     "prepare": "husky"
@@ -43,6 +44,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "lint-staged": "^16.2.3",

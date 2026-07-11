@@ -74,6 +74,7 @@ export function GameTable({ games }: { games: Game[] }) {
     <div>
       {/* デスクトップ: 罫線テーブル */}
       <table
+        aria-label="観戦記録"
         className="hidden w-full border text-sm md:table"
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >
@@ -135,6 +136,7 @@ export function GameTable({ games }: { games: Game[] }) {
 
       {/* モバイル: 罫線カード（縦積み） */}
       <ul
+        aria-label="観戦記録"
         className="flex flex-col border md:hidden"
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >
