@@ -149,6 +149,7 @@ export function Filters({
             <div className="divide-y" style={{ borderColor: "var(--line)" }}>
               <Section title="年度">
                 <Chip
+                  variant="tint"
                   label="すべて"
                   active={filter.year === "all"}
                   onClick={() => onChange({ ...filter, year: "all" })}
@@ -156,6 +157,7 @@ export function Filters({
                 {options.years.map((y) => (
                   <Chip
                     key={y}
+                    variant="tint"
                     label={y}
                     active={filter.year === y}
                     onClick={() => onChange({ ...filter, year: y })}
@@ -167,6 +169,7 @@ export function Filters({
                 {homeAwayOptions.map((o) => (
                   <Chip
                     key={o.value}
+                    variant="tint"
                     label={o.label}
                     active={filter.homeAway === o.value}
                     onClick={() => onChange({ ...filter, homeAway: o.value })}
@@ -178,6 +181,7 @@ export function Filters({
                 {RESULT_ORDER.map((r) => (
                   <Chip
                     key={r}
+                    variant="tint"
                     label={RESULT_LABEL[r]}
                     active={filter.results.includes(r)}
                     onClick={() => onChange({ ...filter, results: toggle(filter.results, r) })}
@@ -189,6 +193,7 @@ export function Filters({
                 {options.stadiums.map((s) => (
                   <Chip
                     key={s.id}
+                    variant="tint"
                     label={s.label}
                     active={filter.stadiums.includes(s.id)}
                     onClick={() => onChange({ ...filter, stadiums: toggle(filter.stadiums, s.id) })}
@@ -200,6 +205,7 @@ export function Filters({
                 {options.opponents.map((o) => (
                   <Chip
                     key={o.id}
+                    variant="tint"
                     label={o.label}
                     active={filter.opponents.includes(o.id)}
                     onClick={() =>

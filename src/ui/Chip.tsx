@@ -2,6 +2,8 @@ import type { CSSProperties } from "react";
 
 // 汎用のトグルチップ（aria-pressed 付きボタン）。
 // variant で見た目を出し分ける: tint=絞り込みの複数選択（淡い塗り）/ solid=年度の単一選択（ブランド塗り）。
+// NOTE: solid の tnum / whitespace-nowrap は「年度＝数値ラベル」という内容都合を暫定的に同梱している。
+// 数値でない solid チップが必要になったら、塗り(variant)と内容都合(className)の分離を検討すること。
 export type ChipVariant = "tint" | "solid";
 
 const CLASS: Record<ChipVariant, string> = {
@@ -24,12 +26,12 @@ export function Chip({
   label,
   active,
   onClick,
-  variant = "tint",
+  variant,
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
-  variant?: ChipVariant;
+  variant: ChipVariant;
 }) {
   return (
     <button

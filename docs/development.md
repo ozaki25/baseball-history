@@ -53,6 +53,13 @@
 - 取り込み専用モジュールは `src/lib/ingest/`（jsdom 依存）に隔離し、`components`/`routes` からの
   import を oxlint（`no-restricted-imports`）で禁止する。クライアントバンドルへの jsdom 混入を防ぐため。
 
+### ディレクトリ構成の方針
+
+- `src/ui/`: **ドメイン型・データ層に依存しない再利用可能なUI**を置く（例: `Chip`, `ThemeToggle`）。
+  `Game` 等のドメイン型や `lib/*` のロジックに依存しないことを採録基準とする。副作用（localStorage 等）を
+  持つ場合はコンポーネント内で完結させる。
+- `src/components/`: 画面固有のコンポーネント（`HomeView` とその構成要素）。将来的には画面単位で `features/` へ再編する。
+
 ## 3. テスト戦略
 
 | 種別           | 対象                                                                                                  | 手段                                                                              |
