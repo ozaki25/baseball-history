@@ -44,3 +44,6 @@ yarn-error.log*
 next-env.d.ts
 
 *.log
+# vitest browser mode attachments (actual/diff)
+.vitest/
+.vitest-attachments/

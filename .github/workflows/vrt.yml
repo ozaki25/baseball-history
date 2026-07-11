@@ -1,0 +1,68 @@
+name: Visual Regression
+
+# VRT（視覚回帰テスト）。描画は環境差に敏感なため、必ず固定された標準環境
+# （Playwright 公式 Docker イメージ ＋ Noto CJK フォント）で実行する。
+# ベースラインはこの環境で生成してリポジトリにコミットする（ローカル生成はコミットしない）。
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      update:
+        description: "ベースラインを再生成してコミットする"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  vrt:
+    runs-on: ubuntu-latest
+    # dep の playwright と同一バージョンのイメージを使う（バンドルされたブラウザと一致させる）
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # PR 時はマージrefではなくブランチをチェックアウト（ベースライン push のため）
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: 日本語フォント（Noto CJK）を導入
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends fonts-noto-cjk
+          rm -rf /var/lib/apt/lists/*
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: git 設定
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: 視覚回帰（比較／初回ブートストラップ／更新）
+        env:
+          UPDATE: ${{ github.event_name == 'workflow_dispatch' && inputs.update }}
+        run: |
+          existing=$(find src/tests/vrt -name '*.png' 2>/dev/null | wc -l)
+          if [ "$UPDATE" = "true" ] || [ "$existing" -eq 0 ]; then
+            echo "ベースラインを生成/更新します（標準環境）"
+            pnpm test:visual:update
+            git add src/tests/vrt
+            if git diff --cached --quiet; then
+              echo "ベースラインに変更なし"
+            else
+              git commit -m "chore(vrt): 視覚ベースラインを更新"
+              git push
+            fi
+          else
+            echo "コミット済みベースラインと比較します"
+            pnpm test:visual
+          fi
