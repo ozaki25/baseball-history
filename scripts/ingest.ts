@@ -5,7 +5,7 @@
  *
  * ルール:
  * - データ源はスクレイピングのみ（手編集・override なし）。
- * - 確定済み(win/lose/draw/cancelled)は再取得しない。scheduled と失敗分だけ再取得。
+ * - 確定済み(win/lose/draw)は再取得しない。scheduled・cancelled・失敗分は再取得（自己修復）。
  * - 試合前の日は scheduled として保存（事前登録の受け皿）。
  * - --force で全件再取得。--year YYYY で対象年を限定。
  */
@@ -47,7 +47,12 @@ function gameUrl(year: string, mmdd: string): string {
 }
 
 async function fetchHtml(url: string): Promise<string> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+  const res = await fetch(url, {
+    signal: AbortSignal.timeout(15_000),
+    headers: {
+      "User-Agent": "kansen-note-ingest/1.0 (+https://github.com/ozaki25/baseball-history)",
+    },
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.text();
 }
@@ -62,8 +67,11 @@ async function main() {
     for (const g of prev.games) existing.set(g.id, g);
   }
 
+  // 確定＝勝敗が付いた試合のみ。scheduled と cancelled は毎回再取得して自己修復させる
+  // （中止判定の誤検知が固着しないように）。
+  const DECIDED = new Set<Game["result"]>(["win", "lose", "draw"]);
   const isConfirmed = (g: Game | undefined) =>
-    g !== undefined && g.result !== "scheduled" && !args.force;
+    g !== undefined && DECIDED.has(g.result) && !args.force;
 
   const result: Game[] = [];
   const failures: { id: string; error: string }[] = [];
@@ -115,11 +123,14 @@ async function main() {
             throw parseErr;
           }
         }
-        await sleep(SCRAPING_DELAY_MS);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         failures.push({ id, error: message });
         console.error(`  ✗ ${id}: ${message}`);
+        // 失敗時は既存レコードを保持（データ消失を防ぐ）。新規で未取得なら次回リトライ。
+        if (prev) result.push(prev);
+      } finally {
+        await sleep(SCRAPING_DELAY_MS);
       }
     }
   }

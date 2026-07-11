@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { GameResult, HomeAway } from "#/types/game";
 import type { GameFilter, FilterOptions } from "#/lib/filters";
@@ -53,6 +53,18 @@ export function Filters({
   onChange: (next: GameFilter) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const active = isFilterActive(filter);
   const activeCount =
     (filter.year !== "all" ? 1 : 0) +
@@ -108,6 +120,7 @@ export function Filters({
           />
           <div
             role="dialog"
+            aria-modal="true"
             aria-label="絞り込み条件"
             className="fixed inset-x-0 bottom-0 z-50 max-h-[82vh] overflow-auto border-t p-4 md:absolute md:inset-x-auto md:right-0 md:top-full md:bottom-auto md:mt-1 md:w-[40rem] md:max-h-[70vh] md:border"
             style={{ borderColor: "var(--line)", background: "var(--panel)" }}
@@ -115,6 +128,7 @@ export function Filters({
             <div className="mb-1 flex items-center justify-between">
               <h2 className="text-base font-bold">絞り込み</h2>
               <button
+                ref={closeRef}
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="閉じる"

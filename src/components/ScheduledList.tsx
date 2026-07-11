@@ -1,5 +1,5 @@
 import type { Game } from "#/types/game";
-import { formatDateJa, HOME_AWAY_LABEL } from "#/lib/labels";
+import { formatDateJa } from "#/lib/labels";
 import { CalendarClock } from "lucide-react";
 
 export function ScheduledList({ games }: { games: Game[] }) {
@@ -25,7 +25,6 @@ export function ScheduledList({ games }: { games: Game[] }) {
         {upcoming.map((g) => (
           <li key={g.id} className="flex items-center gap-3 text-sm">
             <span className="tnum text-[var(--muted)]">{formatDateJa(g.date)}</span>
-            <span className="text-[var(--faint)]">{HOME_AWAY_LABEL[g.homeAway]}</span>
             {g.opponent ? (
               <span>vs {g.opponent}</span>
             ) : (

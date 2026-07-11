@@ -44,7 +44,7 @@ self.addEventListener("fetch", (event) => {
       if (res) return res;
 
       if (request.mode === "navigate") {
-        const fallback = await cache.match("/");
+        const fallback = await cache.match("/", { ignoreSearch: true });
         if (fallback) return fallback;
       }
       return new Response("オフラインです", {

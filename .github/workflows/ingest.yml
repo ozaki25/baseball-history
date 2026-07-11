@@ -32,12 +32,14 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm rebuild esbuild lightningcss
       - name: Ingest
+        env:
+          FORCE: ${{ github.event.inputs.force }}
+          YEAR: ${{ github.event.inputs.year }}
         run: |
           ARGS=""
-          if [ "${{ github.event.inputs.force }}" = "true" ]; then ARGS="$ARGS --force"; fi
-          if [ -n "${{ github.event.inputs.year }}" ]; then ARGS="$ARGS --year ${{ github.event.inputs.year }}"; fi
+          if [ "$FORCE" = "true" ]; then ARGS="$ARGS --force"; fi
+          if [ -n "$YEAR" ]; then ARGS="$ARGS --year $YEAR"; fi
           pnpm ingest $ARGS
       - name: Commit updated data
         run: |
@@ -47,6 +49,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "変更なし"
           else
-            git commit -m "chore(data): 取り込み結果を更新 [skip ci]"
+            git commit -m "chore(data): 取り込み結果を更新"
             git push
           fi

@@ -8,15 +8,6 @@ export const RESULT_LABEL: Record<GameResult, string> = {
   scheduled: "予定",
 };
 
-/** 意味色の CSS 変数名（styles.css と対応） */
-export const RESULT_VAR: Record<GameResult, string> = {
-  win: "var(--win)",
-  lose: "var(--lose)",
-  draw: "var(--draw)",
-  cancelled: "var(--cancel)",
-  scheduled: "var(--sched)",
-};
-
 export const HOME_AWAY_LABEL: Record<HomeAway, string> = {
   home: "主催",
   away: "ビジター",

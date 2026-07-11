@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseGameHTML } from "@/lib/parsers/gameParser";
-import { getGameResult } from "@/lib/gameUtils";
+import { resultFromScores } from "@/lib/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "@/tests/helpers/testHtmlLoader";
 
 describe("gameParser integration tests", () => {
@@ -15,7 +15,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(1); // 相手1点
       expect(result.location).toBe("エスコンフィールド");
       expect(result.isHome).toBe(true);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("win");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("win");
     });
 
     it("パターン2: ホームゲーム敗戦を正しく解析", () => {
@@ -28,7 +28,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(5); // 相手5点
       expect(result.location).toBe("エスコンフィールド");
       expect(result.isHome).toBe(true);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("lose");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("lose");
     });
 
     it("パターン3: ビジターゲーム勝利を正しく解析", () => {
@@ -41,7 +41,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(0); // 相手0点
       expect(result.location).toBe("京セラD大阪");
       expect(result.isHome).toBe(false);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("win");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("win");
     });
 
     it("パターン4: ビジターゲーム敗戦を正しく解析", () => {
@@ -54,7 +54,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(5); // 相手5点
       expect(result.location).toBe("京セラD大阪");
       expect(result.isHome).toBe(false);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("lose");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("lose");
     });
 
     it("パターン5: 引き分けを正しく解析", () => {
@@ -67,7 +67,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(4); // 相手4点
       expect(result.location).toBe("エスコンフィールド");
       expect(result.isHome).toBe(true);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("draw");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("draw");
     });
 
     it("パターン6: サヨナラ勝ちを正しく解析", () => {
@@ -80,7 +80,7 @@ describe("gameParser integration tests", () => {
       expect(result.vsScore).toBe(3); // 相手3点
       expect(result.location).toBe("エスコンフィールド");
       expect(result.isHome).toBe(true);
-      expect(getGameResult(result.myScore, result.vsScore)).toBe("win");
+      expect(resultFromScores(result.myScore, result.vsScore)).toBe("win");
     });
   });
 

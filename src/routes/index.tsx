@@ -24,10 +24,12 @@ function Home() {
   const filter = searchToFilter(search);
 
   const { attended, scheduled } = useMemo(() => {
-    const filtered = applyFilters(ALL_GAMES, filter);
-    // 予定は結果フィルタを無視して、他の軸だけで抽出（別枠表示のため）
-    const scheduledView = applyFilters(ALL_GAMES, { ...filter, results: [] }).filter(
-      (g) => g.result === "scheduled",
+    const current = searchToFilter(search);
+    const filtered = applyFilters(ALL_GAMES, current);
+    // 予定は結果未確定で相手/球場/主催が不定なため、年度だけで抽出して別枠表示する。
+    const scheduledView = ALL_GAMES.filter(
+      (g) =>
+        g.result === "scheduled" && (current.year === "all" || g.date.slice(0, 4) === current.year),
     );
     return {
       attended: filtered.filter((g) => g.result !== "scheduled"),
@@ -36,7 +38,8 @@ function Home() {
   }, [search]);
 
   const setFilter = (next: GameFilter) => {
-    void navigate({ search: filterToSearch(next) });
+    // フィルタ変更で履歴を積まない（戻る連打を防ぐ）
+    void navigate({ search: filterToSearch(next), replace: true });
   };
 
   return (
