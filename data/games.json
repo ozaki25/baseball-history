@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T04:09:25.143Z",
+  "generatedAt": "2026-07-11T04:51:52.466Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -866,6 +866,30 @@
       }
     },
     {
+      "id": "2024-04-05",
+      "date": "2024-04-05",
+      "opponent": "埼玉西武",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2024-04-06",
+      "date": "2024-04-06",
+      "opponent": "埼玉西武",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 5
+      }
+    },
+    {
       "id": "2024-04-07",
       "date": "2024-04-07",
       "opponent": "埼玉西武",
@@ -950,6 +974,18 @@
       }
     },
     {
+      "id": "2024-07-30",
+      "date": "2024-07-30",
+      "opponent": "オリックス",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "draw",
+      "score": {
+        "fighters": 3,
+        "opponent": 3
+      }
+    },
+    {
       "id": "2024-07-31",
       "date": "2024-07-31",
       "opponent": "オリックス",
@@ -983,6 +1019,30 @@
       "score": {
         "fighters": 5,
         "opponent": 6
+      }
+    },
+    {
+      "id": "2024-08-25",
+      "date": "2024-08-25",
+      "opponent": "福岡ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 3
+      }
+    },
+    {
+      "id": "2025-04-01",
+      "date": "2025-04-01",
+      "opponent": "福岡ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 5
       }
     },
     {
@@ -1031,6 +1091,18 @@
       "score": {
         "fighters": 3,
         "opponent": 5
+      }
+    },
+    {
+      "id": "2025-05-18",
+      "date": "2025-05-18",
+      "opponent": "千葉ロッテ",
+      "stadium": "ZOZOマリン",
+      "homeAway": "away",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 2
       }
     },
     {
@@ -1130,6 +1202,18 @@
       }
     },
     {
+      "id": "2025-08-23",
+      "date": "2025-08-23",
+      "opponent": "福岡ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 8,
+        "opponent": 3
+      }
+    },
+    {
       "id": "2025-08-24",
       "date": "2025-08-24",
       "opponent": "福岡ソフトバンク",
@@ -1163,6 +1247,18 @@
       "score": {
         "fighters": 0,
         "opponent": 3
+      }
+    },
+    {
+      "id": "2026-04-11",
+      "date": "2026-04-11",
+      "opponent": "福岡ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 6
       }
     },
     {
@@ -1235,6 +1331,18 @@
       "score": {
         "fighters": 3,
         "opponent": 1
+      }
+    },
+    {
+      "id": "2026-06-13",
+      "date": "2026-06-13",
+      "opponent": "中日",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 3
       }
     },
     {
