@@ -142,7 +142,7 @@ export function Filters({
         <>
           <button
             type="button"
-            aria-label="閉じる"
+            aria-label="閉じる（背景）"
             onClick={close}
             className="fixed inset-0 z-40 bg-black/40"
           />

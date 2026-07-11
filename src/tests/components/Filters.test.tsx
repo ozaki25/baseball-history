@@ -159,10 +159,8 @@ describe("Filters", () => {
   it("背面(オーバーレイ)クリックで閉じる", async () => {
     const { user } = setup();
     await openDialog(user);
-    // ダイアログ外の backdrop も aria-label「閉じる」。dialog 外の方をクリック。
-    const backdrops = screen.getAllByRole("button", { name: "閉じる" });
-    const overlay = backdrops.find((b) => b.className.includes("inset-0"));
-    await user.click(overlay!);
+    // backdrop は X ボタンと区別できる固有名を持つ（アクセシブル名で選択）
+    await user.click(screen.getByRole("button", { name: "閉じる（背景）" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
