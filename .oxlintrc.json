@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "dist",
+    ".output",
+    ".nitro",
+    ".tanstack",
+    "node_modules",
+    "src/routeTree.gen.ts"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-console": "off",
+    "unicorn/no-array-sort": "off",
+    "no-underscore-dangle": "off"
+  }
+}

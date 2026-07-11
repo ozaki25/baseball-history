@@ -1,118 +1,68 @@
-# 観戦履歴アプリ
+# 観戦ノート
 
-北海道日本ハムファイターズの観戦記録を管理するPWA（Progressive Web App）です。
+北海道日本ハムファイターズの**個人観戦記録**を、多条件で絞り込み・集計して振り返る PWA。
 
-## 🏟️ 機能
+観戦した日付を登録すると、公式サイトから試合結果を取得して `games.json` に永続化し、
+アプリはそれを読むだけ（表示はスクレイピングに依存しない）。
 
-- **観戦履歴管理**: 試合日程、対戦相手、結果、スコア、球場、メモを記録
-- **年度別フィルタリング**: 年度を選択して観戦履歴を絞り込み
-- **統計表示**: 総観戦数、勝利数、敗戦数、勝率を表示
-- **レスポンシブデザイン**: モバイル・タブレット・デスクトップに最適化
-- **PWA対応**: デスクトップにインストール可能、オフライン対応
-- **アクセシビリティ**: WCAG 2.1 AA準拠、スクリーンリーダー対応
+## 技術スタック
 
-## 🎨 デザイン
+- **TanStack Start**（完全静的 / SSG・prerender）＋ **TanStack Router / Table**
+- **TypeScript 7** / **Vite 8** / **Tailwind CSS 4**
+- **pnpm** / **oxlint** + **oxfmt**（oxc）
+- **Vitest**
+- PWA（手書き `manifest.webmanifest` + `sw.js`）
+- デプロイ: **Vercel**
 
-- **ファイターズカラー**: 公式ブランドカラーを使用
-  - プライマリ（ヘッダー）: `#016298`
-  - 背景（white）: `#FFFFFF`
-  - 交互背景（alt）: `#E5E5E5`
-  - 本文テキスト: `#000000`
-
-## 🛠️ 技術スタック
-
-- **フレームワーク**: Next.js 15 (App Router)
-- **言語**: TypeScript
-- **スタイリング**: Tailwind CSS
-- **PWA**: Service Worker、Web App Manifest
-- **アクセシビリティ**: ARIA、セマンティックHTML
-- **デプロイ**: Vercel
-
-## 📱 PWA機能
-
-- **インストール**: ブラウザから直接アプリをインストール
-- **オフライン対応**: インターネット接続なしでも基本機能を利用可能
-- **ネイティブ風UI**: モバイルアプリのような操作感
-
-## 🚀 開発
+## 開発
 
 ```bash
-# 依存関係をインストール
-npm install
+pnpm install
+pnpm dev            # 開発サーバー (http://localhost:3000)
+pnpm build          # 本番ビルド（SSG プリレンダリング）
+pnpm preview        # ビルド結果をプレビュー
 
-# 開発サーバーを起動
-npm run dev
-
-# プロダクションビルド
-npm run build
-
-# プロダクションサーバーを起動
-npm start
+pnpm lint           # oxlint
+pnpm format         # oxfmt（--check で確認）
+pnpm typecheck      # tsc --noEmit
+pnpm test           # Vitest
 ```
 
-## 📂 プロジェクト構造
+## データの仕組み
 
 ```
-src/
-  app/           # Next.js App Router
-  components/    # Reactコンポーネント
-  lib/
-    parsers/     # HTML解析モジュール（リファクタリング済み）
-      teamExtractor.ts      # チーム情報抽出
-      scoreExtractor.ts     # スコア情報抽出
-      locationExtractor.ts  # 開催地情報抽出
-      homeDetector.ts       # ホーム/ビジター判定
-      gameParser.ts         # メイン解析ロジック
-      index.ts              # エクスポートまとめ
-    gameDataFetcher.ts      # メインスクレイピング機能
-  types/
-    game.ts               # ゲーム関連の型定義
-    parsing.ts            # HTML解析用の型定義
-data/           # JSONデータファイル
-public/         # 静的ファイル、PWA関連
+data/dates.json ──(push)──▶ GitHub Actions(ingest) ──▶ 公式サイト取得・解析
+                                     │
+                                     ▼
+                              data/games.json（コミット対象）
+                                     │
+                                     ▼
+                        アプリはビルド時に読み込むだけ → Vercel 自動デプロイ
 ```
 
-## 🔧 HTML解析システム（リファクタリング済み）
+- **データ源はスクレイピングのみ**。手編集は行わない（`games.json` は取り込みの生成物）。
+- **事前登録**に対応: 試合前の日は `scheduled`（観戦予定）として保存し、結果確定後の実行で自動更新。
+- 集計は野球の通例: 勝率 = 勝 /(勝+敗)。中止は観戦数に含み勝敗集計から除外、予定は全集計から除外。
 
-HTMLからの試合データ抽出を大幅にリファクタリングし、保守性とテスタビリティを向上させました：
+### 観戦日の追加
 
-### 📋 主要な改善点
+Claude 経由で「〇月〇日の観戦を登録して」と依頼すると、`add-date` が `data/dates.json` へ追記して
+push し、GitHub Actions が取り込み〜デプロイまで自動で流す。手動 CLI でも可能:
 
-- **機能分割**: 抽出機能を責任ごとに個別モジュールに分離
-- **型安全性**: TypeScriptによる厳密な型定義
-- **エラーハンドリング**: 詳細なエラー情報とフォールバック戦略
-- **DOM解析**: 文字列検索からDOMベース解析に移行（JSDOM使用）
-- **複数判定方式**: チーム位置と会場情報による冗長なホーム/ビジター判定
+```bash
+pnpm add-date 2026 0705 0706   # 年 と MMDD（複数可）
+pnpm ingest                    # 公式サイトから未確定分を取得（--force で全件 / --year YYYY）
+```
 
-### 🎯 モジュール構成
+> ingest は外部ネットワークが必要なため GitHub Actions 上で実行する。
+> アプリのビルド自体は `games.json` のみに依存する。
 
-- **`teamExtractor`**: 対戦相手チーム名とファイターズの位置検出
-- **`scoreExtractor`**: 試合スコアと勝敗判定、試合ステータス（中止/延期）検出
-- **`locationExtractor`**: 試合開催地の抽出
-- **`homeDetector`**: ロゴ位置による信頼性の高いホーム/ビジター判定
-- **`gameParser`**: 全機能を統合したメイン解析エンジン
+## ドキュメント
 
-### 🛡️ エラーハンドリング戦略
+- 要件: [`docs/requirements.md`](docs/requirements.md)
+- 設計: [`docs/design.md`](docs/design.md)
+- 開発フロー: [`docs/development.md`](docs/development.md)
 
-- **カスタムエラー**: `ParseError`クラスによる構造化エラー情報
-- **段階的フォールバック**: 一次手法失敗時の代替解析方法
-- **デフォルト値除去**: エラーの可視性向上のためデフォルト値を削除
-- **詳細ログ**: デバッグ用の詳細なコンソール出力
+## ライセンス
 
-## 🎯 主要コンポーネント
-
-- **GameTable**: 観戦履歴テーブル（デスクトップ）・カード（モバイル）
-- **StatsCards**: 統計情報カード
-- **YearSelector**: 年度選択プルダウン
-- **Header/Footer**: ナビゲーションとフッター
-
-## ♿ アクセシビリティ対応
-
-- **WCAG 2.1 AA準拠**: コントラスト比、フォーカス管理
-- **キーボードナビゲーション**: タブキーでの操作
-- **スクリーンリーダー**: ARIA属性、セマンティックHTML
-- **多言語対応**: 日本語UI
-
-## 📄 ライセンス
-
-MIT License
+MIT

@@ -1,8 +1,9 @@
-import { GameInfo, ParseError } from '@/types/parsing';
-import { extractVsTeam, extractMyTeam } from './teamExtractor';
-import { extractGameScore } from './scoreExtractor';
-import { extractGameLocation } from './locationExtractor';
-import { detectIsHome } from './homeDetector';
+import type { GameInfo } from "#/types/parsing";
+import { ParseError } from "#/types/parsing";
+import { extractVsTeam, extractMyTeam } from "./teamExtractor";
+import { extractGameScore } from "./scoreExtractor";
+import { extractGameLocation } from "./locationExtractor";
+import { detectIsHome } from "./homeDetector";
 
 /**
  * HTMLから試合データを抽出するメインパーサー
@@ -29,7 +30,7 @@ export function parseGameHTML(html: string): GameInfo {
     if (error instanceof ParseError) {
       throw error;
     }
-    throw new ParseError('HTML解析中にエラーが発生しました', 'parseGameHTML', {
+    throw new ParseError("HTML解析中にエラーが発生しました", "parseGameHTML", {
       originalError: error,
     });
   }

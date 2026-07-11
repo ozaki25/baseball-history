@@ -11,9 +11,9 @@ export class ParseError extends Error {
   constructor(
     message: string,
     public readonly step: string,
-    public readonly details?: Record<string, unknown>
+    public readonly details?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'ParseError';
+    this.name = "ParseError";
   }
 }

@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-07-11T00:00:00.000Z",
+  "games": [
+    {
+      "id": "2024-04-05",
+      "date": "2024-04-05",
+      "opponent": "オリックス",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": { "fighters": 5, "opponent": 3 }
+    },
+    {
+      "id": "2024-04-06",
+      "date": "2024-04-06",
+      "opponent": "オリックス",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "lose",
+      "score": { "fighters": 1, "opponent": 4 }
+    },
+    {
+      "id": "2024-07-30",
+      "date": "2024-07-30",
+      "opponent": "ソフトバンク",
+      "stadium": "みずほPayPayドーム",
+      "homeAway": "away",
+      "result": "win",
+      "score": { "fighters": 7, "opponent": 6 }
+    },
+    {
+      "id": "2024-08-25",
+      "date": "2024-08-25",
+      "opponent": "楽天",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "draw",
+      "score": { "fighters": 2, "opponent": 2 }
+    },
+    {
+      "id": "2025-04-01",
+      "date": "2025-04-01",
+      "opponent": "ロッテ",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": { "fighters": 3, "opponent": 0 }
+    },
+    {
+      "id": "2025-05-18",
+      "date": "2025-05-18",
+      "opponent": "西武",
+      "stadium": "ベルーナドーム",
+      "homeAway": "away",
+      "result": "lose",
+      "score": { "fighters": 2, "opponent": 5 }
+    },
+    {
+      "id": "2025-07-14",
+      "date": "2025-07-14",
+      "opponent": "ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": null,
+      "result": "cancelled",
+      "score": { "fighters": null, "opponent": null }
+    },
+    {
+      "id": "2025-08-23",
+      "date": "2025-08-23",
+      "opponent": "オリックス",
+      "stadium": "京セラドーム大阪",
+      "homeAway": "away",
+      "result": "win",
+      "score": { "fighters": 6, "opponent": 2 }
+    },
+    {
+      "id": "2026-04-11",
+      "date": "2026-04-11",
+      "opponent": "楽天",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "win",
+      "score": { "fighters": 4, "opponent": 1 }
+    },
+    {
+      "id": "2026-06-13",
+      "date": "2026-06-13",
+      "opponent": "巨人",
+      "stadium": "エスコンフィールド",
+      "homeAway": "home",
+      "result": "lose",
+      "score": { "fighters": 3, "opponent": 8 }
+    },
+    {
+      "id": "2026-09-20",
+      "date": "2026-09-20",
+      "opponent": "ソフトバンク",
+      "stadium": "エスコンフィールド",
+      "homeAway": null,
+      "result": "scheduled",
+      "score": { "fighters": null, "opponent": null }
+    }
+  ]
+}

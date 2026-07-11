@@ -9,4 +9,4 @@ export async function sleep(ms: number): Promise<void> {
 /**
  * サーバー負荷軽減のための標準待機時間
  */
-export const SCRAPING_DELAY_MS = 100;
+export const SCRAPING_DELAY_MS = 700;

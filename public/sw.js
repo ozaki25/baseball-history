@@ -1,31 +1,56 @@
-const CACHE_NAME = 'fighters-history-v1';
-const urlsToCache = ['/', '/manifest.json', '/icon-192x192.svg', '/icon-512x512.svg'];
+/*
+ * 観戦ノート Service Worker（静的サイト向けの軽量版）
+ * 方針: same-origin GET を stale-while-revalidate でキャッシュし、
+ * ナビゲーションはオフライン時にキャッシュ済みトップへフォールバック。
+ */
+const CACHE = "kansen-note-v1";
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
+self.addEventListener("install", () => {
+  self.skipWaiting();
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request);
-    })
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+      await self.clients.claim();
+    })(),
   );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+  if (request.method !== "GET") return;
+  if (new URL(request.url).origin !== self.location.origin) return;
+
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(request);
+      const network = fetch(request)
+        .then((res) => {
+          if (res && res.ok) cache.put(request, res.clone());
+          return res;
         })
-      );
-    })
+        .catch(() => null);
+
+      if (cached) {
+        event.waitUntil(network);
+        return cached;
+      }
+
+      const res = await network;
+      if (res) return res;
+
+      if (request.mode === "navigate") {
+        const fallback = await cache.match("/", { ignoreSearch: true });
+        if (fallback) return fallback;
+      }
+      return new Response("オフラインです", {
+        status: 503,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    })(),
   );
 });

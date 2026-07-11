@@ -13,12 +13,15 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
-# production
+# build output
+/dist
+/.output
+/.nitro
+/.tanstack
 /build
+
+# generated route tree (regenerated on build/typecheck)
+src/routeTree.gen.ts
 
 # misc
 .DS_Store
