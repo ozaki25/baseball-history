@@ -7,11 +7,18 @@ import { makeGame } from "@/tests/helpers/makeGame";
 
 const GAMES = [
   makeGame({ id: "2025-04-01", date: "2025-04-01", opponent: "千葉ロッテ", result: "win" }),
-  makeGame({ id: "2025-06-15", date: "2025-06-15", opponent: "オリックス", result: "lose" }),
+  makeGame({
+    id: "2025-06-15",
+    date: "2025-06-15",
+    opponent: "オリックス",
+    result: "lose",
+    score: { fighters: 2, opponent: 6 },
+  }),
   makeGame({
     id: "2025-05-03",
     date: "2025-05-03",
     opponent: "埼玉西武",
+    stadium: "",
     result: "cancelled",
     homeAway: null,
     score: { fighters: null, opponent: null },
@@ -50,7 +57,7 @@ describe("GameTable", () => {
     render(<GameTable games={GAMES} />);
     const table = screen.getByRole("table");
     const dateButton = within(table).getByRole("button", { name: /日付/ });
-    const dateHeader = () => within(table).getAllByRole("columnheader")[0]!;
+    const dateHeader = () => within(table).getByRole("columnheader", { name: /日付/ });
 
     // 初期は降順
     expect(dateHeader()).toHaveAttribute("aria-sort", "descending");
@@ -63,11 +70,23 @@ describe("GameTable", () => {
     expect(tableRows()[2]).toHaveTextContent("2025.6.15");
   });
 
-  it("中止試合は主催/球場が — 、スコアも —", () => {
+  it("中止試合は主催/V・球場・スコアが — 、対戦相手は表示する", () => {
     render(<GameTable games={[GAMES[2]!]} />);
-    const table = screen.getByRole("table");
-    // 対戦相手は表示される（埼玉西武）が、homeAway と score は — になる
-    expect(within(table).getByText("埼玉西武")).toBeInTheDocument();
-    expect(within(table).getAllByText("—").length).toBeGreaterThanOrEqual(2);
+    // 列順: 日付 / 対戦相手 / 主催V / 球場 / 結果 / スコア
+    const cells = within(tableRows()[0]!).getAllByRole("cell");
+    expect(cells[1]).toHaveTextContent("埼玉西武"); // 対戦相手は残る
+    expect(cells[2]).toHaveTextContent("—"); // 主催/V（homeAway=null）
+    expect(cells[3]).toHaveTextContent("—"); // 球場（空）
+    expect(cells[5]).toHaveTextContent("—"); // スコア（null）
+  });
+
+  it("モバイルカードにも対戦相手とスコアを表示する", () => {
+    render(<GameTable games={GAMES} />);
+    // モバイルは <ul>（role=list）。テーブルとは別に列挙される。
+    const list = screen.getByRole("list");
+    const items = within(list).getAllByRole("listitem");
+    expect(items).toHaveLength(3);
+    expect(within(list).getByText("千葉ロッテ")).toBeInTheDocument();
+    expect(within(list).getByText("5 - 1")).toBeInTheDocument();
   });
 });

@@ -30,21 +30,32 @@ const GAMES = [
   }),
 ];
 
+// 行(rowheader)から同じ <tr> の数値セルを取り出す。列順: 観戦/勝/敗/分/中止/勝率
+function statsRow(name: string) {
+  const panel = screen.getByRole("tabpanel");
+  const row = within(panel).getByRole("rowheader", { name }).closest("tr")!;
+  return within(row).getAllByRole("cell");
+}
+
 describe("CrossStats", () => {
   it("初期は球場別タブが選択されている", () => {
     render(<CrossStats games={GAMES} />);
     expect(screen.getByRole("tab", { name: "球場別" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("球場別: 表記ゆれ(西武ドーム/ベルーナ)を代表名で1行に束ねる", () => {
+  it("球場別: 表記ゆれ(西武ドーム/ベルーナ)を代表名で1行に束ね、観戦数を合算する", () => {
     render(<CrossStats games={GAMES} />);
     const panel = screen.getByRole("tabpanel");
     // 代表ラベルは「ベルーナドーム」1行のみ（西武ドームという行は出ない）
-    expect(within(panel).getByRole("rowheader", { name: "ベルーナドーム" })).toBeInTheDocument();
     expect(within(panel).queryByRole("rowheader", { name: "西武ドーム" })).not.toBeInTheDocument();
     expect(
       within(panel).getByRole("rowheader", { name: "エスコンフィールド" }),
     ).toBeInTheDocument();
+    // 2013(負) + 2025(勝) が束ねられ 観戦=2 / 勝=1 / 敗=1
+    const cells = statsRow("ベルーナドーム");
+    expect(cells[0]).toHaveTextContent("2"); // 観戦
+    expect(cells[1]).toHaveTextContent("1"); // 勝
+    expect(cells[2]).toHaveTextContent("1"); // 敗
   });
 
   it("相手別タブに切り替えるとチーム代表名で集計を出す", async () => {

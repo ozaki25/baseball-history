@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { StatsSummary } from "@/components/StatsSummary";
 import { makeGame } from "@/tests/helpers/makeGame";
 
@@ -14,11 +14,11 @@ const GAMES = [
   makeGame({ id: "2025-05-01", date: "2025-05-01", result: "scheduled" }),
 ];
 
+// セルはラベルと値を内包する。DOM 構造に依存せず、コンテナのテキストから
+// ラベルを除いた残り（＝値）を読む。
 function cell(label: string): string {
-  // Cell は <span>ラベル</span><span>値</span> 構造。ラベルの兄弟(値)を読む。
-  const labelEl = screen.getByText(label);
-  const spans = within(labelEl.parentElement!).getAllByText(/.*/, { selector: "span" });
-  return spans.find((el) => el !== labelEl)?.textContent ?? "";
+  const container = screen.getByText(label).parentElement!;
+  return container.textContent!.replace(label, "");
 }
 
 describe("StatsSummary", () => {

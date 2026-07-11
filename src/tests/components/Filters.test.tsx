@@ -43,11 +43,32 @@ describe("Filters", () => {
     expect(within(dialog).getByRole("button", { name: "千葉ロッテ" })).toBeInTheDocument();
   });
 
-  it("球場チップのクリックで stadiumId を立てて onChange する", async () => {
+  it("球場チップのクリックで stadiumId を立て、他の条件は保持する", async () => {
     const { onChange, user } = setup();
     const dialog = await openDialog(user);
     await user.click(within(dialog).getByRole("button", { name: "ベルーナドーム" }));
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ stadiums: ["seibu-dome"] }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, stadiums: ["seibu-dome"] });
+  });
+
+  it("選択済み球場チップの再クリックで解除する（toggle-off）", async () => {
+    const { onChange, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "エスコンフィールド" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, stadiums: [] });
+  });
+
+  it("年度チップは単一値として置き換える", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "2024" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, year: "2024" });
+  });
+
+  it("主催/ビジターチップは単一値として置き換える", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "ビジター" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, homeAway: "away" });
   });
 
   it("選択済みチップは aria-pressed=true", async () => {
@@ -75,7 +96,7 @@ describe("Filters", () => {
     const { onChange, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
     const dialog = await openDialog(user);
     await user.click(within(dialog).getByRole("button", { name: "リセット" }));
-    expect(onChange).toHaveBeenCalledWith(emptyFilter);
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(emptyFilter);
   });
 
   it("Escape でダイアログを閉じる", async () => {
@@ -87,8 +108,8 @@ describe("Filters", () => {
 
   it("有効な条件があるとトリガーに件数バッジと「条件をクリア」を出す", () => {
     setup({ ...emptyFilter, stadiums: ["escon"], opponents: ["lotte"], homeAway: "home" });
-    // stadiums1 + opponents1 + homeAway1 = 3
-    expect(screen.getByText("3")).toBeInTheDocument();
+    // stadiums1 + opponents1 + homeAway1 = 3。バッジはトリガーの名前に含まれる。
+    expect(screen.getByRole("button", { name: /絞り込み\s*3/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "条件をクリア" })).toBeInTheDocument();
   });
 });
