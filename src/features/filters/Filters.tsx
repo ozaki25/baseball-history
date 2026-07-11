@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { GameResult, HomeAway } from "#/types/game";
 import type { GameFilter, FilterOptions } from "./model/filters";
-import { emptyFilter, isFilterActive } from "./model/filters";
+import { emptyFilter, isFilterActive, countActiveFilters } from "./model/filters";
 import { RESULT_LABEL } from "#/lib/labels";
 import { Chip } from "#/ui/Chip";
 
@@ -72,12 +72,7 @@ export function Filters({
   }, [open]);
 
   const active = isFilterActive(filter);
-  const activeCount =
-    (filter.year !== "all" ? 1 : 0) +
-    filter.stadiums.length +
-    filter.opponents.length +
-    (filter.homeAway !== "all" ? 1 : 0) +
-    filter.results.length;
+  const activeCount = countActiveFilters(filter);
 
   const homeAwayOptions: { value: HomeAway | "all"; label: string }[] = [
     { value: "all", label: "すべて" },

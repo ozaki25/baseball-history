@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { YearFilter } from "#/features/filters/YearFilter";
+import { YearFilter, visibleYears } from "#/features/filters/YearFilter";
 
 // 新しい順。直近3年は 2026/2025/2024、それより古い年は既定では上部に出さない。
 const YEARS = ["2026", "2025", "2024", "2023", "2019", "2013"];
@@ -48,5 +48,23 @@ describe("YearFilter", () => {
     render(<YearFilter years={YEARS} value="2025" onChange={onChange} />);
     await user.click(screen.getByRole("button", { name: "すべて" }));
     expect(onChange).toHaveBeenCalledExactlyOnceWith("all");
+  });
+});
+
+describe("visibleYears（純関数）", () => {
+  it("既定は直近3年のみ", () => {
+    expect(visibleYears(YEARS, "all")).toEqual(["2026", "2025", "2024"]);
+  });
+
+  it("選択中の年が直近内ならそのまま（重複させない）", () => {
+    expect(visibleYears(YEARS, "2025")).toEqual(["2026", "2025", "2024"]);
+  });
+
+  it("選択中の年が直近外なら末尾に足して可視化する", () => {
+    expect(visibleYears(YEARS, "2013")).toEqual(["2026", "2025", "2024", "2013"]);
+  });
+
+  it("recentCount を変えられる", () => {
+    expect(visibleYears(YEARS, "all", 2)).toEqual(["2026", "2025"]);
   });
 });

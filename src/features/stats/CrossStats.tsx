@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { Game } from "#/types/game";
-import { groupBy, formatWinRate, type GroupKey, type GroupRow } from "./model/stats";
-import { teamLabel, stadiumLabel } from "#/lib/masters";
-import { HOME_AWAY_LABEL } from "#/lib/labels";
+import { buildRows, rowLabel, formatWinRate, type GroupKey } from "./model/stats";
 
 const TABS: { key: GroupKey; label: string }[] = [
   { key: "stadium", label: "球場別" },
@@ -10,30 +8,6 @@ const TABS: { key: GroupKey; label: string }[] = [
   { key: "year", label: "年度別" },
   { key: "homeAway", label: "主催/ビジター" },
 ];
-
-function rowLabel(tab: GroupKey, key: string): string {
-  if (tab === "homeAway") return HOME_AWAY_LABEL[key as keyof typeof HOME_AWAY_LABEL] ?? key;
-  if (tab === "stadium") return stadiumLabel(key);
-  if (tab === "opponent") return teamLabel(key);
-  return key;
-}
-
-const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, cancelled: 0, winRate: null };
-
-/**
- * 表示行を作る。年度別のときは記録の無い年度も「データなし(0件)」として明示する
- * （要件: 空白年を隠さない）。空年度は末尾に年降順で並べる。
- */
-function buildRows(games: Game[], tab: GroupKey, years: string[]): GroupRow[] {
-  const rows = groupBy(games, tab, (k) => rowLabel(tab, k));
-  if (tab !== "year" || years.length === 0) return rows;
-  const present = new Set(rows.map((r) => r.key));
-  const empties = years
-    .filter((y) => !present.has(y))
-    .sort((a, b) => b.localeCompare(a))
-    .map((y) => ({ key: y, ...EMPTY_ROW }));
-  return [...rows, ...empties];
-}
 
 export function CrossStats({ games, years = [] }: { games: Game[]; years?: string[] }) {
   const [tab, setTab] = useState<GroupKey>("stadium");

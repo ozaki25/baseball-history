@@ -1,4 +1,6 @@
 import type { Game } from "#/types/game";
+import { teamLabel, stadiumLabel } from "#/lib/masters";
+import { HOME_AWAY_LABEL } from "#/lib/labels";
 
 /**
  * 集計の定義（野球の通例）:
@@ -94,4 +96,29 @@ export function groupBy(
 export function formatWinRate(rate: number | null): string {
   if (rate === null) return "-";
   return rate.toFixed(3).replace(/^0/, "");
+}
+
+/** 軸別集計の行ラベルを解決する（球場/相手は安定ID→代表名、主催/ビジターは日本語、年度はそのまま）。 */
+export function rowLabel(tab: GroupKey, key: string): string {
+  if (tab === "homeAway") return HOME_AWAY_LABEL[key as keyof typeof HOME_AWAY_LABEL] ?? key;
+  if (tab === "stadium") return stadiumLabel(key);
+  if (tab === "opponent") return teamLabel(key);
+  return key;
+}
+
+const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, cancelled: 0, winRate: null };
+
+/**
+ * 表示行を作る。年度別のときは記録の無い年度も「データなし(0件)」として明示する
+ * （要件: 空白年を隠さない）。空年度は末尾に年降順で並べる。
+ */
+export function buildRows(games: Game[], tab: GroupKey, years: string[] = []): GroupRow[] {
+  const rows = groupBy(games, tab, (k) => rowLabel(tab, k));
+  if (tab !== "year" || years.length === 0) return rows;
+  const present = new Set(rows.map((r) => r.key));
+  const empties = years
+    .filter((y) => !present.has(y))
+    .sort((a, b) => b.localeCompare(a))
+    .map((y) => ({ key: y, ...EMPTY_ROW }));
+  return [...rows, ...empties];
 }
