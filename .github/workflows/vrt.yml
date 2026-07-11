@@ -62,17 +62,33 @@ jobs:
       - name: 視覚回帰（比較／初回ブートストラップ／更新）
         env:
           UPDATE: ${{ github.event_name == 'workflow_dispatch' && inputs.update }}
+          # fork PR では GITHUB_TOKEN が read-only になり baseline の push ができない。
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
         run: |
-          existing=$(find src/tests/vrt -name '*.png' 2>/dev/null | wc -l)
+          # baseline を push するパスで fork PR（read-only token）を明示的に弾く。
+          # fork PR では push が必ず失敗するため、メンテナが権限のある環境で update=true を実行する運用とする。
+          ensure_pushable() {
+            if [ "$IS_FORK" = "true" ]; then
+              echo "::error::fork からの PR では baseline の自動生成/コミットは行いません。メンテナが Visual Regression を update=true で手動実行してください。"
+              exit 1
+            fi
+          }
+          # 実行中に誰かがブランチを進めた場合（non-fast-forward）に一度だけ追従して push する。
+          push_baseline() {
+            git push || (git pull --rebase --autostash && git push)
+          }
+
+          existing=$(find src/tests/vrt/__screenshots__ -name '*.png' 2>/dev/null | wc -l)
           if [ "$UPDATE" = "true" ] || [ "$existing" -eq 0 ]; then
             echo "ベースラインを生成/更新します（標準環境）"
             pnpm test:visual:update
-            git add src/tests/vrt
+            git add src/tests/vrt/__screenshots__
             if git diff --cached --quiet; then
               echo "ベースラインに変更なし"
             else
+              ensure_pushable
               git commit -m "chore(vrt): 視覚ベースラインを更新"
-              git push
+              push_baseline
             fi
             # 生成直後に同一環境で比較して自己検証（生成物が実際に一致することを担保）
             echo "生成したベースラインで自己検証します"
@@ -82,23 +98,26 @@ jobs:
             if pnpm test:visual; then
               echo "視覚ベースラインと一致"
             else
-              # 失敗の切り分け: 新規ケース(baseline 未生成)は自動追加し、既存 baseline との差分は
-              # 視覚回帰として失敗させる。既存 baseline は自動更新せず(=creep 防止)、回帰を塗り潰さない。
+              # 比較 fail の切り分け:
+              #  - 新規ケース(未生成の toMatchScreenshot キー) → その baseline だけ自動生成・コミットして再検証
+              #  - 既存 baseline との差分(視覚回帰) → 自動更新せず fail（人間が update=true で承認する）
+              # 既知の限界: テストキーの「改名」は net-new として扱われ旧 baseline が孤児化する。改名時は
+              #   update=true を手動実行すること（本 CI は改名を検知せず、孤児 baseline の自動承認もしない）。
               echo "比較に失敗。新規ケースか視覚回帰かを判定します"
               pnpm test:visual:update
-              # 既存(追跡中)baseline への変更は破棄。残る差分は「新規ケースの追加分」だけになる。
+              # 既存(追跡中)baseline への変更は破棄（回帰を自動で塗り潰さない）。残差=新規 untracked のみ。
               git checkout -- src/tests/vrt/__screenshots__
               if [ -z "$(git status --porcelain -- src/tests/vrt/__screenshots__)" ]; then
-                echo "::error::既存の視覚ベースラインと差分があります(視覚回帰)。意図した変更なら Visual Regression を update=true で手動実行してください"
+                echo "::error::既存 baseline との差分を検出（視覚回帰、または flaky の可能性）。意図した UI 変更なら Visual Regression を update=true で手動実行してください。"
                 exit 1
               fi
-              echo "新規ケースの baseline を追加します"
+              ensure_pushable
               git add src/tests/vrt/__screenshots__
               git commit -m "chore(vrt): 新規ケースの視覚ベースラインを追加"
-              git push
-              # 追加分を含めて再比較。既存ケースに回帰があればここで失敗する。
-              echo "追加した baseline で自己検証します"
+              # push の前に最終比較する。既存ケースに回帰があればここで exit し、リモートを汚さない。
+              echo "新規 baseline を含めて再検証します"
               pnpm test:visual
+              push_baseline
             fi
           fi
 
