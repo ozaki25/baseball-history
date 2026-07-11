@@ -48,7 +48,7 @@ export function scheduledGame(id: string, isoDate: string): Game {
     date: isoDate,
     opponent: "",
     stadium: "",
-    homeAway: "home",
+    homeAway: null,
     result: "scheduled",
     score: { fighters: null, opponent: null },
   };

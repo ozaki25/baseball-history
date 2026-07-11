@@ -14,7 +14,7 @@ const RESULTS: readonly string[] = ["win", "lose", "draw", "cancelled", "schedul
 
 function toStringArray(value: unknown): string[] | undefined {
   if (Array.isArray(value)) {
-    const arr = value.map(String).filter(Boolean);
+    const arr = [...new Set(value.map(String).filter(Boolean))];
     return arr.length > 0 ? arr : undefined;
   }
   if (typeof value === "string" && value) return [value];

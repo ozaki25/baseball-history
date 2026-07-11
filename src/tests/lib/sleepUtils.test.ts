@@ -26,8 +26,8 @@ describe("sleepUtils", () => {
   });
 
   describe("SCRAPING_DELAY_MS", () => {
-    it("100msの定数値が設定されている", () => {
-      expect(SCRAPING_DELAY_MS).toBe(100);
+    it("サーバー負荷に配慮した正の待機時間が設定されている", () => {
+      expect(SCRAPING_DELAY_MS).toBeGreaterThanOrEqual(500);
     });
   });
 });

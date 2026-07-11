@@ -115,7 +115,7 @@ async function main() {
               date: isoDate,
               opponent: "",
               stadium: "",
-              homeAway: "home",
+              homeAway: null,
               result: "cancelled",
               score: { fighters: null, opponent: null },
             });

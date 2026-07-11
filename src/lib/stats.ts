@@ -51,12 +51,12 @@ export interface GroupRow extends Summary {
   key: string;
 }
 
-function groupValue(game: Game, key: GroupKey): string {
+function groupValue(game: Game, key: GroupKey): string | null {
   switch (key) {
     case "year":
       return game.date.slice(0, 4);
     case "homeAway":
-      return game.homeAway;
+      return game.homeAway; // null（中止/予定など）は集計から除外
     case "stadium":
       return game.stadium || "(不明)";
     case "opponent":
@@ -64,11 +64,12 @@ function groupValue(game: Game, key: GroupKey): string {
   }
 }
 
-/** 軸別のクロス集計。観戦数の多い順→キー順で並べる。 */
+/** 軸別のクロス集計。観戦数の多い順→キー順で並べる。値が不明(null)の試合は除外。 */
 export function groupBy(games: Game[], key: GroupKey): GroupRow[] {
   const buckets = new Map<string, Game[]>();
   for (const game of games) {
     const value = groupValue(game, key);
+    if (value === null) continue;
     const bucket = buckets.get(value);
     if (bucket) bucket.push(game);
     else buckets.set(value, [game]);

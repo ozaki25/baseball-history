@@ -2,6 +2,7 @@ name: Ingest
 
 on:
   push:
+    branches: ["main"]
     paths: ["data/dates.json"]
   workflow_dispatch:
     inputs:

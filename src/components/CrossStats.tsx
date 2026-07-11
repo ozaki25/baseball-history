@@ -33,7 +33,9 @@ export function CrossStats({ games }: { games: Game[] }) {
             <button
               key={t.key}
               role="tab"
+              id={`crossstats-tab-${t.key}`}
               aria-selected={active}
+              aria-controls="crossstats-panel"
               onClick={() => setTab(t.key)}
               className="whitespace-nowrap px-3 py-2 text-sm font-medium"
               style={
@@ -48,7 +50,12 @@ export function CrossStats({ games }: { games: Game[] }) {
         })}
       </div>
 
-      <table className="w-full text-sm">
+      <table
+        id="crossstats-panel"
+        role="tabpanel"
+        aria-labelledby={`crossstats-tab-${tab}`}
+        className="w-full text-sm"
+      >
         <thead>
           <tr className="text-[11px] text-[var(--muted)]">
             <th scope="col" className="px-3 py-1.5 text-left font-medium">
@@ -66,6 +73,9 @@ export function CrossStats({ games }: { games: Game[] }) {
             <th scope="col" className="px-2 py-1.5 text-right font-medium">
               分
             </th>
+            <th scope="col" className="px-2 py-1.5 text-right font-medium">
+              中止
+            </th>
             <th scope="col" className="px-3 py-1.5 text-right font-medium">
               勝率
             </th>
@@ -81,12 +91,13 @@ export function CrossStats({ games }: { games: Game[] }) {
               <td className="tnum px-2 py-1.5 text-right">{r.win}</td>
               <td className="tnum px-2 py-1.5 text-right">{r.lose}</td>
               <td className="tnum px-2 py-1.5 text-right">{r.draw}</td>
+              <td className="tnum px-2 py-1.5 text-right text-[var(--muted)]">{r.cancelled}</td>
               <td className="tnum px-3 py-1.5 text-right font-bold">{formatWinRate(r.winRate)}</td>
             </tr>
           ))}
           {rows.length === 0 && (
             <tr>
-              <td colSpan={6} className="px-3 py-6 text-center text-[var(--faint)]">
+              <td colSpan={7} className="px-3 py-6 text-center text-[var(--faint)]">
                 データなし
               </td>
             </tr>

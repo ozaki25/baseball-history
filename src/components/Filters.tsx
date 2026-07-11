@@ -54,12 +54,39 @@ export function Filters({
 }) {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const close = () => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  };
 
   useEffect(() => {
     if (!open) return;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+      // フォーカストラップ: ダイアログ内で Tab を循環させる
+      const items = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (items.length === 0) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      const activeEl = document.activeElement;
+      if (e.shiftKey && activeEl === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && activeEl === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -83,6 +110,7 @@ export function Filters({
     <div className="relative">
       <div className="flex items-center justify-between gap-2">
         <button
+          ref={triggerRef}
           type="button"
           onClick={() => setOpen(true)}
           className="inline-flex items-center gap-1.5 border px-3 py-1.5 text-sm font-medium"
@@ -115,10 +143,11 @@ export function Filters({
           <button
             type="button"
             aria-label="閉じる"
-            onClick={() => setOpen(false)}
+            onClick={close}
             className="fixed inset-0 z-40 bg-black/40"
           />
           <div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="絞り込み条件"
@@ -130,7 +159,7 @@ export function Filters({
               <button
                 ref={closeRef}
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 aria-label="閉じる"
                 className="p-1"
               >
@@ -210,7 +239,7 @@ export function Filters({
               </button>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="px-4 py-1.5 text-sm font-bold text-white"
                 style={{ background: "var(--brand)" }}
               >

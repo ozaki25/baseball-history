@@ -25,7 +25,10 @@ const columns = [
   }),
   columnHelper.accessor("homeAway", {
     header: "主催/V",
-    cell: (c) => <span className="text-[var(--muted)]">{HOME_AWAY_LABEL[c.getValue()]}</span>,
+    cell: (c) => {
+      const v = c.getValue();
+      return <span className="text-[var(--muted)]">{v ? HOME_AWAY_LABEL[v] : "—"}</span>;
+    },
   }),
   columnHelper.accessor("stadium", {
     header: "球場",
@@ -85,7 +88,14 @@ export function GameTable({ games }: { games: Game[] }) {
                 const sortable = h.column.getCanSort();
                 const sorted = h.column.getIsSorted();
                 return (
-                  <th key={h.id} scope="col" className="px-3 py-2 font-medium text-[var(--muted)]">
+                  <th
+                    key={h.id}
+                    scope="col"
+                    aria-sort={
+                      sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : undefined
+                    }
+                    className="px-3 py-2 font-medium text-[var(--muted)]"
+                  >
                     {sortable ? (
                       <button
                         type="button"
@@ -140,9 +150,11 @@ export function GameTable({ games }: { games: Game[] }) {
                 <span className="tnum text-xs text-[var(--muted)]">{formatDateJa(g.date)}</span>
                 <span className="font-medium">
                   {g.opponent || "—"}
-                  <span className="ml-1.5 text-xs text-[var(--faint)]">
-                    {HOME_AWAY_LABEL[g.homeAway]}
-                  </span>
+                  {g.homeAway && (
+                    <span className="ml-1.5 text-xs text-[var(--faint)]">
+                      {HOME_AWAY_LABEL[g.homeAway]}
+                    </span>
+                  )}
                 </span>
                 <span className="text-xs text-[var(--faint)]">{g.stadium || "—"}</span>
               </div>

@@ -14,7 +14,8 @@ export interface Game {
   opponent: string;
   /** 正規化済み球場名 */
   stadium: string;
-  homeAway: HomeAway;
+  /** 主催/ビジター。中止・予定など不明な場合は null */
+  homeAway: HomeAway | null;
   result: GameResult;
   score: {
     fighters: number | null;
