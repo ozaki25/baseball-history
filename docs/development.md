@@ -84,8 +84,10 @@
   - baseline は `src/tests/vrt/__screenshots__/` にコミットする（生成物はCI所有）。**ローカルで生成した baseline はコミットしない**
     （ローカルは `VRT_CHROMIUM_PATH=<chromium> pnpm test:visual` で挙動確認のみ・非正）。
   - baseline が無い初回はCIが自動生成してPRへコミット（ブートストラップ）。生成直後に同一ジョブ内で比較して
-    自己検証する。意図的なUI変更や**新しい `*.vrt.test.tsx` を追加**した時は、`Visual Regression` ワークフローを
-    `update=true` で手動実行すると標準環境で再生成しコミットする（新規テストは baseline が無いと比較 fail する）。
+    自己検証する。**新規ケース（baseline 未生成の `toMatchScreenshot`）を追加した場合も、比較 fail を検知した
+    CIがその新規 baseline だけを標準環境で生成してコミットし、再比較する**（新規追加のたびの手動実行は不要）。
+    このとき**既存 baseline は自動更新しない**（`git checkout` で復元）。よって既存ケースの差分は「視覚回帰」として
+    fail し、意図的なUI変更は `Visual Regression` を `update=true` で手動実行して明示的に再生成する。
     差分はコミットされた画像としてPRでレビューする。
   - 比較 fail 時は `actual`/`diff` 画像が `vrt-diff` アーティファクトとして保存される（Actions からダウンロード可）。
   - ローカルの `pnpm test:visual` は Hiragino 等が無くフォント差で fail しやすい（挙動確認用）。`test:visual:update` は

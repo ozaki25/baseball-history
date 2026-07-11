@@ -79,7 +79,27 @@ jobs:
             pnpm test:visual
           else
             echo "コミット済みベースラインと比較します"
-            pnpm test:visual
+            if pnpm test:visual; then
+              echo "視覚ベースラインと一致"
+            else
+              # 失敗の切り分け: 新規ケース(baseline 未生成)は自動追加し、既存 baseline との差分は
+              # 視覚回帰として失敗させる。既存 baseline は自動更新せず(=creep 防止)、回帰を塗り潰さない。
+              echo "比較に失敗。新規ケースか視覚回帰かを判定します"
+              pnpm test:visual:update
+              # 既存(追跡中)baseline への変更は破棄。残る差分は「新規ケースの追加分」だけになる。
+              git checkout -- src/tests/vrt/__screenshots__
+              if [ -z "$(git status --porcelain -- src/tests/vrt/__screenshots__)" ]; then
+                echo "::error::既存の視覚ベースラインと差分があります(視覚回帰)。意図した変更なら Visual Regression を update=true で手動実行してください"
+                exit 1
+              fi
+              echo "新規ケースの baseline を追加します"
+              git add src/tests/vrt/__screenshots__
+              git commit -m "chore(vrt): 新規ケースの視覚ベースラインを追加"
+              git push
+              # 追加分を含めて再比較。既存ケースに回帰があればここで失敗する。
+              echo "追加した baseline で自己検証します"
+              pnpm test:visual
+            fi
           fi
 
       - name: 失敗時に actual/diff 画像をアーティファクト保存
