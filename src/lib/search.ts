@@ -1,5 +1,6 @@
 import type { GameResult, HomeAway } from "#/types/game";
 import type { GameFilter } from "./filters";
+import { resolveStadium, resolveTeam } from "./masters";
 
 /** URL search params と 1:1 の絞り込み表現（未指定はキーごと省略） */
 export interface GameSearch {
@@ -41,11 +42,17 @@ export function validateGameSearch(search: Record<string, unknown>): GameSearch 
   return out;
 }
 
+// URL値は安定ID想定だが、旧ブックマーク等の表示名も masters 経由でIDへ写像する
+// （既にIDの値はフォールバックでそのまま返るため無害）。重複は除去。
+function toIds(values: string[] | undefined, resolveId: (v: string) => string): string[] {
+  return values ? [...new Set(values.map(resolveId))] : [];
+}
+
 export function searchToFilter(search: GameSearch): GameFilter {
   return {
     year: search.year ?? "all",
-    stadiums: search.stadium ?? [],
-    opponents: search.opponent ?? [],
+    stadiums: toIds(search.stadium, (v) => resolveStadium(v).id),
+    opponents: toIds(search.opponent, (v) => resolveTeam(v).id),
     homeAway: search.home ?? "all",
     results: search.result ?? [],
   };

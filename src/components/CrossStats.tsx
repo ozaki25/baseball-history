@@ -21,7 +21,11 @@ function rowLabel(tab: GroupKey, key: string): string {
 
 export function CrossStats({ games }: { games: Game[] }) {
   const [tab, setTab] = useState<GroupKey>("stadium");
-  const rows = groupBy(games, tab);
+  // 観戦数の多い順。同数は表示名（代表名）順で安定させる。
+  const rows = [...groupBy(games, tab)].sort(
+    (a, b) =>
+      b.attended - a.attended || rowLabel(tab, a.key).localeCompare(rowLabel(tab, b.key), "ja"),
+  );
 
   return (
     <section

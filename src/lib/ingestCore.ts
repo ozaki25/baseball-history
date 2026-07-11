@@ -46,6 +46,19 @@ export function buildGame(id: string, isoDate: string, html: string): Game {
   };
 }
 
+/**
+ * 既存レコードの opponentId/stadiumId を現行 masters で再解決して返す。
+ * 表示名(opponent/stadium)は保持。masters の更新を再フェッチなしで反映するため、
+ * ingest で確定済みレコードを保持する際に通す。
+ */
+export function withResolvedIds(game: Game): Game {
+  return {
+    ...game,
+    opponentId: game.opponent ? resolveTeam(game.opponent).id : "",
+    stadiumId: game.stadium ? resolveStadium(game.stadium).id : "",
+  };
+}
+
 /** 事前登録（試合前）の受け皿となる scheduled レコード */
 export function scheduledGame(id: string, isoDate: string): Game {
   return {

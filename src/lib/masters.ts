@@ -115,8 +115,15 @@ function buildIndex(list: Master[]) {
   const byId = new Map<string, Master>();
   for (const m of list) {
     byId.set(m.id, m);
-    for (const a of m.aliases) byAlias.set(normalizeText(a), m);
-    byAlias.set(normalizeText(m.label), m);
+    for (const a of [...m.aliases, m.label]) {
+      const key = normalizeText(a);
+      const existing = byAlias.get(key);
+      // 別名の衝突（同キーが別IDへ）は誤マッピングの元。早期に落とす。
+      if (existing && existing.id !== m.id) {
+        throw new Error(`master alias 衝突: "${a}" が ${existing.id} と ${m.id} に重複`);
+      }
+      byAlias.set(key, m);
+    }
   }
   return { byAlias, byId };
 }
