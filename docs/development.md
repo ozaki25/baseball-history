@@ -87,7 +87,7 @@
 - コミットは意味単位で分割し、明確なメッセージを付ける（例: `feat: TanStack Router で絞り込みURL状態を実装`）。
 - `main` へは PR 経由（ユーザーの明示指示があれば作成）。
 
-## 5. GitHub Actions（新規・2 本立て）
+## 5. GitHub Actions（3 本立て）
 
 ### 5.1 CI（`ci.yml`）— 品質チェック
 
@@ -102,7 +102,7 @@ jobs:
       - pnpm lint # oxlint
       - pnpm format:check # oxfmt
       - pnpm typecheck # tsc --noEmit
-      - pnpm test
+      - pnpm test:coverage # 単体（--project unit）＋しきい値
       - pnpm build
 ```
 
@@ -128,6 +128,12 @@ jobs:
 
 > GitHub ランナーは外部ネットに出られるため公式サイトへ到達可能。
 > 開発環境や Vercel ビルドからは到達不可でも、取り込みは Actions 側で完結するので影響しない。
+
+### 5.3 Visual Regression（`vrt.yml`）— 視覚回帰
+
+`pull_request` で比較、`workflow_dispatch(update=true)` で baseline 更新。描画の環境差を排除するため
+**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`** の固定環境で実行し、baseline はこの環境が生成して
+コミットする（初回は自動ブートストラップ）。詳細は §3 のVRT項を参照。
 
 ## 6. デプロイ（Vercel）
 
