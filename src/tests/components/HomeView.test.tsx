@@ -66,8 +66,9 @@ describe("HomeView", () => {
 
   it("年フィルタのクリックで year を onNavigate に渡す", async () => {
     const { onNavigate, user } = setup();
-    await user.click(screen.getByRole("button", { name: "2013年" }));
-    expect(onNavigate).toHaveBeenCalledExactlyOnceWith({ year: "2013" });
+    // 直近年（上部に出るクイック年度）をクリック
+    await user.click(screen.getByRole("button", { name: "2025年" }));
+    expect(onNavigate).toHaveBeenCalledExactlyOnceWith({ year: "2025" });
   });
 
   it("search で年度指定すると一覧が絞られ、対象外年の予定も消える", () => {
