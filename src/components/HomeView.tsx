@@ -9,7 +9,7 @@ import { Filters } from "./Filters";
 import { YearFilter } from "./YearFilter";
 import { CrossStats } from "./CrossStats";
 import { GameTable } from "./GameTable";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "#/ui/ThemeToggle";
 
 /**
  * メイン画面の本体（表示・絞り込みの結線）。ルーターに依存せず、
