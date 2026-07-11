@@ -44,13 +44,16 @@
 
 ## 3. テスト戦略
 
-| 種別           | 対象                                          | 手段                                                   |
-| -------------- | --------------------------------------------- | ------------------------------------------------------ |
-| 単体           | パーサ（team/score/location/home/gameParser） | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用 |
-| 単体           | 集計 `stats.ts`（勝率・軸別集計）             | 代表データで期待値検証                                 |
-| 単体           | 絞り込み `filters.ts`・URL スキーマ           | 条件→抽出結果、URL 相互変換                            |
-| コンポーネント | Filters↔Table↔Stats の連動（任意）            | Testing Library（必要に応じ）                          |
+| 種別           | 対象                                                                                       | 手段                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| 単体           | パーサ（team/score/location/home/gameParser）                                              | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用                            |
+| 単体           | 集計 `stats.ts`（勝率・軸別集計）                                                          | 代表データで期待値検証                                                            |
+| 単体           | 絞り込み `filters.ts`・URL スキーマ                                                        | 条件→抽出結果、URL 相互変換                                                       |
+| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                    | scheduled/確定/失敗保持/中止/self-heal を網羅                                     |
+| 単体           | 安定ID `masters.ts`（表記ゆれ束ね・衝突検知）                                              | alias 解決＋実データ ID 整合の回帰テスト                                          |
+| コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
 
+- コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
 - CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test` → `build` を実行（後述）。
 
 ## 4. ブランチ / コミット
