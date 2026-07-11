@@ -80,6 +80,15 @@ describe("GameTable", () => {
     expect(cells[5]).toHaveTextContent("—"); // スコア（null）
   });
 
+  it("日付は取得元(公式サイトの試合結果)へのリンク", () => {
+    render(<GameTable games={GAMES} />);
+    const table = screen.getByRole("table", { name: "観戦記録" });
+    const link = within(table).getByRole("link", { name: /2025\.6\.15/ });
+    expect(link).toHaveAttribute("href", "https://www.fighters.co.jp/gamelive/result/2025061501/");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+  });
+
   it("モバイルカードにも対戦相手とスコアを表示する", () => {
     render(<GameTable games={GAMES} />);
     // モバイルは <ul>（role=list）。テーブルとは別に列挙される。

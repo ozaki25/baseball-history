@@ -27,3 +27,8 @@ export function formatScore(game: Game): string {
   if (game.score.fighters === null || game.score.opponent === null) return "—";
   return `${game.score.fighters} - ${game.score.opponent}`;
 }
+
+/** 取得元（公式サイトの試合結果ページ）URL。日付から復元（第1試合）。 */
+export function gameSourceUrl(isoDate: string): string {
+  return `https://www.fighters.co.jp/gamelive/result/${isoDate.replaceAll("-", "")}01/`;
+}
