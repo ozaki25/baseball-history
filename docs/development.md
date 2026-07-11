@@ -37,7 +37,7 @@
 ## 2. コード品質
 
 - **TypeScript strict** を有効化。`any` を避け、`Game` 等の型を単一定義。
-- **oxlint**（Lint）＋ **oxfmt**（Format）で oxc に統一。dev 連携は `vite-plugin-oxlint`。
+- **oxlint**（Lint）＋ **oxfmt**（Format）で oxc に統一（`pnpm lint` / `pnpm format`）。
   - oxfmt は 0.x のため整形挙動が更新で変わりうる。CI で `format:check` を回し差分を検知。
 - **Husky + lint-staged**: コミット前に対象ファイルへ `oxlint --fix` / `oxfmt --write`。
 - 純関数（`stats.ts` / `filters.ts` / `parsers/*`）に単体テストを付ける。

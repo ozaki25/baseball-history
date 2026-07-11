@@ -38,7 +38,7 @@
 | テーブル/集計     | **TanStack Table**                | 8.21       | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装                     |
 | 言語              | **TypeScript**                    | 7.0        | strict。型は単一定義                                                                             |
 | スタイル          | **Tailwind CSS**                  | 4.x        | ファイターズカラーをトークン化                                                                   |
-| PWA               | **vite-plugin-pwa**               | 1.3        | Manifest + Service Worker。Start(Vite基盤)構成向けに設定                                         |
+| PWA               | **自前(manifest+sw.js)**          | —          | vite-plugin-pwa は Start のマルチ環境ビルドで SW 未生成のため撤去。静的サイト向けに手書き        |
 | テスト            | **Vitest**                        | 4.x        | パーサ/集計の単体テスト                                                                          |
 | 解析              | **jsdom + 既存パーサ**            | —          | ingest 側で再利用（後述）                                                                        |
 | Lint              | **oxlint**                        | 1.x        | 高速。ESLint は使わない                                                                          |
@@ -268,9 +268,10 @@ npm run ingest -- --year 2026
 
 ## 9. PWA 設計
 
-- `vite-plugin-pwa`（`registerType: 'autoUpdate'`）を TanStack Start（Vite 基盤）構成に組み込む。
-- キャッシュ対象: アプリシェル一式 + `games.json`。
-- Manifest: 名称「観戦ノート」・**刷新した新アイコン**（フェーズ5作成）・テーマカラー `#016298`・`display: standalone`。
+- **自前実装**（vite-plugin-pwa は Start のマルチ環境ビルドで SW を生成しなかったため撤去）。
+- `public/manifest.webmanifest`（名称「観戦ノート」・新アイコン・テーマカラー `#016298`・`standalone`）。
+- `public/sw.js`（same-origin GET を stale-while-revalidate、ナビゲーションはオフライン時トップへフォールバック）。
+- `__root.tsx` でアイコン/マニフェスト/テーマカラーを head に、SW 登録をインラインスクリプトで実施。
 
 ## 9b. 観戦日の登録（Claude 経由スキル）
 
