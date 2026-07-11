@@ -4,14 +4,28 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { YearFilter } from "#/components/YearFilter";
 
-const YEARS = ["2025", "2024", "2013"];
+// 新しい順。直近3年は 2026/2025/2024、それより古い年は既定では上部に出さない。
+const YEARS = ["2026", "2025", "2024", "2023", "2019", "2013"];
 
 describe("YearFilter", () => {
-  it("「すべて」＋各年度のボタンを描画する", () => {
+  it("「すべて」＋直近3年だけを描画し、それより古い年は出さない", () => {
     render(<YearFilter years={YEARS} value="all" onChange={() => {}} />);
     expect(screen.getByRole("button", { name: "すべて" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "2026年" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "2025年" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "2013年" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "2024年" })).toBeInTheDocument();
+    // 直近外は上部に出さない（全年度は絞り込みシートで選ぶ）
+    expect(screen.queryByRole("button", { name: "2023年" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "2013年" })).not.toBeInTheDocument();
+  });
+
+  it("直近外の年が選択されている時は、その年もピルに出して解除できる", () => {
+    render(<YearFilter years={YEARS} value="2013" onChange={() => {}} />);
+    const y2013 = screen.getByRole("button", { name: "2013年" });
+    expect(y2013).toBeInTheDocument();
+    expect(y2013).toHaveAttribute("aria-pressed", "true");
+    // 他の直近外(2019/2023)は依然出さない
+    expect(screen.queryByRole("button", { name: "2019年" })).not.toBeInTheDocument();
   });
 
   it("選択中の年度だけ aria-pressed=true になる", () => {
