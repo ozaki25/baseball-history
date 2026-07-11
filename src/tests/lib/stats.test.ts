@@ -47,6 +47,17 @@ describe("summarize", () => {
     const s = summarize([game({ date: "2025-06-01", result: "cancelled" })]);
     expect(s.winRate).toBeNull();
   });
+
+  it("unknown(詳細不明) は観戦数に含めるが勝敗には数えない", () => {
+    const s = summarize([
+      game({ date: "2006-06-02", result: "unknown" }),
+      game({ date: "2025-04-01", result: "win" }),
+    ]);
+    expect(s.attended).toBe(2); // 記録として残す＝観戦数に含む
+    expect(s.win).toBe(1);
+    expect(s.lose + s.draw + s.cancelled).toBe(0);
+    expect(s.winRate).toBe(1); // 勝1/(勝1+敗0)
+  });
 });
 
 describe("groupBy", () => {

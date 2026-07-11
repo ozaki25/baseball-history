@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-11T04:51:52.466Z",
+  "generatedAt": "2026-07-11T17:33:33.911Z",
   "games": [
     {
       "id": "2006-06-02",
       "date": "2006-06-02",
-      "opponent": "横浜",
-      "opponentId": "baystars",
-      "stadium": "名護",
-      "stadiumId": "nago",
-      "homeAway": "home",
-      "result": "lose",
+      "opponent": "",
+      "opponentId": "",
+      "stadium": "",
+      "stadiumId": "",
+      "homeAway": null,
+      "result": "unknown",
       "score": {
-        "fighters": 3,
-        "opponent": 7
+        "fighters": null,
+        "opponent": null
       }
     },
     {

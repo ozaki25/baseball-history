@@ -21,6 +21,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATES_PATH = resolve(root, "data/dates.json");
 const GAMES_PATH = resolve(root, "data/games.json");
 const REPORT_PATH = resolve(root, "data/ingest-report.json");
+const DATE_ONLY_PATH = resolve(root, "data/date-only.json");
 
 interface Args {
   force: boolean;
@@ -62,11 +63,19 @@ async function main() {
     for (const g of prev.games) existing.set(g.id, g);
   }
 
+  // 詳細不明として日付のみ残す日（現行サイトで正しく取得できない古い試合など）
+  const dateOnly = new Set<string>(
+    existsSync(DATE_ONLY_PATH)
+      ? (JSON.parse(readFileSync(DATE_ONLY_PATH, "utf-8")) as string[])
+      : [],
+  );
+
   const { games, failures, fetched } = await mergeIngest(dates, existing, {
     fetchHtml,
     force: args.force,
     yearFilter: args.year,
     sleep: () => sleep(SCRAPING_DELAY_MS),
+    dateOnly,
   });
 
   const output: GamesData = { generatedAt: new Date().toISOString(), games };

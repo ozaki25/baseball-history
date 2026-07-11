@@ -99,6 +99,26 @@ describe("GameTable", () => {
     expect(within(list).getByText("5 - 1")).toBeInTheDocument();
   });
 
+  it("unknown(詳細不明) は日付リンクと『詳細不明』を表示し他は —", () => {
+    const g = makeGame({
+      id: "2006-06-02",
+      date: "2006-06-02",
+      opponent: "",
+      stadium: "",
+      result: "unknown",
+      homeAway: null,
+      score: { fighters: null, opponent: null },
+    });
+    render(<GameTable games={[g]} />);
+    const table = screen.getByRole("table", { name: "観戦記録" });
+    expect(within(table).getByRole("link", { name: /2006\.6\.2/ })).toBeInTheDocument();
+    expect(within(table).getByText("詳細不明")).toBeInTheDocument();
+    // 対戦相手・球場・スコアは — 、リンク先は取得元
+    const cells = within(tableRows()[0]!).getAllByRole("cell");
+    expect(cells[1]).toHaveTextContent("—"); // 対戦相手
+    expect(cells[3]).toHaveTextContent("—"); // 球場
+  });
+
   it("モバイルカードも取得元へのリンク（href/target/rel）", () => {
     render(<GameTable games={GAMES} />);
     const list = screen.getByRole("list");

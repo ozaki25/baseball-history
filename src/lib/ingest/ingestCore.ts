@@ -82,6 +82,21 @@ export function cancelledGame(id: string, isoDate: string): Game {
   };
 }
 
+/** 詳細不明（記録は残すが試合詳細は信頼できない）。日付のみの受け皿。fetch しない。 */
+export function unknownGame(id: string, isoDate: string): Game {
+  return {
+    id,
+    date: isoDate,
+    opponent: "",
+    opponentId: "",
+    stadium: "",
+    stadiumId: "",
+    homeAway: null,
+    result: "unknown",
+    score: { fighters: null, opponent: null },
+  };
+}
+
 const DECIDED = new Set<GameResult>(["win", "lose", "draw"]);
 
 export interface IngestDeps {
@@ -95,6 +110,8 @@ export interface IngestDeps {
   yearFilter?: string;
   /** 1件処理ごとの待機（レート制御。テストでは省略で即時） */
   sleep?: () => Promise<void>;
+  /** 詳細不明として日付のみ残す日(ISO)。取得せず unknown レコードにする（誤データも上書き）。 */
+  dateOnly?: Set<string>;
 }
 
 export interface IngestResult {
@@ -116,6 +133,7 @@ export async function mergeIngest(
 ): Promise<IngestResult> {
   const { fetchHtml, now = new Date(), force = false, yearFilter } = deps;
   const sleep = deps.sleep ?? (async () => {});
+  const dateOnly = deps.dateOnly ?? new Set<string>();
   const isConfirmed = (g: Game | undefined) => g !== undefined && DECIDED.has(g.result) && !force;
 
   const games: Game[] = [];
@@ -125,8 +143,12 @@ export async function mergeIngest(
   for (const [year, list] of Object.entries(dates)) {
     if (yearFilter && year !== yearFilter) {
       for (const mmdd of list) {
-        const prev = existing.get(toIsoDate(year, mmdd));
-        if (prev) games.push(withResolvedIds(prev));
+        const isoDate = toIsoDate(year, mmdd);
+        if (dateOnly.has(isoDate)) games.push(unknownGame(isoDate, isoDate));
+        else {
+          const prev = existing.get(isoDate);
+          if (prev) games.push(withResolvedIds(prev));
+        }
       }
       continue;
     }
@@ -136,6 +158,11 @@ export async function mergeIngest(
       const id = isoDate;
       const prev = existing.get(id);
 
+      // 詳細不明指定は最優先（誤った既存データも日付のみで上書き）。取得しない。
+      if (dateOnly.has(id)) {
+        games.push(unknownGame(id, isoDate));
+        continue;
+      }
       if (isConfirmed(prev)) {
         games.push(withResolvedIds(prev!));
         continue;

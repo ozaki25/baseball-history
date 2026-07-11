@@ -142,6 +142,26 @@ describe("mergeIngest", () => {
     expect(r.games.map((g) => g.id)).toEqual(["2024-04-05", "2025-04-01"]);
   });
 
+  it("date-only 指定日は fetch せず unknown にする（既存の確定データも上書き）", async () => {
+    const { fetchHtml, calls } = makeFetch({ "20060602": HOME_WIN });
+    // 既存は誤って確定(lose)しているとする
+    const existing = new Map([["2006-06-02", confirmed("2006-06-02")]]);
+    const r = await mergeIngest({ "2006": ["0602"] }, existing, {
+      fetchHtml,
+      now: NOW,
+      dateOnly: new Set(["2006-06-02"]),
+    });
+    expect(calls).toEqual([]); // 取得しない
+    expect(r.games[0]).toMatchObject({
+      result: "unknown",
+      opponent: "",
+      opponentId: "",
+      stadium: "",
+      stadiumId: "",
+      homeAway: null,
+    });
+  });
+
   it("既存の cancelled は再取得し、結果が出れば確定へ自己修復する", async () => {
     const existing = new Map([
       ["2025-06-01", { ...confirmed("2025-06-01"), result: "cancelled" as const }],

@@ -8,6 +8,7 @@ const SOLID: Record<GameResult, string> = {
   draw: "#5b656f",
   cancelled: "#5f6b76",
   scheduled: "#016298",
+  unknown: "#54606b",
 };
 
 export function ResultBadge({ result }: { result: GameResult }) {

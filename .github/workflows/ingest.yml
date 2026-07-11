@@ -6,6 +6,7 @@ on:
     # 観戦日の追加、または取り込みロジック(本ワークフロー)の変更で再取り込みする
     paths:
       - "data/dates.json"
+      - "data/date-only.json"
       - ".github/workflows/ingest.yml"
   workflow_dispatch:
     inputs:
