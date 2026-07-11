@@ -10,10 +10,14 @@ export interface Game {
   id: string;
   /** ISO "YYYY-MM-DD" */
   date: string;
-  /** 正規化済み対戦相手名（scheduled 時は空になりうる） */
+  /** 対戦相手の表示名（その年の表記。scheduled 時は空になりうる） */
   opponent: string;
-  /** 正規化済み球場名 */
+  /** 対戦相手の安定ID（表記ゆれを束ねて集計/絞り込みに使う） */
+  opponentId: string;
+  /** 球場の表示名（その年の表記） */
   stadium: string;
+  /** 球場の安定ID */
+  stadiumId: string;
   /** 主催/ビジター。中止・予定など不明な場合は null */
   homeAway: HomeAway | null;
   result: GameResult;

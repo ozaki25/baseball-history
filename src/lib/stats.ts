@@ -58,9 +58,9 @@ function groupValue(game: Game, key: GroupKey): string | null {
     case "homeAway":
       return game.homeAway; // null（中止/予定など）は集計から除外
     case "stadium":
-      return game.stadium || "(不明)";
+      return game.stadiumId || null; // 安定IDで束ねる。不明(空)は除外
     case "opponent":
-      return game.opponent || "(不明)";
+      return game.opponentId || null;
   }
 }
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Game } from "#/types/game";
 import { groupBy, formatWinRate, type GroupKey } from "#/lib/stats";
+import { teamLabel, stadiumLabel } from "#/lib/masters";
 
 const TABS: { key: GroupKey; label: string }[] = [
   { key: "stadium", label: "球場別" },
@@ -10,6 +11,13 @@ const TABS: { key: GroupKey; label: string }[] = [
 ];
 
 const HOME_AWAY_JA: Record<string, string> = { home: "主催", away: "ビジター" };
+
+function rowLabel(tab: GroupKey, key: string): string {
+  if (tab === "homeAway") return HOME_AWAY_JA[key] ?? key;
+  if (tab === "stadium") return stadiumLabel(key);
+  if (tab === "opponent") return teamLabel(key);
+  return key;
+}
 
 export function CrossStats({ games }: { games: Game[] }) {
   const [tab, setTab] = useState<GroupKey>("stadium");
@@ -85,7 +93,7 @@ export function CrossStats({ games }: { games: Game[] }) {
           {rows.map((r) => (
             <tr key={r.key} className="border-t" style={{ borderColor: "var(--line)" }}>
               <th scope="row" className="px-3 py-1.5 text-left font-normal">
-                {tab === "homeAway" ? (HOME_AWAY_JA[r.key] ?? r.key) : r.key}
+                {rowLabel(tab, r.key)}
               </th>
               <td className="tnum px-2 py-1.5 text-right">{r.attended}</td>
               <td className="tnum px-2 py-1.5 text-right">{r.win}</td>

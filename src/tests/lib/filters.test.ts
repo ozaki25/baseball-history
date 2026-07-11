@@ -1,13 +1,18 @@
 import { describe, it, expect } from "vitest";
 import type { Game, GameResult } from "@/types/game";
 import { applyFilters, deriveOptions, emptyFilter, isFilterActive } from "@/lib/filters";
+import { resolveTeam, resolveStadium } from "@/lib/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {
+  const opponent = partial.opponent ?? "オリックス";
+  const stadium = partial.stadium ?? "エスコンフィールド";
   return {
     id: partial.date,
     date: partial.date,
-    opponent: partial.opponent ?? "オリックス",
-    stadium: partial.stadium ?? "エスコンフィールド",
+    opponent,
+    opponentId: opponent ? resolveTeam(opponent).id : "",
+    stadium,
+    stadiumId: stadium ? resolveStadium(stadium).id : "",
     homeAway: partial.homeAway ?? "home",
     result: partial.result,
     score: partial.score ?? { fighters: null, opponent: null },
@@ -41,21 +46,20 @@ describe("applyFilters", () => {
     expect(result[0]!.date).toBe("2025-08-23");
   });
 
-  it("球場の複数選択（OR）", () => {
-    const result = applyFilters(games, {
-      ...emptyFilter,
-      stadiums: ["エスコンフィールド", "京セラドーム大阪"],
-    });
+  it("球場の複数選択（安定IDのOR）", () => {
+    const result = applyFilters(games, { ...emptyFilter, stadiums: ["escon", "kyocera"] });
     expect(result).toHaveLength(2);
   });
 });
 
 describe("deriveOptions", () => {
-  it("実データの distinct 値を返す（年は新しい順）", () => {
+  it("安定IDで束ね、代表名を返す（年は新しい順）", () => {
     const options = deriveOptions(games);
     expect(options.years).toEqual(["2025", "2024"]);
-    expect(options.stadiums).toContain("ベルーナドーム");
-    expect(options.opponents).toContain("西武");
+    expect(
+      options.stadiums.some((s) => s.id === "seibu-dome" && s.label === "ベルーナドーム"),
+    ).toBe(true);
+    expect(options.opponents.some((o) => o.id === "seibu" && o.label === "埼玉西武")).toBe(true);
   });
 });
 
@@ -63,5 +67,17 @@ describe("isFilterActive", () => {
   it("空フィルタは非アクティブ", () => {
     expect(isFilterActive(emptyFilter)).toBe(false);
     expect(isFilterActive({ ...emptyFilter, year: "2025" })).toBe(true);
+  });
+});
+
+describe("安定ID（表記ゆれの束ね）", () => {
+  it("横浜と横浜DeNAは同一ID(baystars)", () => {
+    expect(resolveTeam("横浜").id).toBe("baystars");
+    expect(resolveTeam("横浜DeNA").id).toBe("baystars");
+  });
+  it("西武ドーム/西武プリンス/ベルーナドームは同一ID(seibu-dome)", () => {
+    expect(resolveStadium("西武ドーム").id).toBe("seibu-dome");
+    expect(resolveStadium("西武プリンス").id).toBe("seibu-dome");
+    expect(resolveStadium("ベルーナドーム").id).toBe("seibu-dome");
   });
 });

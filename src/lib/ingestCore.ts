@@ -1,6 +1,7 @@
 import type { Game, GameResult } from "#/types/game";
 import { parseGameHTML } from "./parsers/gameParser";
 import { normalizeText } from "./normalize";
+import { resolveTeam, resolveStadium } from "./masters";
 
 /** ファイターズ視点のスコアから勝敗を判定 */
 export function resultFromScores(fightersScore: number, opponentScore: number): GameResult {
@@ -30,11 +31,15 @@ export function isFutureDate(isoDate: string, now: Date = new Date()): boolean {
 /** 公式サイトの試合結果 HTML から Game を組み立てる（解析不能時は throw） */
 export function buildGame(id: string, isoDate: string, html: string): Game {
   const info = parseGameHTML(html);
+  const opponent = normalizeText(info.vsTeam);
+  const stadium = normalizeText(info.location);
   return {
     id,
     date: isoDate,
-    opponent: normalizeText(info.vsTeam),
-    stadium: normalizeText(info.location),
+    opponent,
+    opponentId: resolveTeam(opponent).id,
+    stadium,
+    stadiumId: resolveStadium(stadium).id,
     homeAway: info.isHome ? "home" : "away",
     result: resultFromScores(info.myScore, info.vsScore),
     score: { fighters: info.myScore, opponent: info.vsScore },
@@ -47,7 +52,9 @@ export function scheduledGame(id: string, isoDate: string): Game {
     id,
     date: isoDate,
     opponent: "",
+    opponentId: "",
     stadium: "",
+    stadiumId: "",
     homeAway: null,
     result: "scheduled",
     score: { fighters: null, opponent: null },
