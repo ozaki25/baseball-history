@@ -65,6 +65,16 @@
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
+- **テスト配置（コロケーションではなく集約）**: テストは実装ファイルの隣（コロケーション）ではなく、
+  `src/tests/` に実装ツリーをミラーして集約する（`src/tests/{lib,components,parsers,vrt}` ＋ `helpers`/`fixtures`/`setup*`）。
+  一般的にはコロケーションも主流で妥当だが、本プロジェクトでは次の理由で集約を規約とする:
+  - fixtures（公式サイトHTML）・VRT baseline（PNG）・共有 helpers・setup など、**モジュール単位に割り付かない
+    「テスト専用資産」の比重が高く**、集約が自然な受け皿になる（VRT は画面単位でコロケーションの旨味が薄い）。
+  - カバレッジ除外（`src/tests/**` 一行）・VRT baseline の CI 所有運用・`#/tests/*` での共有参照が、
+    パスで単純・安定に表現できる。
+  - 実装とテストが小規模で 1:1 ミラーを保っており、発見性・リファクタ追従の実害が無い。
+  - 将来テストが大規模化したら「単体はコロケーション＋VRT/fixtures/helpers は集約」のハイブリッドへ移す余地はある
+    （現時点では移行の便益がコスト・リスク＝カバレッジ閾値やVRT運用のパス変更を上回らないため集約を維持）。
 - コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
 - **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
   課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
