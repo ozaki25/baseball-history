@@ -22,8 +22,7 @@ function SourceDate({ date }: { date: string }) {
       target="_blank"
       rel="noopener noreferrer"
       title="公式サイトの試合結果ページを開く"
-      className="tnum inline-flex items-center gap-1 whitespace-nowrap hover:underline"
-      style={{ color: "var(--brand)" }}
+      className="tnum inline-flex items-center gap-1 whitespace-nowrap text-[var(--brand)] hover:underline"
     >
       {formatDateJa(date)}
       <ExternalLink size={11} aria-hidden />

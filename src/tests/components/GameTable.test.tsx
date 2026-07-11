@@ -98,4 +98,13 @@ describe("GameTable", () => {
     expect(within(list).getByText("千葉ロッテ")).toBeInTheDocument();
     expect(within(list).getByText("5 - 1")).toBeInTheDocument();
   });
+
+  it("モバイルカードも取得元へのリンク（href/target/rel）", () => {
+    render(<GameTable games={GAMES} />);
+    const list = screen.getByRole("list");
+    const link = within(list).getByRole("link", { name: /2025\.6\.15/ });
+    expect(link).toHaveAttribute("href", "https://www.fighters.co.jp/gamelive/result/2025061501/");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
+  });
 });
