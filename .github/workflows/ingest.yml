@@ -3,7 +3,10 @@ name: Ingest
 on:
   push:
     branches: ["main"]
-    paths: ["data/dates.json"]
+    # 観戦日の追加、または取り込みロジック(本ワークフロー)の変更で再取り込みする
+    paths:
+      - "data/dates.json"
+      - ".github/workflows/ingest.yml"
   workflow_dispatch:
     inputs:
       force:
