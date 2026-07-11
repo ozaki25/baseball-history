@@ -53,9 +53,10 @@
 - コミットは意味単位で分割し、明確なメッセージを付ける（例: `feat: TanStack Router で絞り込みURL状態を実装`）。
 - `main` へは PR 経由（ユーザーの明示指示があれば作成）。
 
-## 5. CI（GitHub Actions・新規）
+## 5. GitHub Actions（新規・2 本立て）
 
-`push` / `pull_request` で以下を実行する想定。
+### 5.1 CI（`ci.yml`）— 品質チェック
+`push` / `pull_request` で実行。外部サイトへはアクセスしない。
 
 ```yaml
 # .github/workflows/ci.yml（案）
@@ -68,7 +69,27 @@ jobs:
       - npm run test
 ```
 
-> ingest は外部サイトへアクセスするため CI では実行しない（`games.json` はコミット済みを使用）。
+### 5.2 Ingest（`ingest.yml`）— データ取り込み
+公式サイトから取得し、`games.json` を**リポジトリへ自動コミット**する（→ Vercel が自動デプロイ）。
+
+```yaml
+# .github/workflows/ingest.yml（案）
+on:
+  push:
+    paths: ["data/dates.json"]     # 観戦日を足したら起動
+  workflow_dispatch:                # 手動実行（force / 年指定）
+permissions:
+  contents: write                   # games.json を push するため
+jobs:
+  ingest:
+    steps:
+      - checkout / setup-node(20) / npm ci
+      - npm run ingest              # 未取得分だけ取得（--force で全件）
+      - 差分があれば data/games.json をコミット & push
+```
+
+> GitHub ランナーは外部ネットに出られるため公式サイトへ到達可能。
+> 開発環境や Vercel ビルドからは到達不可でも、取り込みは Actions 側で完結するので影響しない。
 
 ## 6. デプロイ（Vercel）
 
@@ -81,15 +102,23 @@ jobs:
 
 観戦記録を増やすときの手順。
 
+**通常運用（自動）** — 利用者がやるのは観戦日の追加だけ。
+
 ```
 1. npm run add-date 2026 0705 0706   # 観戦日を dates.json に追加
-2. npm run ingest                    # 公式サイトから差分取得 → games.json 更新
-3. （失敗があれば）npm run ingest      # 再実行で自動リトライ（冪等）
-4. 変更をコミット & プッシュ           # Vercel が自動デプロイ
+2. git commit && git push            # dates.json を push
+   ↓（以降は自動）
+   GitHub Actions(ingest) が未取得分をスクレイピング
+   → games.json を自動コミット
+   → Vercel が自動デプロイ
 ```
 
+- 観戦日は試合終了後に足せば結果は確定済みで、push トリガーだけで取得できる。
+- まだ結果が出ていない稀なケースは、Actions の「Run workflow」で 1 回押し直せばよい（定期実行はしない）。
+- ローカル `npm run ingest` もフォールバックとして利用可能。
+
 > データ源はスクレイピングのみ。手編集・override は行わない。取得できない試合は
-> 再実行で拾い直すか、`dates.json` から外す運用とする。
+> リトライで拾い直すか、`dates.json` から外す運用とする。
 
 ## 8. 実装フェーズ（ステップごとに確認）
 
@@ -110,7 +139,8 @@ jobs:
 
 | リスク | 影響 | 対応 |
 |---|---|---|
-| 実行環境から `fighters.co.jp` に到達不可 | 初回 `games.json` 生成ができない | ingest はローカル実行に切り出し可能。アプリのビルドは `games.json` のみに依存し影響なし。まず疎通確認する |
+| 開発環境/Vercel から `fighters.co.jp` に到達不可 | その場では取り込めない | 取り込みは GitHub Actions（外部ネット可）で実行。アプリのビルドは `games.json` のみに依存し影響なし |
+| Actions の自動コミットが CI をループ起動 | 無駄実行 | ingest のコミットは CI 対象パスから除外／`[skip ci]` を付ける等で抑止 |
 | 公式サイトの HTML 構造変更 | パーサ破損 | フィクスチャ＋テストで検知、パーサを修正して再取り込み |
 | 20 年分の年代差による表記ゆれ | 絞り込み/集計が分裂 | 最小限の正規化。distinct 値を確認し、実際に割れた分だけ名寄せ対応表を追加（データ駆動） |
 | データ欠損年（2017-2019, 2023 等） | 集計の空白 | 空は空として扱う（記録なし）。方針を要確認 |

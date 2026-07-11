@@ -21,6 +21,7 @@
 ```
 
 - **データ源はスクレイピングのみ**。手編集・override は行わない（`games.json` は取り込みの生成物）。
+- **取り込みは GitHub Actions 上で実行**（Vercel ビルド時でもアプリ実行時でもない）。
 - アプリはビルド時に `games.json` を読み込むだけ。外部サイトに非依存。
 - `games.json` は**コミット対象**（ビルドをサイトから切り離すためのキャッシュ）。
 
@@ -196,15 +197,29 @@ interface Game {
 - 失敗分は次回実行時に自動でリトライ対象になる（手動補完は行わない）。
 - レート制御: リクエスト間 sleep（既存 `SCRAPING_DELAY_MS` 踏襲）。
 
-### 7.3 実行
+### 7.3 実行方式（GitHub Actions）
+
+取り込みは **GitHub Actions のワークフロー（`.github/workflows/ingest.yml`）** で実行する。
+GitHub のランナーは外部ネットに出られるため公式サイトへ到達可能（この開発環境や Vercel ビルドからは到達不可でも問題ない）。
+
+| トリガー | 動作 |
+|---|---|
+| `dates.json` への push | 追加された観戦日を含む**未取得分だけ**取得 |
+| 手動実行（`workflow_dispatch`） | 任意実行。`--force` や年指定も可能 |
+
+- **定期実行（cron）はしない**。年に十数日の観戦のためにルーティンで回す必要はない。
+  観戦日は「試合が終わってから」足せば結果は確定済みで push トリガーだけで取得できる。
+  万一まだ結果が出ていない稀なケースは、手動実行で 1 回押し直せばよい。
+- ワークフローは取得後、`games.json`（と `ingest-report.json`）を**リポジトリへ自動コミット**する。
+  → その push を Vercel が検知して自動デプロイ。
+- コミット権限は `permissions: contents: write`（`GITHUB_TOKEN`）。
+- ローカルからの手動実行もフォールバックとして可能（同じ CLI）:
+
 ```bash
 npm run ingest            # 差分取得
 npm run ingest -- --force # 全再取得
 npm run ingest -- --year 2026
 ```
-
-> ⚠️ 実行環境から `fighters.co.jp` に到達できない場合は、生成をローカル実行に切り出す。
-> アプリのビルド自体は `games.json`（コミット済み）だけで完結するため影響しない。
 
 ## 8. 集計ロジック（`stats.ts`）
 
