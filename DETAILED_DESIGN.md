@@ -206,7 +206,7 @@ export interface GameResult {
   //       'ソフトバンク', '巨人', '阪神', '中日',
   //       '広島', 'ヤクルト'] のいずれか
 
-  result: 'win' | 'lose' | 'draw'; // 試合結果
+  result: "win" | "lose" | "draw"; // 試合結果
   // win: 勝利, lose: 敗戦, draw: 引分
 
   score: {
@@ -335,11 +335,11 @@ export default function RootLayout({ children }: LayoutProps) {
 
 // メタデータ定義
 export const metadata: Metadata = {
-  title: '観戦履歴 | 北海道日本ハムファイターズ',
-  description: 'ファイターズの観戦記録を管理するWebアプリケーション',
-  manifest: '/manifest.json',
-  themeColor: '#016298',
-  viewport: 'width=device-width, initial-scale=1',
+  title: "観戦履歴 | 北海道日本ハムファイターズ",
+  description: "ファイターズの観戦記録を管理するWebアプリケーション",
+  manifest: "/manifest.json",
+  themeColor: "#016298",
+  viewport: "width=device-width, initial-scale=1",
   // PWA関連メタデータ
   // OGP設定
   // セキュリティヘッダー
@@ -653,13 +653,13 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
 
   // HTTP Request Configuration
   const requestConfig: RequestInit = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
-      'Cache-Control': 'no-cache',
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "ja,en-US;q=0.9,en;q=0.8",
+      "Cache-Control": "no-cache",
     },
     // Critical: Timeout configuration
     signal: AbortSignal.timeout(10000), // 10秒でタイムアウト
@@ -687,7 +687,7 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     if (gameData) {
       console.log(
         `🏟️ 試合データ解析成功: vs ${gameData.opponent} ` +
-          `${gameData.result} ${gameData.score.fighters}-${gameData.score.opponent}`
+          `${gameData.result} ${gameData.score.fighters}-${gameData.score.opponent}`,
       );
       return gameData;
     } else {
@@ -697,14 +697,14 @@ export async function fetchGameData(year: string, date: string): Promise<GameRes
     console.error(`❌ データ取得失敗: ${year}/${date}`, error);
 
     // Error Details Logging
-    if (error instanceof TypeError && error.message.includes('fetch')) {
-      console.error('Network error - check internet connection');
-    } else if (error instanceof DOMException && error.name === 'AbortError') {
-      console.error('Request timeout - server response too slow');
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      console.error("Network error - check internet connection");
+    } else if (error instanceof DOMException && error.name === "AbortError") {
+      console.error("Request timeout - server response too slow");
     }
 
     // 要件に従いビルドを異常終了
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     throw new Error(`Build failed: データ取得失敗 ${year}/${date} - ${errorMessage}`);
   }
 }
@@ -725,22 +725,22 @@ function parseGameHTML(html: string, date: string): GameResult | null {
 
     // Step 1: Team Name Extraction
     const teamNames = [
-      '楽天',
-      'ロッテ',
-      '西武',
-      'オリックス',
-      'ソフトバンク', // Pacific League
-      '巨人',
-      '阪神',
-      '中日',
-      '広島',
-      'ヤクルト', // Central League
+      "楽天",
+      "ロッテ",
+      "西武",
+      "オリックス",
+      "ソフトバンク", // Pacific League
+      "巨人",
+      "阪神",
+      "中日",
+      "広島",
+      "ヤクルト", // Central League
     ];
 
-    let opponent = '';
+    let opponent = "";
     for (const team of teamNames) {
       // Case-insensitive search with context
-      const teamRegex = new RegExp(`(${team})`, 'gi');
+      const teamRegex = new RegExp(`(${team})`, "gi");
       if (teamRegex.test(html)) {
         opponent = team;
         console.log(`✅ 対戦相手発見: ${team}`);
@@ -749,19 +749,19 @@ function parseGameHTML(html: string, date: string): GameResult | null {
     }
 
     if (!opponent) {
-      console.warn('対戦相手が特定できませんでした');
+      console.warn("対戦相手が特定できませんでした");
       // HTML Content Analysis for debugging
-      console.log('HTML length:', html.length);
-      console.log('Contains title:', html.includes('<title>') ? 'Yes' : 'No');
-      console.log('Contains game info:', html.includes('試合') ? 'Yes' : 'No');
+      console.log("HTML length:", html.length);
+      console.log("Contains title:", html.includes("<title>") ? "Yes" : "No");
+      console.log("Contains game info:", html.includes("試合") ? "Yes" : "No");
 
       // 詳細エラー分析
       const possibleTeamMentions = teamNames.filter((team) =>
-        html.toLowerCase().includes(team.toLowerCase())
+        html.toLowerCase().includes(team.toLowerCase()),
       );
 
       if (possibleTeamMentions.length === 0) {
-        console.log('このURLには試合データが存在しない可能性があります');
+        console.log("このURLには試合データが存在しない可能性があります");
         throw new Error(`試合データが存在しません: ${date} - URLに試合情報が含まれていません`);
       }
 
@@ -789,7 +789,7 @@ function parseGameHTML(html: string, date: string): GameResult | null {
     let opponentScore: number;
 
     if (!scoreMatch) {
-      console.warn('スコア情報が見つかりませんでした - デフォルト値使用');
+      console.warn("スコア情報が見つかりませんでした - デフォルト値使用");
       // Development fallback - should not happen in production
       fightersScore = Math.floor(Math.random() * 10) + 1;
       opponentScore = Math.floor(Math.random() * 10) + 1;
@@ -799,7 +799,7 @@ function parseGameHTML(html: string, date: string): GameResult | null {
       const scoreNumberMatch = firstScore.match(/(\d{1,2})\s*[-－−\s]\s*(\d{1,2})/);
 
       if (!scoreNumberMatch) {
-        console.warn('スコア数値の抽出に失敗しました');
+        console.warn("スコア数値の抽出に失敗しました");
         return null;
       }
 
@@ -826,46 +826,46 @@ function parseGameHTML(html: string, date: string): GameResult | null {
     }
 
     // Step 3: Result Determination
-    let result: 'win' | 'lose' | 'draw';
+    let result: "win" | "lose" | "draw";
     if (fightersScore > opponentScore) {
-      result = 'win';
+      result = "win";
     } else if (fightersScore < opponentScore) {
-      result = 'lose';
+      result = "lose";
     } else {
-      result = 'draw';
+      result = "draw";
     }
 
     // Step 4: Stadium/Location Extraction
     const venues = [
-      'ES CON FIELD HOKKAIDO',
-      'エスコンフィールド',
-      'エスコン',
-      '札幌ドーム',
-      '東京ドーム',
-      'PayPayドーム',
-      'ペイペイドーム',
-      '京セラドーム大阪',
-      '京セラドーム',
-      '楽天生命パーク宮城',
-      '楽天生命パーク',
-      'Koboパーク',
-      'ZOZOマリンスタジアム',
-      'ZOZOマリン',
-      'マリンスタジアム',
-      'ベルーナドーム',
-      '西武ドーム',
-      'バンテリンドーム',
-      'ナゴヤドーム',
-      'マツダスタジアム',
-      '神宮球場',
-      '明治神宮野球場',
+      "ES CON FIELD HOKKAIDO",
+      "エスコンフィールド",
+      "エスコン",
+      "札幌ドーム",
+      "東京ドーム",
+      "PayPayドーム",
+      "ペイペイドーム",
+      "京セラドーム大阪",
+      "京セラドーム",
+      "楽天生命パーク宮城",
+      "楽天生命パーク",
+      "Koboパーク",
+      "ZOZOマリンスタジアム",
+      "ZOZOマリン",
+      "マリンスタジアム",
+      "ベルーナドーム",
+      "西武ドーム",
+      "バンテリンドーム",
+      "ナゴヤドーム",
+      "マツダスタジアム",
+      "神宮球場",
+      "明治神宮野球場",
     ];
 
-    let location = 'ES CON FIELD HOKKAIDO'; // Default home stadium
+    let location = "ES CON FIELD HOKKAIDO"; // Default home stadium
     for (const venue of venues) {
       if (html.includes(venue)) {
         location =
-          venue === 'エスコンフィールド' || venue === 'エスコン' ? 'ES CON FIELD HOKKAIDO' : venue;
+          venue === "エスコンフィールド" || venue === "エスコン" ? "ES CON FIELD HOKKAIDO" : venue;
         console.log(`✅ 球場発見: ${location}`);
         break;
       }
@@ -882,12 +882,12 @@ function parseGameHTML(html: string, date: string): GameResult | null {
 
     console.log(
       `📊 解析完了: vs ${opponent}, スコア ${fightersScore}-${opponentScore}, ` +
-        `${result}, ${location}`
+        `${result}, ${location}`,
     );
 
     return gameResult;
   } catch (error) {
-    console.error('HTML解析中にエラー:', error);
+    console.error("HTML解析中にエラー:", error);
     return null;
   }
 }
@@ -900,34 +900,34 @@ function parseGameHTML(html: string, date: string): GameResult | null {
 ```typescript
 // Network Errors
 interface NetworkError extends Error {
-  type: 'NETWORK';
-  cause: 'TIMEOUT' | 'CONNECTION' | 'DNS';
+  type: "NETWORK";
+  cause: "TIMEOUT" | "CONNECTION" | "DNS";
 }
 
 // HTTP Errors
 interface HTTPError extends Error {
-  type: 'HTTP';
+  type: "HTTP";
   status: number;
   statusText: string;
 }
 
 // Parsing Errors
 interface ParseError extends Error {
-  type: 'PARSE';
-  cause: 'NO_TEAM' | 'NO_SCORE' | 'INVALID_FORMAT';
+  type: "PARSE";
+  cause: "NO_TEAM" | "NO_SCORE" | "INVALID_FORMAT";
 }
 
 // Error Handling Flow
 try {
   const result = await fetchGameData(year, date);
 } catch (error) {
-  if (error.type === 'NETWORK') {
+  if (error.type === "NETWORK") {
     // Log network diagnostics
     // Consider retry for transient errors
-  } else if (error.type === 'HTTP') {
+  } else if (error.type === "HTTP") {
     // Log HTTP details
     // Check if 404 means no game data
-  } else if (error.type === 'PARSE') {
+  } else if (error.type === "PARSE") {
     // Log parsing details
     // Analyze HTML structure changes
   }
@@ -944,7 +944,7 @@ try {
 interface ScrapingLog {
   timestamp: string;
   url: string;
-  status: 'START' | 'SUCCESS' | 'ERROR';
+  status: "START" | "SUCCESS" | "ERROR";
   duration?: number;
   error?: string;
   dataExtracted?: {

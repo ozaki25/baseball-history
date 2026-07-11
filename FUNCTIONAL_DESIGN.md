@@ -133,7 +133,7 @@ const opponentStats = games.reduce((acc, game) => {
     acc[game.opponent] = { wins: 0, losses: 0, draws: 0 };
   }
   acc[game.opponent][
-    game.result === 'win' ? 'wins' : game.result === 'lose' ? 'losses' : 'draws'
+    game.result === "win" ? "wins" : game.result === "lose" ? "losses" : "draws"
   ]++;
   return acc;
 }, {});
@@ -159,13 +159,14 @@ const opponentStats = games.reduce((acc, game) => {
 | **実装ファイル** | `src/components/GameTable.tsx` |
 
 **表示項目**:
-| カラム | データ型 | 表示形式 | 説明 |
-|--------|----------|----------|------|
-| 日付 | string | MM/DD | 試合日 (月/日) |
-| 対戦相手 | string | 球団名 | 相手チーム名 |
-| 結果 | 'win'\|'lose'\|'draw' | 勝/負/分 | 試合結果 |
-| スコア | Object | N-N | ファイターズ-相手 |
-| 球場 | string | 球場名 | 開催球場 |
+
+| カラム   | データ型              | 表示形式 | 説明              |
+| -------- | --------------------- | -------- | ----------------- |
+| 日付     | string                | MM/DD    | 試合日 (月/日)    |
+| 対戦相手 | string                | 球団名   | 相手チーム名      |
+| 結果     | 'win'\|'lose'\|'draw' | 勝/負/分 | 試合結果          |
+| スコア   | Object                | N-N      | ファイターズ-相手 |
+| 球場     | string                | 球場名   | 開催球場          |
 
 **機能詳細**:
 
@@ -188,7 +189,7 @@ const opponentStats = games.reduce((acc, game) => {
 ```typescript
 // ソート処理
 const handleSort = (column: string) => {
-  const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+  const newOrder = sortOrder === "asc" ? "desc" : "asc";
   setSortOrder(newOrder);
   setSortColumn(column);
 };
@@ -288,8 +289,8 @@ const filteredGames = games.filter((game) => {
 
 ```javascript
 // Cache First Strategy
-self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('/api/')) {
+self.addEventListener("fetch", (event) => {
+  if (event.request.url.includes("/api/")) {
     // API requests: Network First
     event.respondWith(networkFirstStrategy(event.request));
   } else {
@@ -352,7 +353,7 @@ self.addEventListener('fetch', (event) => {
 interface GameResult {
   date: string; // "MMDD" format
   opponent: string; // 対戦相手球団名
-  result: 'win' | 'lose' | 'draw';
+  result: "win" | "lose" | "draw";
   score: {
     fighters: number; // ファイターズ得点
     opponent: number; // 相手得点

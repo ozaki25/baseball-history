@@ -1,11 +1,11 @@
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 /**
  * MMDD形式をM/D形式に変換
  * @param mmddDate MMDD形式の日付（例: "0401" → "4/1"）
  */
 export function formatDate(mmddDate: string | dayjs.Dayjs): string {
-  if (typeof mmddDate === 'string') {
+  if (typeof mmddDate === "string") {
     if (mmddDate.length !== 4 || !/^\d{4}$/.test(mmddDate)) {
       throw new Error(`Invalid MMDD format: expected 4 digits, got "${mmddDate}"`);
     }
@@ -26,7 +26,7 @@ export function formatDate(mmddDate: string | dayjs.Dayjs): string {
   } else {
     // dayjs input
     if (!mmddDate.isValid()) {
-      throw new Error('Invalid dayjs date passed to formatDate');
+      throw new Error("Invalid dayjs date passed to formatDate");
     }
     return `${mmddDate.month() + 1}/${mmddDate.date()}`;
   }
@@ -35,12 +35,12 @@ export function formatDate(mmddDate: string | dayjs.Dayjs): string {
 /**
  * スコアから試合結果を算出
  */
-export function getGameResult(myScore: number, vsScore: number): 'win' | 'lose' | 'draw' {
+export function getGameResult(myScore: number, vsScore: number): "win" | "lose" | "draw" {
   if (myScore > vsScore) {
-    return 'win';
+    return "win";
   } else if (myScore < vsScore) {
-    return 'lose';
+    return "lose";
   } else {
-    return 'draw';
+    return "draw";
   }
 }

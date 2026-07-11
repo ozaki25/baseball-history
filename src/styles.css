@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/*
+ * 観戦ノート — デザイントークン
+ * ベース: ファイターズブルー。数字が主役の「記録簿」的な見た目。
+ * 意味色（勝ち/負け/引分）はアクセントとは別系統。
+ */
+@theme {
+  --font-sans:
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif;
+  --font-mono: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Courier New", monospace;
+
+  --color-fb-blue: #016298;
+  --color-fb-navy: #02324e;
+  --color-fb-sky: #37a0de;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--surface, #f4f6f8);
+  color: var(--ink, #14202b);
+}

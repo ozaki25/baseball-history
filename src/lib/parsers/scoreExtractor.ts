@@ -1,5 +1,5 @@
-import { JSDOM } from 'jsdom';
-import { ParseError } from '@/types/parsing';
+import { JSDOM } from "jsdom";
+import { ParseError } from "@/types/parsing";
 
 /**
  * ファイターズ視点でスコアを抽出
@@ -9,7 +9,7 @@ import { ParseError } from '@/types/parsing';
  */
 export function extractGameScore(
   html: string,
-  isHome: boolean
+  isHome: boolean,
 ): {
   myScore: number;
   vsScore: number;
@@ -17,13 +17,13 @@ export function extractGameScore(
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
-  const scoreElement = document.querySelector('.game-vs-teams__team-score');
+  const scoreElement = document.querySelector(".game-vs-teams__team-score");
   if (!scoreElement) {
-    throw new ParseError('スコア要素が見つかりません', 'extractGameScore');
+    throw new ParseError("スコア要素が見つかりません", "extractGameScore");
   }
 
-  const spanElements = scoreElement.querySelectorAll('span');
-  const emElement = scoreElement.querySelector('em');
+  const spanElements = scoreElement.querySelectorAll("span");
+  const emElement = scoreElement.querySelector("em");
 
   let homeScore: number;
   let visitorScore: number;
@@ -34,12 +34,12 @@ export function extractGameScore(
     const span2Text = spanElements[1].textContent?.trim();
 
     if (!span1Text || !span2Text) {
-      throw new ParseError('スコアテキストが空です', 'extractGameScore');
+      throw new ParseError("スコアテキストが空です", "extractGameScore");
     }
 
     // 左のspan = ホーム、右のspan = ビジター
-    homeScore = parseInt(span1Text.replace(/[^\d]/g, ''));
-    visitorScore = parseInt(span2Text.replace(/[^\d]/g, ''));
+    homeScore = parseInt(span1Text.replace(/[^\d]/g, ""));
+    visitorScore = parseInt(span2Text.replace(/[^\d]/g, ""));
   } else if (spanElements.length >= 1 && emElement) {
     // 勝敗が決している場合：<span>と<em>
     const spanElement = spanElements[0];
@@ -47,11 +47,11 @@ export function extractGameScore(
     const emText = emElement.textContent?.trim();
 
     if (!spanText || !emText) {
-      throw new ParseError('スコアテキストが空です', 'extractGameScore');
+      throw new ParseError("スコアテキストが空です", "extractGameScore");
     }
 
-    const spanScore = parseInt(spanText.replace(/[^\d]/g, ''));
-    const emScore = parseInt(emText.replace(/[^\d]/g, ''));
+    const spanScore = parseInt(spanText.replace(/[^\d]/g, ""));
+    const emScore = parseInt(emText.replace(/[^\d]/g, ""));
 
     // 親要素の子要素として順序を確認
     const parent = spanElement.parentElement;
@@ -68,11 +68,11 @@ export function extractGameScore(
       visitorScore = spanScore;
     }
   } else {
-    throw new ParseError('スコア要素の構造が不正です', 'extractGameScore');
+    throw new ParseError("スコア要素の構造が不正です", "extractGameScore");
   }
 
   if (isNaN(homeScore) || isNaN(visitorScore)) {
-    throw new ParseError('スコアの数値変換に失敗しました', 'extractGameScore');
+    throw new ParseError("スコアの数値変換に失敗しました", "extractGameScore");
   }
 
   // ファイターズ視点でのスコアを返す

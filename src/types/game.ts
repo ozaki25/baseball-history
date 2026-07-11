@@ -1,20 +1,34 @@
-export interface GameResult {
-  date: string; // MM/DD形式
-  myTeam: string;
-  vsTeam: string;
-  result: 'win' | 'lose' | 'draw';
+// 観戦ノートの中核データモデル（すべてスクレイピング由来・手入力項目は持たない）
+
+export type HomeAway = "home" | "away";
+
+// scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される。
+export type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled";
+
+export interface Game {
+  /** "YYYY-MM-DD"（第1試合のみ扱う） */
+  id: string;
+  /** ISO "YYYY-MM-DD" */
+  date: string;
+  /** 正規化済み対戦相手名（scheduled 時は空になりうる） */
+  opponent: string;
+  /** 正規化済み球場名 */
+  stadium: string;
+  homeAway: HomeAway;
+  result: GameResult;
   score: {
-    my: number;
-    vs: number;
+    fighters: number | null;
+    opponent: number | null;
   };
-  location: string;
-  gameUrl: string; // 該当試合のURL
 }
 
+export interface GamesData {
+  /** 取り込み実行時刻（ISO） */
+  generatedAt: string;
+  games: Game[];
+}
+
+/** data/dates.json の形: { "2025": ["0401", ...], ... } */
 export interface DatesData {
-  [year: string]: string[]; // ["0405", "0412", "0503"] 形式
-}
-
-export interface YearData {
-  [year: string]: GameResult[];
+  [year: string]: string[];
 }

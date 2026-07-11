@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { sleep, SCRAPING_DELAY_MS } from '@/lib/sleepUtils';
+import { describe, it, expect } from "vitest";
+import { sleep, SCRAPING_DELAY_MS } from "@/lib/sleepUtils";
 
-describe('sleepUtils', () => {
-  describe('sleep', () => {
-    it('指定した時間だけ待機する', async () => {
+describe("sleepUtils", () => {
+  describe("sleep", () => {
+    it("指定した時間だけ待機する", async () => {
       const startTime = Date.now();
       const delayMs = 50; // 50ms待機
 
@@ -15,7 +15,7 @@ describe('sleepUtils', () => {
       expect(elapsed).toBeLessThan(delayMs + 20);
     });
 
-    it('0msでも正常に動作する', async () => {
+    it("0msでも正常に動作する", async () => {
       const startTime = Date.now();
 
       await sleep(0);
@@ -25,8 +25,8 @@ describe('sleepUtils', () => {
     });
   });
 
-  describe('SCRAPING_DELAY_MS', () => {
-    it('100msの定数値が設定されている', () => {
+  describe("SCRAPING_DELAY_MS", () => {
+    it("100msの定数値が設定されている", () => {
       expect(SCRAPING_DELAY_MS).toBe(100);
     });
   });

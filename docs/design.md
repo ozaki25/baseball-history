@@ -31,20 +31,20 @@
 > 下表の版は 2026-07 時点の確認値。TypeScript 7 はネイティブコンパイラ世代の大型更新のため、
 > スキャフォールド時にツール互換を実地確認し、問題があれば 5 系へ退避可能とする。
 
-| レイヤ | 採用 | 版(確認時) | 選定理由 |
-|---|---|---|---|
-| フレームワーク | **TanStack Start** | 1.168 | TanStack 一式（Router 基盤）を中核に。Vercel を公式サポート。**完全静的（SSG/prerender）で運用** |
-| ルーティング/状態 | **TanStack Router**（Start 内蔵） | 1.170 | 絞り込み条件を**型安全に URL（search params）へ保持**。ファイルベースルーティング |
-| テーブル/集計 | **TanStack Table** | 8.21 | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装 |
-| 言語 | **TypeScript** | 7.0 | strict。型は単一定義 |
-| スタイル | **Tailwind CSS** | 4.x | ファイターズカラーをトークン化 |
-| PWA | **vite-plugin-pwa** | 1.3 | Manifest + Service Worker。Start(Vite基盤)構成向けに設定 |
-| テスト | **Vitest** | 4.x | パーサ/集計の単体テスト |
-| 解析 | **jsdom + 既存パーサ** | — | ingest 側で再利用（後述） |
-| Lint | **oxlint** | 1.x | 高速。ESLint は使わない |
-| Format | **oxfmt**（oxc） | 0.x | oxc で統一（0.x のため整形挙動の変化に留意） |
-| パッケージ管理 | **pnpm** | 11.x | 高速・省ディスク。npm から移行 |
-| デプロイ | **Vercel** | — | TanStack Start の Vercel ターゲットを使用 |
+| レイヤ            | 採用                              | 版(確認時) | 選定理由                                                                                         |
+| ----------------- | --------------------------------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| フレームワーク    | **TanStack Start**                | 1.168      | TanStack 一式（Router 基盤）を中核に。Vercel を公式サポート。**完全静的（SSG/prerender）で運用** |
+| ルーティング/状態 | **TanStack Router**（Start 内蔵） | 1.170      | 絞り込み条件を**型安全に URL（search params）へ保持**。ファイルベースルーティング                |
+| テーブル/集計     | **TanStack Table**                | 8.21       | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装                     |
+| 言語              | **TypeScript**                    | 7.0        | strict。型は単一定義                                                                             |
+| スタイル          | **Tailwind CSS**                  | 4.x        | ファイターズカラーをトークン化                                                                   |
+| PWA               | **vite-plugin-pwa**               | 1.3        | Manifest + Service Worker。Start(Vite基盤)構成向けに設定                                         |
+| テスト            | **Vitest**                        | 4.x        | パーサ/集計の単体テスト                                                                          |
+| 解析              | **jsdom + 既存パーサ**            | —          | ingest 側で再利用（後述）                                                                        |
+| Lint              | **oxlint**                        | 1.x        | 高速。ESLint は使わない                                                                          |
+| Format            | **oxfmt**（oxc）                  | 0.x        | oxc で統一（0.x のため整形挙動の変化に留意）                                                     |
+| パッケージ管理    | **pnpm**                          | 11.x       | 高速・省ディスク。npm から移行                                                                   |
+| デプロイ          | **Vercel**                        | —          | TanStack Start の Vercel ターゲットを使用                                                        |
 
 > Router は Start に内蔵。将来的に `@tanstack/react-query` / `react-form` を足す余地はあるが、
 > 初期スコープ（静的データ・編集 UI なし）では不要。
@@ -89,15 +89,15 @@ baseball-history/
 ### 4.1 Game（`games.json`）
 
 ```ts
-type HomeAway = 'home' | 'away';
+type HomeAway = "home" | "away";
 // scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される
-type GameResult = 'win' | 'lose' | 'draw' | 'cancelled' | 'scheduled';
+type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled";
 
 interface Game {
-  id: string;            // "2025-04-01"
-  date: string;          // ISO "YYYY-MM-DD"
-  opponent: string;      // 正規化済みチーム名（scheduled 時は空になりうる）
-  stadium: string;       // 正規化済み球場名
+  id: string; // "2025-04-01"
+  date: string; // ISO "YYYY-MM-DD"
+  opponent: string; // 正規化済みチーム名（scheduled 時は空になりうる）
+  stadium: string; // 正規化済み球場名
   homeAway: HomeAway;
   result: GameResult;
   score: { fighters: number | null; opponent: number | null }; // 中止時は null
@@ -110,7 +110,7 @@ interface Game {
 // games.json
 {
   "generatedAt": "2026-07-10T00:00:00Z",
-  "games": [ /* Game[] を date 昇順で格納 */ ]
+  "games": [/* Game[] を date 昇順で格納 */],
 }
 ```
 
@@ -216,6 +216,7 @@ interface Game {
 ## 7. 取り込み（ingest）設計
 
 ### 7.1 フロー
+
 1. `dates.json` を読み、`{year, MMDD}` を列挙。
 2. 既存 `games.json` があれば読み、**未確定の試合のみ**対象にする（確定済み＝再取得しない。`scheduled` と未取得は対象。`--force` で全再取得）。
 3. **未来日 or 当日で結果未確定**なら、取得を試みず（または結果なしを検知して）`result: 'scheduled'` として記録（事前登録の受け皿）。
@@ -225,6 +226,7 @@ interface Game {
 7. `date` 昇順で `games.json` を書き出し（`generatedAt` 更新）。
 
 ### 7.2 状態遷移とエラー処理
+
 - **事前登録**: 試合前の日は `scheduled` として保存。結果が出た後の実行で `win/lose/draw/cancelled` に**自動確定**（`scheduled` は毎回再取得対象なので放置でも次回実行で更新）。
 - 取得/解析失敗はレコードを捏造せず、**別途 `ingest-report.json`**（失敗一覧）に記録し、標準出力にサマリを出す。失敗分は次回実行で自動リトライ。
 - **再取得のトリガー**: 新しい観戦日を（スキル経由で）足して push すれば ingest が走り、その際に `scheduled`／失敗分も一緒に拾い直す。単独で確定させたい時は手動実行。
@@ -235,10 +237,10 @@ interface Game {
 取り込みは **GitHub Actions のワークフロー（`.github/workflows/ingest.yml`）** で実行する。
 GitHub のランナーは外部ネットに出られるため公式サイトへ到達可能（この開発環境や Vercel ビルドからは到達不可でも問題ない）。
 
-| トリガー | 動作 |
-|---|---|
-| `dates.json` への push | 追加された観戦日を含む**未取得分だけ**取得 |
-| 手動実行（`workflow_dispatch`） | 任意実行。`--force` や年指定も可能 |
+| トリガー                        | 動作                                       |
+| ------------------------------- | ------------------------------------------ |
+| `dates.json` への push          | 追加された観戦日を含む**未取得分だけ**取得 |
+| 手動実行（`workflow_dispatch`） | 任意実行。`--force` や年指定も可能         |
 
 - **定期実行（cron）はしない**。年に十数日の観戦のためにルーティンで回す必要はない。
   観戦日は「試合が終わってから」足せば結果は確定済みで push トリガーだけで取得できる。
