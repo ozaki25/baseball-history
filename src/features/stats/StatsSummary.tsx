@@ -1,5 +1,5 @@
 import type { Game } from "#/types/game";
-import { summarize, formatWinRate } from "#/lib/stats";
+import { summarize, formatWinRate } from "./model/stats";
 
 function Cell({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (

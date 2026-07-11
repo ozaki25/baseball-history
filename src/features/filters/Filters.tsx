@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { GameResult, HomeAway } from "#/types/game";
-import type { GameFilter, FilterOptions } from "#/lib/filters";
-import { emptyFilter, isFilterActive } from "#/lib/filters";
+import type { GameFilter, FilterOptions } from "./model/filters";
+import { emptyFilter, isFilterActive } from "./model/filters";
 import { RESULT_LABEL } from "#/lib/labels";
 import { Chip } from "#/ui/Chip";
 

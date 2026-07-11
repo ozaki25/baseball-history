@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { ScheduledList } from "#/components/ScheduledList";
+import { ScheduledList } from "#/features/home/ScheduledList";
 import { makeGame } from "#/tests/helpers/makeGame";
 
 describe("ScheduledList", () => {

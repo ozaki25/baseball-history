@@ -19,7 +19,39 @@
   },
   "overrides": [
     {
-      "files": ["src/components/**", "src/routes/**"],
+      "files": ["src/ui/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/lib/**", "#/routes/**", "#/types/**"],
+                "message": "ui/ はドメイン非依存の再利用UIです。domain型・lib・features に依存する部品は features/ に置いてください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/lib/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
+                "message": "lib は最下層の共有モジュールです。features/ui/routes に依存させないでください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/routes/**"],
       "rules": {
         "no-restricted-imports": [
           "error",
@@ -27,7 +59,99 @@
             "patterns": [
               {
                 "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアント(components/routes)から import しないでください。取り込み専用モジュールです。"
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/home/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+              },
+              {
+                "group": ["#/routes/**"],
+                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/filters/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+              },
+              {
+                "group": ["#/routes/**"],
+                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["#/features/home/**", "#/features/stats/**", "#/features/games/**"],
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/stats/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+              },
+              {
+                "group": ["#/routes/**"],
+                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["#/features/home/**", "#/features/filters/**", "#/features/games/**"],
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/features/games/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+              },
+              {
+                "group": ["#/routes/**"],
+                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["#/features/home/**", "#/features/filters/**", "#/features/stats/**"],
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
               }
             ]
           }

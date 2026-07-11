@@ -50,15 +50,35 @@
   **要素固有・動的な色は inline `style`**（例: `style={{ borderColor: "var(--line)" }}`）で書く。
   クラスと inline を混在させる場合はこの基準に従う（動的値のみ inline）。
 - 勝敗バッジの色はライト/ダーク共通の固定色として `ResultBadge.tsx` に集約（`styles.css` には置かない）。
-- 取り込み専用モジュールは `src/lib/ingest/`（jsdom 依存）に隔離し、`components`/`routes` からの
+- 取り込み専用モジュールは `src/lib/ingest/`（jsdom 依存）に隔離し、`features`/`routes` からの
   import を oxlint（`no-restricted-imports`）で禁止する。クライアントバンドルへの jsdom 混入を防ぐため。
 
-### ディレクトリ構成の方針
+### ディレクトリ構成と依存規則
 
-- `src/ui/`: **ドメイン型・データ層に依存しない再利用可能なUI**を置く（例: `Chip`, `ThemeToggle`）。
-  `Game` 等のドメイン型や `lib/*` のロジックに依存しないことを採録基準とする。副作用（localStorage 等）を
-  持つ場合はコンポーネント内で完結させる。
-- `src/components/`: 画面固有のコンポーネント（`HomeView` とその構成要素）。将来的には画面単位で `features/` へ再編する。
+3 層構成（上 → 下の一方向依存のみ許可。循環は構造的に発生しない）:
+
+```
+src/
+  routes/        # ルーター結線（container）。file-based。data import / validateSearch / navigate のみ
+  features/      # 画面単位。{home, filters, stats, games}
+    <feature>/
+      *.tsx      # その画面固有のコンポーネント（presentational）
+      model/     # その画面固有の純ロジック（例: filters/model, stats/model）。関数として単体テスト可能に
+  ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle）。hooks も可
+  lib/           # 全 feature が使う共有下層（labels, masters, normalize）と ingest/（取り込み専用）
+  types/         # 共有ドメイン型（Game 等）
+```
+
+- **依存方向**: `routes → features → { ui, lib, types }`。`features/home` は画面合成層として他 feature を横断
+  import してよいが、**兄弟 feature（filters/stats/games）相互の import は禁止**（共有ロジックは `lib/` へ）。
+  `ui`/`lib` は上位（features/routes）へ依存しない。これらは `.oxlintrc.json` の `no-restricted-imports` で機械的に強制する。
+- **`src/ui/` の採録基準**: ドメイン型・`lib` に依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
+  副作用（localStorage 等）はその部品内で完結させる。domain 型や `lib` に依存する部品は `features/` に置く。
+- **container / presentational**: `routes/*` が container（データ取得・URL 検証・`navigate` 結線）、`HomeView` 以下の
+  `features/*` は presentational（props で受け、`onNavigate` コールバックで返す）。新しい画面も route に結線だけ置き、
+  View は feature に置くこと。ルーター依存を feature に持ち込まない（`HomeView` の `search`/`onNavigate` seam を維持）。
+- ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる（`no-restricted-imports` は文字列マッチのため、相対パスでの
+  境界回避を規約で防ぐ）。
 
 ## 3. テスト戦略
 

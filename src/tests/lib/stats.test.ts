@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Game, GameResult } from "#/types/game";
-import { summarize, groupBy, formatWinRate } from "#/lib/stats";
+import { summarize, groupBy, formatWinRate } from "#/features/stats/model/stats";
 import { resolveTeam, resolveStadium } from "#/lib/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {

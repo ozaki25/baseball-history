@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { YearFilter } from "#/components/YearFilter";
+import { YearFilter } from "#/features/filters/YearFilter";
 
 // 新しい順。直近3年は 2026/2025/2024、それより古い年は既定では上部に出さない。
 const YEARS = ["2026", "2025", "2024", "2023", "2019", "2013"];

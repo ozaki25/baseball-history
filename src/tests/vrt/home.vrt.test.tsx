@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { HomeView } from "#/components/HomeView";
+import { HomeView } from "#/features/home/HomeView";
 import type { Game } from "#/types/game";
 import { makeGame } from "#/tests/helpers/makeGame";
 
