@@ -4,31 +4,10 @@ import type { GameResult, HomeAway } from "#/types/game";
 import type { GameFilter, FilterOptions } from "#/lib/filters";
 import { emptyFilter, isFilterActive } from "#/lib/filters";
 import { RESULT_LABEL } from "#/lib/labels";
+import { Chip } from "#/ui/Chip";
 
 // 予定(scheduled)は「勝敗」ではなく別枠(観戦予定)で扱うため、絞り込み選択肢には含めない
 const RESULT_ORDER: GameResult[] = ["win", "lose", "draw", "cancelled"];
-
-function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className="border px-2.5 py-1 text-sm"
-      style={
-        active
-          ? {
-              borderColor: "var(--brand)",
-              color: "var(--brand)",
-              background: "color-mix(in srgb, var(--brand) 10%, transparent)",
-            }
-          : { borderColor: "var(--line-strong)", color: "var(--muted)" }
-      }
-    >
-      {label}
-    </button>
-  );
-}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -170,6 +149,7 @@ export function Filters({
             <div className="divide-y" style={{ borderColor: "var(--line)" }}>
               <Section title="年度">
                 <Chip
+                  variant="tint"
                   label="すべて"
                   active={filter.year === "all"}
                   onClick={() => onChange({ ...filter, year: "all" })}
@@ -177,6 +157,7 @@ export function Filters({
                 {options.years.map((y) => (
                   <Chip
                     key={y}
+                    variant="tint"
                     label={y}
                     active={filter.year === y}
                     onClick={() => onChange({ ...filter, year: y })}
@@ -188,6 +169,7 @@ export function Filters({
                 {homeAwayOptions.map((o) => (
                   <Chip
                     key={o.value}
+                    variant="tint"
                     label={o.label}
                     active={filter.homeAway === o.value}
                     onClick={() => onChange({ ...filter, homeAway: o.value })}
@@ -199,6 +181,7 @@ export function Filters({
                 {RESULT_ORDER.map((r) => (
                   <Chip
                     key={r}
+                    variant="tint"
                     label={RESULT_LABEL[r]}
                     active={filter.results.includes(r)}
                     onClick={() => onChange({ ...filter, results: toggle(filter.results, r) })}
@@ -210,6 +193,7 @@ export function Filters({
                 {options.stadiums.map((s) => (
                   <Chip
                     key={s.id}
+                    variant="tint"
                     label={s.label}
                     active={filter.stadiums.includes(s.id)}
                     onClick={() => onChange({ ...filter, stadiums: toggle(filter.stadiums, s.id) })}
@@ -221,6 +205,7 @@ export function Filters({
                 {options.opponents.map((o) => (
                   <Chip
                     key={o.id}
+                    variant="tint"
                     label={o.label}
                     active={filter.opponents.includes(o.id)}
                     onClick={() =>

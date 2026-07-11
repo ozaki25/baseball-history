@@ -59,3 +59,14 @@ test("トップ画面（デスクトップ 1280px）", async () => {
   renderHome();
   await expect.element(page.getByTestId("vrt-root")).toMatchScreenshot("home-desktop");
 });
+
+// 絞り込みダイアログは tint チップ（複数選択UI）を含む唯一の画面。
+// トップ画面のVRTでは撮れないため、開いた状態を別ケースで固定化する。
+test("絞り込みダイアログ（tintチップ・モバイル 390px）", async () => {
+  await page.viewport(390, 900);
+  renderHome();
+  await page.getByRole("button", { name: "絞り込み" }).click();
+  await expect
+    .element(page.getByRole("dialog", { name: "絞り込み条件" }))
+    .toMatchScreenshot("filters-dialog-mobile");
+});
