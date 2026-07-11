@@ -46,12 +46,14 @@ export default defineConfig({
                 : {},
             }),
             headless: true,
+            // 既定 viewport（各テストは page.viewport で明示上書きする）
             instances: [{ browser: "chromium", viewport: { width: 1280, height: 720 } }],
             expect: {
               toMatchScreenshot: {
                 comparatorName: "pixelmatch",
-                // テキスト主体の UI ではアンチエイリアスの微差が出るため 1% まで許容
-                comparatorOptions: { allowedMismatchedPixelRatio: 0.01 },
+                // 環境を固定(Docker+Noto CJK)しているため run 間の揺れはほぼ無い。
+                // per-pixel の AA だけ threshold で吸収し、許容差分は小さな絶対値に抑える。
+                comparatorOptions: { threshold: 0.1, allowedMismatchedPixels: 100 },
               },
             },
           },

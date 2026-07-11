@@ -76,9 +76,14 @@
     GitHub Actions の `Visual Regression` ワークフロー（**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`**）。
   - baseline は `src/tests/vrt/__screenshots__/` にコミットする（生成物はCI所有）。**ローカルで生成した baseline はコミットしない**
     （ローカルは `VRT_CHROMIUM_PATH=<chromium> pnpm test:visual` で挙動確認のみ・非正）。
-  - baseline が無い初回はCIが自動生成してPRへコミット（ブートストラップ）。意図的なUI変更で更新する時は
-    `Visual Regression` ワークフローを `update=true` で手動実行すると、標準環境で再生成しコミットする。差分は
-    コミットされた画像としてPRでレビューする。
+  - baseline が無い初回はCIが自動生成してPRへコミット（ブートストラップ）。生成直後に同一ジョブ内で比較して
+    自己検証する。意図的なUI変更や**新しい `*.vrt.test.tsx` を追加**した時は、`Visual Regression` ワークフローを
+    `update=true` で手動実行すると標準環境で再生成しコミットする（新規テストは baseline が無いと比較 fail する）。
+    差分はコミットされた画像としてPRでレビューする。
+  - 比較 fail 時は `actual`/`diff` 画像が `vrt-diff` アーティファクトとして保存される（Actions からダウンロード可）。
+  - ローカルの `pnpm test:visual` は Hiragino 等が無くフォント差で fail しやすい（挙動確認用）。`test:visual:update` は
+    標準環境以外では既定でブロックする（`scripts/vrt-guard.mjs`。どうしてもローカルの Docker 内で更新する場合のみ
+    `VRT_UPDATE_OK=1`）。閾値は `allowedMismatchedPixels`（絶対数）で管理し、環境固定前提で小さく保つ。
 - CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test:coverage` → `build` を実行（後述）。
 
 ## 4. ブランチ / コミット

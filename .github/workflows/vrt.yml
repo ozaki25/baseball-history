@@ -6,12 +6,24 @@ name: Visual Regression
 
 on:
   pull_request:
+    # 描画に影響し得る変更のみ対象（docs だけの PR では Docker ジョブを走らせない）
+    paths:
+      - "src/**"
+      - "vite.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/vrt.yml"
   workflow_dispatch:
     inputs:
       update:
         description: "ベースラインを再生成してコミットする"
         type: boolean
         default: false
+
+# 同一 PR/ブランチの古い実行はキャンセル
+concurrency:
+  group: vrt-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -62,7 +74,19 @@ jobs:
               git commit -m "chore(vrt): 視覚ベースラインを更新"
               git push
             fi
+            # 生成直後に同一環境で比較して自己検証（生成物が実際に一致することを担保）
+            echo "生成したベースラインで自己検証します"
+            pnpm test:visual
           else
             echo "コミット済みベースラインと比較します"
             pnpm test:visual
           fi
+
+      - name: 失敗時に actual/diff 画像をアーティファクト保存
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vrt-diff
+          path: .vitest-attachments/
+          if-no-files-found: ignore
+          retention-days: 14

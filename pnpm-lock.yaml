@@ -88,7 +88,7 @@ importers:
         specifier: ^1.73.0
         version: 1.73.0
       playwright:
-        specifier: ^1.61.1
+        specifier: 1.61.1
         version: 1.61.1
       tsx:
         specifier: ^4.20.0
