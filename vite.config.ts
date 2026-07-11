@@ -66,6 +66,8 @@ export default defineConfig({
       // 生成物・フレームワークの結線（ロジックを持たない）は計測対象外。
       // 画面ロジックは HomeView に切り出してテスト済み（index.tsx は結線のみ）。
       exclude: [
+        // テストは実装の隣にコロケーション。テスト本体とヘルパ/フィクスチャ/setup/VRTは計測対象外。
+        "src/**/*.test.{ts,tsx}",
         "src/tests/**",
         "src/routeTree.gen.ts",
         "src/router.tsx",

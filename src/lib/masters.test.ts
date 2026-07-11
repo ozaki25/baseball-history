@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { GamesData } from "#/types/game";
-import gamesData from "../../../data/games.json";
+import gamesData from "../../data/games.json";
 import { resolveTeam, resolveStadium } from "#/lib/masters";
 
 describe("masters", () => {

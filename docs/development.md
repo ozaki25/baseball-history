@@ -81,6 +81,12 @@ src/
   境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/lib/ingest/**` を
   併記して相対パス回避も機械的に捕捉する。feature 間の横断禁止は建築規約であり、相対パス（例 `../filters/...`）は
   import 文字列に `features` を含まず文字列マッチでは原理的に捕捉できないため、上記のエイリアス規約で補完する。
+  境界は `scripts/**`（UI層非依存）・`types/**`（最下層）にも適用する。テストファイル（`**/*.test.{ts,tsx}`）は
+  末尾 override で `no-restricted-imports` を off にして対象外（テストは境界を跨いで検証するのが正当で、クライアント
+  バンドルにも含まれないため）。
+- **feature を追加するとき**（例: 5 つ目の feature）: `.oxlintrc.json` の兄弟 feature 禁止リストは negation が効かず
+  明示列挙が必要なため、既存の各 feature override に新 feature を1行ずつ追記する（追記漏れは「違反 import を一時挿入して
+  oxlint が落ちる」ことで検証する）。
 
 ## 3. テスト戦略
 
@@ -94,10 +100,16 @@ src/
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
+- **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/features/filters/model/filters.test.ts`、
+  `src/features/games/GameTable.test.tsx`、`src/lib/masters.test.ts`、`src/lib/ingest/parsers/teamExtractor.test.ts` など）。
+  実装の移動時にテストが一緒に動き、対応関係が一目で分かる。一方、**共有アセットは `src/tests/` に集約**する:
+  `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
+  実装の隣ではないため、`__screenshots__` ごと集約。CI ワークフローも `src/tests/vrt` を参照）。
 - コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
 - **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
   課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
-  ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。現状 96%/92%/96%/96%。
+  ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。コロケーションしたテスト本体
+  （`src/**/*.test.{ts,tsx}`）と `src/tests/**`（ヘルパ/フィクスチャ/setup/VRT）も計測対象外。現状 96%/92%/98%/97%。
 - **VRT（視覚回帰）**: Vitest 4 の Browser Mode（`@vitest/browser-playwright`）＋ `toMatchScreenshot` を使用。
   単体とは別 project（`vrt`, `*.vrt.test.tsx`）に分離し、`pnpm test:visual`（比較）/ `pnpm test:visual:update`（更新）。
   対象は `src/tests/vrt/`（トップ画面のモバイル/デスクトップ等）で、固定フィクスチャで描画して baseline を安定させる。
