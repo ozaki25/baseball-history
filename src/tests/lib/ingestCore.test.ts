@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { buildGame, resultFromScores, toIsoDate, isFutureDate } from "@/lib/ingestCore";
+import type { Game } from "@/types/game";
+import {
+  buildGame,
+  resultFromScores,
+  toIsoDate,
+  isFutureDate,
+  withResolvedIds,
+} from "@/lib/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "@/tests/helpers/testHtmlLoader";
 
 describe("resultFromScores", () => {
@@ -49,5 +56,43 @@ describe("buildGame (フィクスチャで実パーサ検証)", () => {
     const g = buildGame("2025-05-01", "2025-05-01", loadTestHTML(TEST_PATTERNS.DRAW));
     expect(g.result).toBe("draw");
     expect(g.opponent).toBe("福岡ソフトバンク");
+  });
+});
+
+describe("withResolvedIds", () => {
+  it("表示名から opponentId/stadiumId を再解決する（表示名は保持）", () => {
+    const stale: Game = {
+      id: "2013-08-07",
+      date: "2013-08-07",
+      opponent: "埼玉西武",
+      opponentId: "OLD",
+      stadium: "西武ドーム",
+      stadiumId: "OLD",
+      homeAway: "away",
+      result: "lose",
+      score: { fighters: 6, opponent: 7 },
+    };
+    const fixed = withResolvedIds(stale);
+    expect(fixed.opponentId).toBe("seibu");
+    expect(fixed.stadiumId).toBe("seibu-dome");
+    expect(fixed.opponent).toBe("埼玉西武");
+    expect(fixed.stadium).toBe("西武ドーム");
+  });
+
+  it("表示名が空（中止/予定）ならIDも空", () => {
+    const cancelled: Game = {
+      id: "2025-07-14",
+      date: "2025-07-14",
+      opponent: "",
+      opponentId: "x",
+      stadium: "",
+      stadiumId: "x",
+      homeAway: null,
+      result: "cancelled",
+      score: { fighters: null, opponent: null },
+    };
+    const fixed = withResolvedIds(cancelled);
+    expect(fixed.opponentId).toBe("");
+    expect(fixed.stadiumId).toBe("");
   });
 });

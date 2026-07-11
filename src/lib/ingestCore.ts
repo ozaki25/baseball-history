@@ -1,4 +1,4 @@
-import type { Game, GameResult } from "#/types/game";
+import type { DatesData, Game, GameResult } from "#/types/game";
 import { parseGameHTML } from "./parsers/gameParser";
 import { normalizeText } from "./normalize";
 import { resolveTeam, resolveStadium } from "./masters";
@@ -72,4 +72,104 @@ export function scheduledGame(id: string, isoDate: string): Game {
     result: "scheduled",
     score: { fighters: null, opponent: null },
   };
+}
+
+/** 解析不能だが中止と判断できたときの受け皿 */
+export function cancelledGame(id: string, isoDate: string): Game {
+  return {
+    id,
+    date: isoDate,
+    opponent: "",
+    opponentId: "",
+    stadium: "",
+    stadiumId: "",
+    homeAway: null,
+    result: "cancelled",
+    score: { fighters: null, opponent: null },
+  };
+}
+
+const DECIDED = new Set<GameResult>(["win", "lose", "draw"]);
+
+export interface IngestDeps {
+  /** year, mmdd を受け取り HTML を返す（失敗時は throw）。呼び出し側でレート制御・URL組み立て */
+  fetchHtml: (year: string, mmdd: string) => Promise<string>;
+  /** 「今日」の基準（scheduled 判定用） */
+  now?: Date;
+  /** 確定済みも含め全件再取得 */
+  force?: boolean;
+  /** 対象年（未指定=全年） */
+  yearFilter?: string;
+  /** 1件処理ごとの待機（レート制御。テストでは省略で即時） */
+  sleep?: () => Promise<void>;
+}
+
+export interface IngestResult {
+  games: Game[];
+  failures: { id: string; error: string }[];
+  fetched: number;
+}
+
+/**
+ * 取り込みの中核（IO 非依存・fetch を注入）。
+ * - 確定(win/lose/draw)は再取得せず保持（ID は再解決）。scheduled/cancelled は再取得。
+ * - 未来日は scheduled。過去日は取得→解析、解析不能かつ中止表記なら cancelled。
+ * - 取得失敗時は既存レコードを保持（データ消失防止）、無ければ失敗記録のみ。
+ */
+export async function mergeIngest(
+  dates: DatesData,
+  existing: Map<string, Game>,
+  deps: IngestDeps,
+): Promise<IngestResult> {
+  const { fetchHtml, now = new Date(), force = false, yearFilter } = deps;
+  const sleep = deps.sleep ?? (async () => {});
+  const isConfirmed = (g: Game | undefined) => g !== undefined && DECIDED.has(g.result) && !force;
+
+  const games: Game[] = [];
+  const failures: { id: string; error: string }[] = [];
+  let fetched = 0;
+
+  for (const [year, list] of Object.entries(dates)) {
+    if (yearFilter && year !== yearFilter) {
+      for (const mmdd of list) {
+        const prev = existing.get(toIsoDate(year, mmdd));
+        if (prev) games.push(withResolvedIds(prev));
+      }
+      continue;
+    }
+
+    for (const mmdd of list) {
+      const isoDate = toIsoDate(year, mmdd);
+      const id = isoDate;
+      const prev = existing.get(id);
+
+      if (isConfirmed(prev)) {
+        games.push(withResolvedIds(prev!));
+        continue;
+      }
+      if (isFutureDate(isoDate, now)) {
+        games.push(scheduledGame(id, isoDate));
+        continue;
+      }
+
+      try {
+        const html = await fetchHtml(year, mmdd);
+        fetched += 1;
+        try {
+          games.push(buildGame(id, isoDate, html));
+        } catch (parseErr) {
+          if (looksCancelled(html)) games.push(cancelledGame(id, isoDate));
+          else throw parseErr;
+        }
+      } catch (err) {
+        failures.push({ id, error: err instanceof Error ? err.message : String(err) });
+        if (prev) games.push(withResolvedIds(prev));
+      } finally {
+        await sleep();
+      }
+    }
+  }
+
+  games.sort((a, b) => a.date.localeCompare(b.date));
+  return { games, failures, fetched };
 }
