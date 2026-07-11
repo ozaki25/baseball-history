@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import type { Game } from "@/types/game";
-import { formatDateJa, formatScore, RESULT_LABEL, HOME_AWAY_LABEL } from "@/lib/labels";
+import type { Game } from "#/types/game";
+import { formatDateJa, formatScore, RESULT_LABEL, HOME_AWAY_LABEL } from "#/lib/labels";
 
 function game(score: Game["score"]): Game {
   return {

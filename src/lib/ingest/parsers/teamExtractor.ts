@@ -1,13 +1,9 @@
-import { JSDOM } from "jsdom";
 import { ParseError } from "#/types/parsing";
 
 /**
  * 自チーム名を取得
  */
-export function extractMyTeam(html: string, isHome: boolean): string {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
-
+export function extractMyTeam(document: Document, isHome: boolean): string {
   const headerElements = document.querySelectorAll(".c-game-detail__header-text");
   if (headerElements.length < 2) {
     throw new ParseError("チーム名要素が2つ見つかりません", "extractMyTeam");
@@ -26,10 +22,7 @@ export function extractMyTeam(html: string, isHome: boolean): string {
 /**
  * 対戦相手チーム名を取得
  */
-export function extractVsTeam(html: string, isHome: boolean): string {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
-
+export function extractVsTeam(document: Document, isHome: boolean): string {
   const headerElements = document.querySelectorAll(".c-game-detail__header-text");
   if (headerElements.length < 2) {
     throw new ParseError("チーム名要素が2つ見つかりません", "extractVsTeam");

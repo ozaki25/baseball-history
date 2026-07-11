@@ -2,8 +2,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Filters } from "@/components/Filters";
-import { emptyFilter, type FilterOptions, type GameFilter } from "@/lib/filters";
+import { Filters } from "#/components/Filters";
+import { emptyFilter, type FilterOptions, type GameFilter } from "#/lib/filters";
 
 const OPTIONS: FilterOptions = {
   years: ["2025", "2024"],

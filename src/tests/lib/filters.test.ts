@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import type { Game, GameResult } from "@/types/game";
-import { applyFilters, deriveOptions, emptyFilter, isFilterActive } from "@/lib/filters";
-import { resolveTeam, resolveStadium } from "@/lib/masters";
+import type { Game, GameResult } from "#/types/game";
+import { applyFilters, deriveOptions, emptyFilter, isFilterActive } from "#/lib/filters";
+import { resolveTeam, resolveStadium } from "#/lib/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {
   const opponent = partial.opponent ?? "オリックス";
@@ -60,6 +60,12 @@ describe("deriveOptions", () => {
       options.stadiums.some((s) => s.id === "seibu-dome" && s.label === "ベルーナドーム"),
     ).toBe(true);
     expect(options.opponents.some((o) => o.id === "seibu" && o.label === "埼玉西武")).toBe(true);
+  });
+
+  it("allYears で記録の無い年度も候補に残す（新しい順で統合・重複なし）", () => {
+    const options = deriveOptions(games, ["2023", "2024", "2017"]);
+    // 実データ(2024,2025) と allYears(2023,2024,2017) を統合し降順
+    expect(options.years).toEqual(["2025", "2024", "2023", "2017"]);
   });
 });
 

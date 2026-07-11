@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { StatsSummary } from "@/components/StatsSummary";
-import { makeGame } from "@/tests/helpers/makeGame";
+import { StatsSummary } from "#/components/StatsSummary";
+import { makeGame } from "#/tests/helpers/makeGame";
 
 // 集計ロジックは stats.test.ts で網羅。ここは「集計結果が正しく画面に出るか」を確認する。
 const GAMES = [

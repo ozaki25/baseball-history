@@ -2,10 +2,9 @@ import type { Game } from "#/types/game";
 import { formatDateJa } from "#/lib/labels";
 import { CalendarClock } from "lucide-react";
 
+// 抽出（result==="scheduled" と年度絞り込み）は呼び出し側の責務。ここは受け取った予定を並べるだけ。
 export function ScheduledList({ games }: { games: Game[] }) {
-  const upcoming = games
-    .filter((g) => g.result === "scheduled")
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const upcoming = [...games].sort((a, b) => a.date.localeCompare(b.date));
   if (upcoming.length === 0) return null;
 
   return (

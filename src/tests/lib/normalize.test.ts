@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeText } from "@/lib/normalize";
+import { normalizeText } from "#/lib/normalize";
 
 describe("normalizeText", () => {
   it("前後の空白と連続空白を整える", () => {

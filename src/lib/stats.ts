@@ -64,8 +64,16 @@ function groupValue(game: Game, key: GroupKey): string | null {
   }
 }
 
-/** 軸別のクロス集計。観戦数の多い順→キー順で並べる。値が不明(null)の試合は除外。 */
-export function groupBy(games: Game[], key: GroupKey): GroupRow[] {
+/**
+ * 軸別のクロス集計。観戦数の多い順→表示ラベル順で並べる。値が不明(null)の試合は除外。
+ * 表示順はここ（集計層）に集約する。同数時の並びは labelOf（表示名）で決めるため、
+ * 呼び出し側は key→表示名の解決関数を渡す（既定はキー文字列そのもの）。
+ */
+export function groupBy(
+  games: Game[],
+  key: GroupKey,
+  labelOf: (key: string) => string = (k) => k,
+): GroupRow[] {
   const buckets = new Map<string, Game[]>();
   for (const game of games) {
     const value = groupValue(game, key);
@@ -77,7 +85,7 @@ export function groupBy(games: Game[], key: GroupKey): GroupRow[] {
 
   return [...buckets.entries()]
     .map(([groupKey, groupGames]) => ({ key: groupKey, ...summarize(groupGames) }))
-    .sort((a, b) => b.attended - a.attended || a.key.localeCompare(b.key, "ja"));
+    .sort((a, b) => b.attended - a.attended || labelOf(a.key).localeCompare(labelOf(b.key), "ja"));
 }
 
 /** 勝率を ".xxx" 形式に整形（null は "-"）。 */

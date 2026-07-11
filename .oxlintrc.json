@@ -16,5 +16,23 @@
     "no-console": "off",
     "unicorn/no-array-sort": "off",
     "no-underscore-dangle": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/components/**", "src/routes/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアント(components/routes)から import しないでください。取り込み専用モジュールです。"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

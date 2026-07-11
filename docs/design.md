@@ -9,7 +9,7 @@
 
 ```
 ┌────────────── オフライン処理（手動/オンデマンド実行）──────────────┐
-│  data/dates.json ──▶ scripts/ingest.mjs ──▶ 公式サイト取得・解析     │
+│  data/dates.json ──▶ scripts/ingest.ts ──▶ 公式サイト取得・解析      │
 │                             │                                        │
 │                             └──────────────▶  data/games.json        │
 └─────────────────────────────┬────────────────────────────────────────┘
@@ -57,30 +57,33 @@ baseball-history/
 │  ├─ dates.json          # 観戦日（取り込み入力・維持／事前登録もここ）
 │  └─ games.json          # 取り込みの生成物（アプリのソース・コミット対象）
 ├─ scripts/
-│  ├─ ingest.mjs          # dates + 公式サイト → games.json 生成（既存パーサ利用）
-│  └─ add-date.mjs        # 観戦日追加（バリデーション・ソート。スキルから呼ぶ）
+│  ├─ ingest.ts           # dates + 公式サイト → games.json 生成（tsx 実行。IO とCLI引数のみ）
+│  └─ add-date.mjs        # 観戦日追加（バリデーション・ソート。コマンドから呼ぶ）
 ├─ src/
 │  ├─ routes/             # TanStack Start ファイルベースルーティング
-│  │  ├─ __root.tsx       # ルートレイアウト（Header / Footer）
+│  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
 │  │  └─ index.tsx        # 一覧＋絞り込み＋集計（メイン画面）
-│  ├─ components/
-│  │  ├─ GameTable.tsx    # TanStack Table（PC テーブル / モバイルカード）
-│  │  ├─ Filters.tsx      # 5 軸の絞り込み UI（モバイル=ボトムシート）
-│  │  ├─ StatsSummary.tsx # 絞り込み連動の集計サマリ
-│  │  └─ CrossStats.tsx   # 軸別クロス集計テーブル
+│  ├─ components/         # GameTable / Filters / StatsSummary / CrossStats /
+│  │                      # YearFilter / ScheduledList / ResultBadge / ThemeToggle
 │  ├─ lib/
-│  │  ├─ parsers/         # 既存パーサを移設・再利用（ingest から利用）
+│  │  ├─ ingest/          # 取り込み専用（jsdom 依存・クライアントから import 禁止）
+│  │  │  ├─ ingestCore.ts # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
+│  │  │  ├─ parsers/      # 公式サイト HTML パーサ（Document を受け取る抽出器群）
+│  │  │  └─ sleepUtils.ts # レート制御
+│  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
 │  │  ├─ stats.ts         # 集計ロジック（純関数・テスト対象／scheduled は集計から除外）
-│  │  ├─ filters.ts       # 絞り込みロジック・URL スキーマ
-│  │  └─ normalize.ts     # 最小限の正規化＋（必要時のみ）名寄せ対応表
+│  │  ├─ filters.ts       # 絞り込みロジック・選択肢生成
+│  │  ├─ search.ts        # URL search params ⇔ フィルタの相互変換・サニタイズ
+│  │  ├─ labels.ts        # 表示ラベル・日付/スコア整形
+│  │  └─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
 │  ├─ types/
 │  │  └─ game.ts          # Game 型ほか
-│  └─ styles/             # Tailwind エントリ・テーマ
-├─ src/tests/             # Vitest（既存フィクスチャ流用）
-├─ public/                # PWA アイコン・静的ファイル
-├─ .claude/skills/add-date/  # 観戦日追加スキル（Claude 経由の登録口）
+│  └─ styles.css          # Tailwind エントリ・デザイントークン（ライト/ダーク）
+├─ src/tests/             # Vitest（lib 単体・パーサ・コンポーネント[jsdom]）
+├─ public/                # PWA アイコン・manifest・sw.js
+├─ .claude/commands/add-date.md  # 観戦日追加コマンド（Claude 経由の登録口）
 ├─ .github/workflows/     # ci.yml / ingest.yml
-├─ app.config.ts          # TanStack Start 設定
+├─ vite.config.ts         # TanStack Start / Vite / Vitest 設定
 └─ docs/                  # 本ドキュメント群
 ```
 
@@ -96,15 +99,22 @@ type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled";
 interface Game {
   id: string; // "2025-04-01"
   date: string; // ISO "YYYY-MM-DD"
-  opponent: string; // 正規化済みチーム名（scheduled 時は空になりうる）
-  stadium: string; // 正規化済み球場名
-  homeAway: HomeAway;
+  opponent: string; // 当時の表示名（正規化済み。scheduled/cancelled 時は空になりうる）
+  opponentId: string; // 安定ID（表記ゆれを束ねる。不明時は空文字）
+  stadium: string; // 当時の表示名（正規化済み）
+  stadiumId: string; // 安定ID（球場の命名権変更を束ねる。不明時は空文字）
+  homeAway: HomeAway | null; // 中止/予定など不定時は null
   result: GameResult;
-  score: { fighters: number | null; opponent: number | null }; // 中止時は null
+  score: { fighters: number | null; opponent: number | null }; // 中止/予定時は null
 }
 ```
 
 > 全項目がスクレイピング由来。手入力項目（メモ等）は持たない。
+>
+> **安定ID（`masters.ts`）**: チーム・球場は年代で表示名が変わりうる（球団改称・球場の命名権）。
+> 各試合には**当時の表示名**（`opponent`/`stadium`）を残しつつ、集計・絞り込み・URL は
+> **安定ID**（`opponentId`/`stadiumId`）で束ねる。ID は別名表（`aliases`）で解決し、代表名で表示する。
+> 未知の名称は正規化名をそのまま ID/表示にフォールバック（＝名前単位で束ねる）。
 
 ```jsonc
 // games.json
@@ -129,10 +139,13 @@ interface Game {
 - URL スキーマ例:
 
 ```
-/?year=2025&stadium=escon,tokyo-dome&opponent=orix&homeAway=home&result=win,sayonara
+/?year=2025&stadium=escon&stadium=tokyo-dome&opponent=orix&home=home&result=win&result=lose
 ```
 
-- 型安全な search バリデーション（Zod など）で不正値をサニタイズ。
+（stadium/opponent は安定ID。配列は TanStack Router のシリアライズに従い同名キーを繰り返す。）
+
+- search バリデーション（`search.ts` の手書きサニタイズ）で不正値を除去し、値をキーごとに正規化。
+  依存を増やさないため Zod 等は使わず、最小限のバリデータで済ませる。
 - 「URL が状態のソース」→ ブックマーク・共有・戻る/進むが自然に機能。
 
 ## 6. 画面設計（モバイルファースト）
@@ -273,9 +286,9 @@ npm run ingest -- --year 2026
 - `public/sw.js`（same-origin GET を stale-while-revalidate、ナビゲーションはオフライン時トップへフォールバック）。
 - `__root.tsx` でアイコン/マニフェスト/テーマカラーを head に、SW 登録をインラインスクリプトで実施。
 
-## 9b. 観戦日の登録（Claude 経由スキル）
+## 9b. 観戦日の登録（Claude 経由コマンド）
 
-観戦日の追加は**すべて Claude 経由**で行う。`.claude/skills/add-date/` にスキルを置く。
+観戦日の追加は**すべて Claude 経由**で行う。`.claude/commands/add-date.md` にコマンドを置く。
 
 - 役割: 引数（年・`MMDD` 複数可）を検証し、`data/dates.json` へ追記・ソート → commit & push。
   push をトリガーに GitHub Actions(ingest) が走り、結果取得〜デプロイまで自動で流れる。
