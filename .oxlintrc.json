@@ -157,6 +157,44 @@
           }
         ]
       }
+    },
+    {
+      "files": ["scripts/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
+                "message": "scripts(ビルド/取り込み)はUI層に依存しないでください。共有ロジックは lib/ へ置いてください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/types/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/ui/**", "#/lib/**", "#/routes/**"],
+                "message": "types は最下層のドメイン型です。features/ui/lib/routes に依存させないでください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/*.test.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
     }
   ]
 }
