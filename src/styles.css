@@ -1,27 +1,130 @@
 @import "tailwindcss";
 
 /*
- * 観戦ノート — デザイントークン
- * ベース: ファイターズブルー。数字が主役の「記録簿」的な見た目。
- * 意味色（勝ち/負け/引分）はアクセントとは別系統。
+ * 観戦ノート — デザインシステム
+ * コンセプト: 野球のスコアブック / 記録簿。罫線とタブラー数字で「帳簿」感を出す。
+ * 装飾より情報設計。ファイターズブルーは構造色として控えめに使う。
  */
 @theme {
   --font-sans:
     "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif;
   --font-mono: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Courier New", monospace;
-
-  --color-fb-blue: #016298;
-  --color-fb-navy: #02324e;
-  --color-fb-sky: #37a0de;
 }
 
 :root {
   color-scheme: light dark;
+
+  /* ベース（クールニュートラル。クリーム系は使わない） */
+  --paper: #e9edf0;
+  --panel: #ffffff;
+  --panel-2: #f4f6f8;
+  --ink: #17222c;
+  --muted: #5c6b78;
+  --faint: #8a97a2;
+  --line: #d5dce2;
+  --line-strong: #b9c3cb;
+
+  /* 構造色: ファイターズブルー */
+  --brand: #016298;
+
+  /* 意味色（くすませた色調。ネオンにしない） */
+  --win: #1f7a4d;
+  --lose: #b0473f;
+  --draw: #6b7680;
+  --cancel: #97a2ab;
+  --sched: #016298;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b1014;
+    --panel: #141c23;
+    --panel-2: #0f171d;
+    --ink: #e6edf2;
+    --muted: #93a2ae;
+    --faint: #6b7a86;
+    --line: #26313a;
+    --line-strong: #37454f;
+
+    --brand: #37a0de;
+
+    --win: #4fb37c;
+    --lose: #e08a83;
+    --draw: #8a96a0;
+    --cancel: #6d7a84;
+    --sched: #37a0de;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper: #e9edf0;
+  --panel: #ffffff;
+  --panel-2: #f4f6f8;
+  --ink: #17222c;
+  --muted: #5c6b78;
+  --faint: #8a97a2;
+  --line: #d5dce2;
+  --line-strong: #b9c3cb;
+  --brand: #016298;
+  --win: #1f7a4d;
+  --lose: #b0473f;
+  --draw: #6b7680;
+  --cancel: #97a2ab;
+  --sched: #016298;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0b1014;
+  --panel: #141c23;
+  --panel-2: #0f171d;
+  --ink: #e6edf2;
+  --muted: #93a2ae;
+  --faint: #6b7a86;
+  --line: #26313a;
+  --line-strong: #37454f;
+  --brand: #37a0de;
+  --win: #4fb37c;
+  --lose: #e08a83;
+  --draw: #8a96a0;
+  --cancel: #6d7a84;
+  --sched: #37a0de;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html,
 body {
   margin: 0;
-  background: var(--surface, #f4f6f8);
-  color: var(--ink, #14202b);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+body {
+  font-size: 15px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+/* フォーカスの可視化（キーボード操作） */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

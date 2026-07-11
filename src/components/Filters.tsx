@@ -1,0 +1,211 @@
+import { useState } from "react";
+import { SlidersHorizontal, X } from "lucide-react";
+import type { GameResult, HomeAway } from "#/types/game";
+import type { GameFilter, FilterOptions } from "#/lib/filters";
+import { emptyFilter, isFilterActive } from "#/lib/filters";
+import { RESULT_LABEL } from "#/lib/labels";
+
+// 予定(scheduled)は「勝敗」ではなく別枠(観戦予定)で扱うため、絞り込み選択肢には含めない
+const RESULT_ORDER: GameResult[] = ["win", "lose", "draw", "cancelled"];
+
+function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className="border px-2.5 py-1 text-sm"
+      style={
+        active
+          ? {
+              borderColor: "var(--brand)",
+              color: "var(--brand)",
+              background: "color-mix(in srgb, var(--brand) 10%, transparent)",
+            }
+          : { borderColor: "var(--line-strong)", color: "var(--muted)" }
+      }
+    >
+      {label}
+    </button>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2 py-3">
+      <div className="text-[11px] font-bold tracking-wide text-[var(--muted)]">{title}</div>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </div>
+  );
+}
+
+function toggle<T>(list: T[], value: T): T[] {
+  return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+}
+
+export function Filters({
+  filter,
+  options,
+  onChange,
+}: {
+  filter: GameFilter;
+  options: FilterOptions;
+  onChange: (next: GameFilter) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const active = isFilterActive(filter);
+  const activeCount =
+    (filter.year !== "all" ? 1 : 0) +
+    filter.stadiums.length +
+    filter.opponents.length +
+    (filter.homeAway !== "all" ? 1 : 0) +
+    filter.results.length;
+
+  const homeAwayOptions: { value: HomeAway | "all"; label: string }[] = [
+    { value: "all", label: "すべて" },
+    { value: "home", label: "主催" },
+    { value: "away", label: "ビジター" },
+  ];
+
+  return (
+    <div className="relative">
+      <div className="flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-1.5 border px-3 py-1.5 text-sm font-medium"
+          style={{ borderColor: "var(--line-strong)", background: "var(--panel)" }}
+        >
+          <SlidersHorizontal size={14} aria-hidden />
+          絞り込み
+          {activeCount > 0 && (
+            <span
+              className="tnum ml-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-bold text-white"
+              style={{ background: "var(--brand)" }}
+            >
+              {activeCount}
+            </span>
+          )}
+        </button>
+        {active && (
+          <button
+            type="button"
+            onClick={() => onChange(emptyFilter)}
+            className="text-sm text-[var(--muted)] underline underline-offset-2"
+          >
+            条件をクリア
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-label="閉じる"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 bg-black/40"
+          />
+          <div
+            role="dialog"
+            aria-label="絞り込み条件"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[82vh] overflow-auto border-t p-4 md:absolute md:inset-x-auto md:right-0 md:top-full md:bottom-auto md:mt-1 md:w-[40rem] md:max-h-[70vh] md:border"
+            style={{ borderColor: "var(--line)", background: "var(--panel)" }}
+          >
+            <div className="mb-1 flex items-center justify-between">
+              <h2 className="text-base font-bold">絞り込み</h2>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="閉じる"
+                className="p-1"
+              >
+                <X size={18} aria-hidden />
+              </button>
+            </div>
+
+            <div className="divide-y" style={{ borderColor: "var(--line)" }}>
+              <Section title="年度">
+                <Chip
+                  label="すべて"
+                  active={filter.year === "all"}
+                  onClick={() => onChange({ ...filter, year: "all" })}
+                />
+                {options.years.map((y) => (
+                  <Chip
+                    key={y}
+                    label={y}
+                    active={filter.year === y}
+                    onClick={() => onChange({ ...filter, year: y })}
+                  />
+                ))}
+              </Section>
+
+              <Section title="主催 / ビジター">
+                {homeAwayOptions.map((o) => (
+                  <Chip
+                    key={o.value}
+                    label={o.label}
+                    active={filter.homeAway === o.value}
+                    onClick={() => onChange({ ...filter, homeAway: o.value })}
+                  />
+                ))}
+              </Section>
+
+              <Section title="勝敗">
+                {RESULT_ORDER.map((r) => (
+                  <Chip
+                    key={r}
+                    label={RESULT_LABEL[r]}
+                    active={filter.results.includes(r)}
+                    onClick={() => onChange({ ...filter, results: toggle(filter.results, r) })}
+                  />
+                ))}
+              </Section>
+
+              <Section title="球場">
+                {options.stadiums.map((s) => (
+                  <Chip
+                    key={s}
+                    label={s}
+                    active={filter.stadiums.includes(s)}
+                    onClick={() => onChange({ ...filter, stadiums: toggle(filter.stadiums, s) })}
+                  />
+                ))}
+              </Section>
+
+              <Section title="対戦相手">
+                {options.opponents.map((o) => (
+                  <Chip
+                    key={o}
+                    label={o}
+                    active={filter.opponents.includes(o)}
+                    onClick={() => onChange({ ...filter, opponents: toggle(filter.opponents, o) })}
+                  />
+                ))}
+              </Section>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={() => onChange(emptyFilter)}
+                className="px-2 py-1.5 text-sm text-[var(--muted)]"
+              >
+                リセット
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="px-4 py-1.5 text-sm font-bold text-white"
+                style={{ background: "var(--brand)" }}
+              >
+                この条件で見る
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
