@@ -11,11 +11,7 @@ export function YearFilter({
 }) {
   const items: YearValue[] = ["all", ...years];
   return (
-    <div
-      role="group"
-      aria-label="年度で絞り込み"
-      className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1"
-    >
+    <div role="group" aria-label="年度で絞り込み" className="flex flex-wrap gap-1.5">
       {items.map((y) => {
         const active = value === y;
         return (
