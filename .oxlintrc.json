@@ -13,6 +13,8 @@
     "suspicious": "warn"
   },
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "unicorn/no-array-sort": "off",
+    "no-underscore-dangle": "off"
   }
 }

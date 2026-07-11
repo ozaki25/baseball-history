@@ -1,5 +1,5 @@
 import { JSDOM } from "jsdom";
-import { ParseError } from "@/types/parsing";
+import { ParseError } from "#/types/parsing";
 
 /**
  * 試合開催地を抽出
