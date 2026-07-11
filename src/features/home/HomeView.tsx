@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import type { Game } from "#/types/game";
-import type { GameSearch } from "#/lib/search";
-import { searchToFilter, filterToSearch } from "#/lib/search";
-import { applyFilters, deriveOptions, type GameFilter } from "#/lib/filters";
-import { StatsSummary } from "./StatsSummary";
+import type { GameSearch } from "#/features/filters/model/search";
+import { searchToFilter, filterToSearch } from "#/features/filters/model/search";
+import { applyFilters, deriveOptions, type GameFilter } from "#/features/filters/model/filters";
+import { StatsSummary } from "#/features/stats/StatsSummary";
 import { ScheduledList } from "./ScheduledList";
-import { Filters } from "./Filters";
-import { YearFilter } from "./YearFilter";
-import { CrossStats } from "./CrossStats";
-import { GameTable } from "./GameTable";
+import { Filters } from "#/features/filters/Filters";
+import { YearFilter } from "#/features/filters/YearFilter";
+import { CrossStats } from "#/features/stats/CrossStats";
+import { GameTable } from "#/features/games/GameTable";
 import { ThemeToggle } from "#/ui/ThemeToggle";
 
 /**

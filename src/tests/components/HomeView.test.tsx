@@ -2,8 +2,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { HomeView } from "#/components/HomeView";
-import type { GameSearch } from "#/lib/search";
+import { HomeView } from "#/features/home/HomeView";
+import type { GameSearch } from "#/features/filters/model/search";
 import { makeGame } from "#/tests/helpers/makeGame";
 
 const GAMES = [

@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CrossStats } from "#/components/CrossStats";
+import { CrossStats } from "#/features/stats/CrossStats";
 import { makeGame } from "#/tests/helpers/makeGame";
 
 // 表記ゆれ（西武ドーム / ベルーナドーム）が同一IDへ束ねられ、代表名で1行に集約されることも確認。

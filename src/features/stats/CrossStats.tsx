@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Game } from "#/types/game";
-import { groupBy, formatWinRate, type GroupKey, type GroupRow } from "#/lib/stats";
+import { groupBy, formatWinRate, type GroupKey, type GroupRow } from "./model/stats";
 import { teamLabel, stadiumLabel } from "#/lib/masters";
 import { HOME_AWAY_LABEL } from "#/lib/labels";
 

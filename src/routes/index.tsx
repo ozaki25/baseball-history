@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { GamesData, Game, DatesData } from "#/types/game";
 import gamesData from "../../data/games.json";
 import datesData from "../../data/dates.json";
-import { validateGameSearch } from "#/lib/search";
-import { HomeView } from "#/components/HomeView";
+import { validateGameSearch } from "#/features/filters/model/search";
+import { HomeView } from "#/features/home/HomeView";
 
 export const Route = createFileRoute("/")({
   validateSearch: validateGameSearch,
