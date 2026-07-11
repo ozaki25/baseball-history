@@ -78,7 +78,9 @@ src/
   `features/*` は presentational（props で受け、`onNavigate` コールバックで返す）。新しい画面も route に結線だけ置き、
   View は feature に置くこと。ルーター依存を feature に持ち込まない（`HomeView` の `search`/`onNavigate` seam を維持）。
 - ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる（`no-restricted-imports` は文字列マッチのため、相対パスでの
-  境界回避を規約で防ぐ）。
+  境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/lib/ingest/**` を
+  併記して相対パス回避も機械的に捕捉する。feature 間の横断禁止は建築規約であり、相対パス（例 `../filters/...`）は
+  import 文字列に `features` を含まず文字列マッチでは原理的に捕捉できないため、上記のエイリアス規約で補完する。
 
 ## 3. テスト戦略
 

@@ -60,24 +60,25 @@ baseball-history/
 │  ├─ ingest.ts           # dates + 公式サイト → games.json 生成（tsx 実行。IO とCLI引数のみ）
 │  └─ add-date.mjs        # 観戦日追加（バリデーション・ソート。コマンドから呼ぶ）
 ├─ src/
-│  ├─ routes/             # TanStack Start ファイルベースルーティング
+│  ├─ routes/             # TanStack Start ファイルベースルーティング（container）
 │  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
-│  │  └─ index.tsx        # 一覧＋絞り込み＋集計（メイン画面）
-│  ├─ components/         # GameTable / Filters / StatsSummary / CrossStats /
-│  │                      # YearFilter / ScheduledList / ResultBadge / ThemeToggle
-│  ├─ lib/
+│  │  └─ index.tsx        # データ取得・URL検証・navigate 結線 → HomeView へ委譲
+│  ├─ features/           # 画面単位（依存は routes → features → {ui,lib,types} の一方向）
+│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
+│  │  ├─ filters/         # Filters / YearFilter + model/{filters,search}.ts（絞り込み・URL相互変換）
+│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（集計・scheduled除外）
+│  │  └─ games/           # GameTable / ResultBadge
+│  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle。hooks も可）
+│  ├─ lib/                # 全 feature が使う共有下層
 │  │  ├─ ingest/          # 取り込み専用（jsdom 依存・クライアントから import 禁止）
 │  │  │  ├─ ingestCore.ts # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
 │  │  │  ├─ parsers/      # 公式サイト HTML パーサ（Document を受け取る抽出器群）
 │  │  │  └─ sleepUtils.ts # レート制御
 │  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
-│  │  ├─ stats.ts         # 集計ロジック（純関数・テスト対象／scheduled は集計から除外）
-│  │  ├─ filters.ts       # 絞り込みロジック・選択肢生成
-│  │  ├─ search.ts        # URL search params ⇔ フィルタの相互変換・サニタイズ
-│  │  ├─ labels.ts        # 表示ラベル・日付/スコア整形
+│  │  ├─ labels.ts        # 表示ラベル・日付/スコア整形・取得元URL（全feature/scriptsの共有語彙）
 │  │  └─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
 │  ├─ types/
-│  │  └─ game.ts          # Game 型ほか
+│  │  └─ game.ts          # Game 型ほか（共有ドメイン型）
 │  └─ styles.css          # Tailwind エントリ・デザイントークン（ライト/ダーク）
 ├─ src/tests/             # Vitest（lib 単体・パーサ・コンポーネント[jsdom]）
 ├─ public/                # PWA アイコン・manifest・sw.js

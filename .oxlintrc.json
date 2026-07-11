@@ -58,8 +58,8 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               }
             ]
           }
@@ -74,8 +74,8 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
                 "group": ["#/routes/**"],
@@ -94,8 +94,8 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
                 "group": ["#/routes/**"],
@@ -118,8 +118,8 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
                 "group": ["#/routes/**"],
@@ -142,8 +142,8 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです。"
+                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
                 "group": ["#/routes/**"],
