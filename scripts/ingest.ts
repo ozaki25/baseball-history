@@ -4,7 +4,9 @@
  * data/games.json を生成する。GitHub Actions 上で実行する想定（外部ネット必須）。
  *
  * ルール（詳細・分岐は src/lib/ingestCore.ts の mergeIngest を参照）:
- * - データ源はスクレイピングのみ（手編集・override なし）。
+ * - 試合詳細のデータ源はスクレイピングのみ（値の手編集はしない）。
+ * - 例外: data/date-only.json に挙げた日は「詳細不明(unknown)」として日付のみ残す
+ *   （現行サイトで正しく取得できない古い試合向けの信頼性 override。詳細値は捏造しない）。
  * - 確定済み(win/lose/draw)は再取得しない。scheduled・cancelled・失敗分は再取得（自己修復）。
  * - 試合前の日は scheduled として保存（事前登録の受け皿）。
  * - --force で全件再取得。--year YYYY で対象年を限定。
@@ -53,6 +55,19 @@ async function fetchHtml(year: string, mmdd: string): Promise<string> {
   return res.text();
 }
 
+/** date-only.json を読み、ISO 日付配列であることを検証して返す（不正なら throw）。 */
+function loadDateOnly(): string[] {
+  if (!existsSync(DATE_ONLY_PATH)) return [];
+  const parsed: unknown = JSON.parse(readFileSync(DATE_ONLY_PATH, "utf-8"));
+  const ok =
+    Array.isArray(parsed) &&
+    parsed.every((d) => typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d));
+  if (!ok) {
+    throw new Error("data/date-only.json は ISO 日付(YYYY-MM-DD)の配列である必要があります");
+  }
+  return parsed as string[];
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const dates = JSON.parse(readFileSync(DATES_PATH, "utf-8")) as DatesData;
@@ -64,11 +79,20 @@ async function main() {
   }
 
   // 詳細不明として日付のみ残す日（現行サイトで正しく取得できない古い試合など）
-  const dateOnly = new Set<string>(
-    existsSync(DATE_ONLY_PATH)
-      ? (JSON.parse(readFileSync(DATE_ONLY_PATH, "utf-8")) as string[])
-      : [],
+  const dateOnly = new Set<string>(loadDateOnly());
+
+  // date-only は dates.json のループ内でのみ効くため、dates.json に無い指定は黙って無視される。
+  // 同期ズレ（タイポ・形式ずれ・削除済み日付）を早期に気づけるよう警告する。
+  const allObservedDates = new Set(
+    Object.entries(dates).flatMap(([year, list]) =>
+      list.map((mmdd) => `${year}-${mmdd.slice(0, 2)}-${mmdd.slice(2, 4)}`),
+    ),
   );
+  for (const d of dateOnly) {
+    if (!allObservedDates.has(d)) {
+      console.warn(`  ⚠ date-only "${d}" は data/dates.json に存在しません（無視されます）`);
+    }
+  }
 
   const { games, failures, fetched } = await mergeIngest(dates, existing, {
     fetchHtml,

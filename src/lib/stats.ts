@@ -2,9 +2,11 @@ import type { Game } from "#/types/game";
 
 /**
  * 集計の定義（野球の通例）:
- * - 観戦数(attended): scheduled を除く（中止は現地に行ったため含める）
- * - 勝率(winRate): 勝 / (勝 + 敗)。引分・中止・予定は分母から除外。該当なしは null。
+ * - 観戦数(attended): scheduled を除く（中止・詳細不明は現地に行ったため含める）
+ * - 勝率(winRate): 勝 / (勝 + 敗)。引分・中止・予定・詳細不明は分母から除外。該当なしは null。
  * - scheduled（観戦予定）はすべての集計から除外する。
+ * - unknown（詳細不明）は観戦数に含めるが、勝敗・軸別集計には数えない
+ *   （opponentId/stadiumId/homeAway が空のため軸別からは自然に除外される）。
  */
 export interface Summary {
   attended: number;
