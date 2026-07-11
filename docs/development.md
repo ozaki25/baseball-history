@@ -55,19 +55,35 @@
 
 ## 3. テスト戦略
 
-| 種別           | 対象                                                                                       | 手段                                                                              |
-| -------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| 単体           | パーサ（team/score/location/home/gameParser）                                              | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用                            |
-| 単体           | 集計 `stats.ts`（勝率・軸別集計）                                                          | 代表データで期待値検証                                                            |
-| 単体           | 絞り込み `filters.ts`・URL スキーマ                                                        | 条件→抽出結果、URL 相互変換                                                       |
-| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                    | scheduled/確定/失敗保持/中止/self-heal を網羅                                     |
-| 単体           | 安定ID `masters.ts`（表記ゆれ束ね・衝突検知）                                              | alias 解決＋実データ ID 整合の回帰テスト                                          |
-| コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
+| 種別           | 対象                                                                                                  | 手段                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 単体           | パーサ（team/score/location/home/gameParser）                                                         | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用                            |
+| 単体           | 集計 `stats.ts`（勝率・軸別集計）                                                                     | 代表データで期待値検証                                                            |
+| 単体           | 絞り込み `filters.ts`・URL スキーマ                                                                   | 条件→抽出結果、URL 相互変換                                                       |
+| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled/確定/失敗保持/中止/self-heal を網羅                                     |
+| 単体           | 安定ID `masters.ts`（表記ゆれ束ね・衝突検知）                                                         | alias 解決＋実データ ID 整合の回帰テスト                                          |
+| コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
+| 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
 - コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
 - **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
   課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
   ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。現状 96%/92%/96%/96%。
+- **VRT（視覚回帰）**: Vitest 4 の Browser Mode（`@vitest/browser-playwright`）＋ `toMatchScreenshot` を使用。
+  単体とは別 project（`vrt`, `*.vrt.test.tsx`）に分離し、`pnpm test:visual`（比較）/ `pnpm test:visual:update`（更新）。
+  対象は `src/tests/vrt/`（トップ画面のモバイル/デスクトップ等）で、固定フィクスチャで描画して baseline を安定させる。
+  - **描画は環境差（フォント・OS・GPU）に敏感**なため、baseline は必ず**標準環境**で生成する。標準環境は
+    GitHub Actions の `Visual Regression` ワークフロー（**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`**）。
+  - baseline は `src/tests/vrt/__screenshots__/` にコミットする（生成物はCI所有）。**ローカルで生成した baseline はコミットしない**
+    （ローカルは `VRT_CHROMIUM_PATH=<chromium> pnpm test:visual` で挙動確認のみ・非正）。
+  - baseline が無い初回はCIが自動生成してPRへコミット（ブートストラップ）。生成直後に同一ジョブ内で比較して
+    自己検証する。意図的なUI変更や**新しい `*.vrt.test.tsx` を追加**した時は、`Visual Regression` ワークフローを
+    `update=true` で手動実行すると標準環境で再生成しコミットする（新規テストは baseline が無いと比較 fail する）。
+    差分はコミットされた画像としてPRでレビューする。
+  - 比較 fail 時は `actual`/`diff` 画像が `vrt-diff` アーティファクトとして保存される（Actions からダウンロード可）。
+  - ローカルの `pnpm test:visual` は Hiragino 等が無くフォント差で fail しやすい（挙動確認用）。`test:visual:update` は
+    標準環境以外では既定でブロックする（`scripts/vrt-guard.mjs`。どうしてもローカルの Docker 内で更新する場合のみ
+    `VRT_UPDATE_OK=1`）。閾値は `allowedMismatchedPixels`（絶対数）で管理し、環境固定前提で小さく保つ。
 - CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test:coverage` → `build` を実行（後述）。
 
 ## 4. ブランチ / コミット
@@ -76,7 +92,7 @@
 - コミットは意味単位で分割し、明確なメッセージを付ける（例: `feat: TanStack Router で絞り込みURL状態を実装`）。
 - `main` へは PR 経由（ユーザーの明示指示があれば作成）。
 
-## 5. GitHub Actions（新規・2 本立て）
+## 5. GitHub Actions（3 本立て）
 
 ### 5.1 CI（`ci.yml`）— 品質チェック
 
@@ -91,7 +107,7 @@ jobs:
       - pnpm lint # oxlint
       - pnpm format:check # oxfmt
       - pnpm typecheck # tsc --noEmit
-      - pnpm test
+      - pnpm test:coverage # 単体（--project unit）＋しきい値
       - pnpm build
 ```
 
@@ -117,6 +133,12 @@ jobs:
 
 > GitHub ランナーは外部ネットに出られるため公式サイトへ到達可能。
 > 開発環境や Vercel ビルドからは到達不可でも、取り込みは Actions 側で完結するので影響しない。
+
+### 5.3 Visual Regression（`vrt.yml`）— 視覚回帰
+
+`pull_request` で比較、`workflow_dispatch(update=true)` で baseline 更新。描画の環境差を排除するため
+**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`** の固定環境で実行し、baseline はこの環境が生成して
+コミットする（初回は自動ブートストラップ）。詳細は §3 のVRT項を参照。
 
 ## 6. デプロイ（Vercel）
 

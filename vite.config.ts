@@ -1,7 +1,11 @@
-import { defineConfig } from "vitest/config";
+import { defaultExclude, defineConfig } from "vitest/config";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { playwright } from "@vitest/browser-playwright";
+
+// VRT（視覚回帰）テストは専用 project に分離する（環境差の影響を隔離し、更新も明示的に行う）
+const vrtPattern = "**/*.vrt.test.{ts,tsx}";
 
 export default defineConfig({
   resolve: { tsconfigPaths: true },
@@ -14,9 +18,48 @@ export default defineConfig({
     viteReact(),
   ],
   test: {
-    // globals: true で Testing Library の自動クリーンアップ（afterEach）が有効になる
-    globals: true,
-    setupFiles: ["./src/tests/setup.ts"],
+    projects: [
+      {
+        extends: true,
+        test: {
+          // 単体・コンポーネント（jsdom）。VRT は除外。
+          name: "unit",
+          globals: true,
+          setupFiles: ["./src/tests/setup.ts"],
+          exclude: [vrtPattern, ...defaultExclude],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          // 視覚回帰（実ブラウザ・headless）。固定 viewport で描画を安定させる。
+          name: "vrt",
+          include: [vrtPattern],
+          setupFiles: ["./src/tests/setup.browser.ts"],
+          browser: {
+            enabled: true,
+            // CI(Playwright公式Docker)ではバンドル版を使う。ローカル等で別ビルドを使う場合のみ
+            // VRT_CHROMIUM_PATH で実行ファイルを指す（環境差はDocker基準に合わせる前提）。
+            provider: playwright({
+              launchOptions: process.env.VRT_CHROMIUM_PATH
+                ? { executablePath: process.env.VRT_CHROMIUM_PATH }
+                : {},
+            }),
+            headless: true,
+            // 既定 viewport（各テストは page.viewport で明示上書きする）
+            instances: [{ browser: "chromium", viewport: { width: 1280, height: 720 } }],
+            expect: {
+              toMatchScreenshot: {
+                comparatorName: "pixelmatch",
+                // 環境を固定(Docker+Noto CJK)しているため run 間の揺れはほぼ無い。
+                // per-pixel の AA だけ threshold で吸収し、許容差分は小さな絶対値に抑える。
+                comparatorOptions: { threshold: 0.1, allowedMismatchedPixels: 100 },
+              },
+            },
+          },
+        },
+      },
+    ],
     coverage: {
       provider: "v8",
       include: ["src/**"],
