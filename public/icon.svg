@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="観戦ノート">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0C7AB4" />
+      <stop offset="1" stop-color="#014C79" />
+    </linearGradient>
+    <radialGradient id="sheen" cx="0.32" cy="0.24" r="0.9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18" />
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)" />
+  <g stroke="#ffffff" stroke-opacity="0.10" stroke-width="6">
+    <line x1="60" y1="0" x2="60" y2="512" />
+    <line x1="128" y1="0" x2="128" y2="512" />
+    <line x1="196" y1="0" x2="196" y2="512" />
+    <line x1="264" y1="0" x2="264" y2="512" />
+    <line x1="332" y1="0" x2="332" y2="512" />
+    <line x1="400" y1="0" x2="400" y2="512" />
+    <line x1="468" y1="0" x2="468" y2="512" />
+  </g>
+  <circle cx="256" cy="256" r="134" fill="#F6F9FB" />
+  <path d="M188 150 C 148 214, 148 298, 188 362" fill="none" stroke="#C8102E" stroke-width="8" stroke-linecap="round" stroke-dasharray="5 14" />
+  <path d="M324 150 C 364 214, 364 298, 324 362" fill="none" stroke="#C8102E" stroke-width="8" stroke-linecap="round" stroke-dasharray="5 14" />
+  <rect width="512" height="512" fill="url(#sheen)" />
+</svg>
