@@ -65,7 +65,10 @@
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
 
 - コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
-- CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test` → `build` を実行（後述）。
+- **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
+  課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
+  ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。現状 96%/92%/96%/96%。
+- CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test:coverage` → `build` を実行（後述）。
 
 ## 4. ブランチ / コミット
 

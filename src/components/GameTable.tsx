@@ -74,6 +74,7 @@ export function GameTable({ games }: { games: Game[] }) {
     <div>
       {/* デスクトップ: 罫線テーブル */}
       <table
+        aria-label="観戦記録"
         className="hidden w-full border text-sm md:table"
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >

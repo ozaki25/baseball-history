@@ -99,11 +99,31 @@ describe("Filters", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith(emptyFilter);
   });
 
-  it("Escape でダイアログを閉じる", async () => {
+  it("Escape でダイアログを閉じ、トリガーへフォーカスを返す", async () => {
     const { user } = setup();
     await openDialog(user);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("開くと閉じるボタンに初期フォーカスが当たる", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    expect(within(dialog).getByRole("button", { name: "閉じる" })).toHaveFocus();
+  });
+
+  it("Tab が先頭↔末尾で循環する（フォーカストラップ）", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    const closeBtn = within(dialog).getByRole("button", { name: "閉じる" });
+    const applyBtn = within(dialog).getByRole("button", { name: "この条件で見る" });
+
+    expect(closeBtn).toHaveFocus(); // 先頭
+    await user.tab({ shift: true }); // 先頭で Shift+Tab → 末尾へ
+    expect(applyBtn).toHaveFocus();
+    await user.tab(); // 末尾で Tab → 先頭へ
+    expect(closeBtn).toHaveFocus();
   });
 
   it("有効な条件があるとトリガーに件数バッジと「条件をクリア」を出す", () => {
