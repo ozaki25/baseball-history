@@ -27,6 +27,13 @@ function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="ja">
       <head>
+        {/* 描画前に保存済みテーマを適用（チラつき防止） */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();",
+          }}
+        />
         <HeadContent />
       </head>
       <body>

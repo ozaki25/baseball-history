@@ -9,6 +9,7 @@ import { ScheduledList } from "#/components/ScheduledList";
 import { Filters } from "#/components/Filters";
 import { CrossStats } from "#/components/CrossStats";
 import { GameTable } from "#/components/GameTable";
+import { ThemeToggle } from "#/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   validateSearch: validateGameSearch,
@@ -49,9 +50,14 @@ function Home() {
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >
         <div className="h-1 w-full" style={{ background: "var(--brand)" }} aria-hidden />
-        <div className="mx-auto flex max-w-3xl items-baseline gap-2 px-4 py-3">
-          <h1 className="text-lg font-bold tracking-tight">観戦ノート</h1>
-          <p className="text-xs text-[var(--muted)]">北海道日本ハムファイターズ 観戦記録</p>
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3">
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-lg font-bold tracking-tight">観戦ノート</h1>
+            <p className="hidden text-xs text-[var(--muted)] sm:block">
+              北海道日本ハムファイターズ 観戦記録
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -62,8 +68,6 @@ function Home() {
 
         <Filters filter={filter} options={FILTER_OPTIONS} onChange={setFilter} />
 
-        <CrossStats games={attended} />
-
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-[var(--muted)]">
             観戦記録
@@ -71,6 +75,15 @@ function Home() {
           </h2>
         </div>
         <GameTable games={attended} />
+
+        <details className="mt-2">
+          <summary className="cursor-pointer text-sm font-bold text-[var(--muted)]">
+            軸別集計
+          </summary>
+          <div className="mt-2">
+            <CrossStats games={attended} />
+          </div>
+        </details>
       </main>
     </div>
   );
