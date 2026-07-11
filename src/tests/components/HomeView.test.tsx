@@ -80,6 +80,15 @@ describe("HomeView", () => {
     expect(screen.queryByRole("region", { name: "観戦予定" })).not.toBeInTheDocument();
   });
 
+  it("search の球場(安定ID)指定で一覧が絞られる（多値キーの結線）", () => {
+    setup({ stadium: ["kyocera"] });
+    // 京セラドーム大阪 の 1 件（オリックス）だけ
+    expect(recordHeading()).toHaveTextContent("1件");
+    const table = screen.getByRole("table", { name: "観戦記録" });
+    expect(within(table).getByText("オリックス")).toBeInTheDocument();
+    expect(within(table).queryByText("千葉ロッテ")).not.toBeInTheDocument();
+  });
+
   it("「条件をクリア」で空の検索条件を onNavigate に渡す", async () => {
     const { onNavigate, user } = setup({ year: "2025" });
     await user.click(screen.getByRole("button", { name: "条件をクリア" }));

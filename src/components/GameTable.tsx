@@ -136,6 +136,7 @@ export function GameTable({ games }: { games: Game[] }) {
 
       {/* モバイル: 罫線カード（縦積み） */}
       <ul
+        aria-label="観戦記録"
         className="flex flex-col border md:hidden"
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >

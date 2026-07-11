@@ -71,6 +71,20 @@ describe("Filters", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, homeAway: "away" });
   });
 
+  it("勝敗チップのクリックで results に追加する", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "勝" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, results: ["win"] });
+  });
+
+  it("対戦相手チップのクリックで opponentId を立てる", async () => {
+    const { onChange, user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "千葉ロッテ" }));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, opponents: ["lotte"] });
+  });
+
   it("選択済みチップは aria-pressed=true", async () => {
     const { user } = setup({ ...emptyFilter, opponents: ["lotte"] });
     const dialog = await openDialog(user);
@@ -124,6 +138,32 @@ describe("Filters", () => {
     expect(applyBtn).toHaveFocus();
     await user.tab(); // 末尾で Tab → 先頭へ
     expect(closeBtn).toHaveFocus();
+  });
+
+  it("「この条件で見る」で閉じ、トリガーへフォーカスを返す", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "この条件で見る" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("X（閉じる）ボタンで閉じ、トリガーへフォーカスを返す", async () => {
+    const { user } = setup();
+    const dialog = await openDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "閉じる" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /絞り込み/ })).toHaveFocus();
+  });
+
+  it("背面(オーバーレイ)クリックで閉じる", async () => {
+    const { user } = setup();
+    await openDialog(user);
+    // ダイアログ外の backdrop も aria-label「閉じる」。dialog 外の方をクリック。
+    const backdrops = screen.getAllByRole("button", { name: "閉じる" });
+    const overlay = backdrops.find((b) => b.className.includes("inset-0"));
+    await user.click(overlay!);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("有効な条件があるとトリガーに件数バッジと「条件をクリア」を出す", () => {
