@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import { join } from "path";
+import { JSDOM } from "jsdom";
 
 /**
  * テスト用HTMLファイルを読み込むヘルパー関数
@@ -7,6 +8,16 @@ import { join } from "path";
 export function loadTestHTML(filename: string): string {
   const filePath = join(process.cwd(), "src/tests/fixtures", filename);
   return readFileSync(filePath, "utf-8");
+}
+
+/** HTML 文字列を Document 化（抽出器は Document を受け取るため） */
+export function htmlToDoc(html: string): Document {
+  return new JSDOM(html).window.document;
+}
+
+/** フィクスチャを読み込んで Document 化 */
+export function loadTestDoc(filename: string): Document {
+  return htmlToDoc(loadTestHTML(filename));
 }
 
 /**

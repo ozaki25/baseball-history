@@ -27,11 +27,7 @@
   /* 構造色: ファイターズブルー */
   --brand: #016298;
 
-  /* 意味色（くすませた色調。ネオンにしない） */
-  --win: #1f7a4d;
-  --lose: #b0473f;
-  --draw: #6b7680;
-  --cancel: #97a2ab;
+  /* 予定(scheduled)の意味色。勝敗色は ResultBadge が単一の定義元（ライト/ダーク共通の固定色）。 */
   --sched: #016298;
 }
 
@@ -48,10 +44,6 @@
 
     --brand: #37a0de;
 
-    --win: #4fb37c;
-    --lose: #e08a83;
-    --draw: #8a96a0;
-    --cancel: #6d7a84;
     --sched: #37a0de;
   }
 }
@@ -67,10 +59,6 @@
   --line: #d5dce2;
   --line-strong: #b9c3cb;
   --brand: #016298;
-  --win: #1f7a4d;
-  --lose: #b0473f;
-  --draw: #6b7680;
-  --cancel: #97a2ab;
   --sched: #016298;
 }
 
@@ -85,10 +73,6 @@
   --line: #26313a;
   --line-strong: #37454f;
   --brand: #37a0de;
-  --win: #4fb37c;
-  --lose: #e08a83;
-  --draw: #8a96a0;
-  --cancel: #6d7a84;
   --sched: #37a0de;
 }
 

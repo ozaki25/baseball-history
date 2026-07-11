@@ -1,15 +1,11 @@
-import { JSDOM } from "jsdom";
 import { ParseError } from "#/types/parsing";
 
 /**
- * HTMLから自チームがホームかビジターかを判定する
- * @param html - 解析対象のHTML
+ * Document から自チームがホームかビジターかを判定する
+ * @param document - 解析対象の Document
  * @returns ホームの場合true、ビジターの場合false
  */
-export function detectIsHome(html: string): boolean {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
-
+export function detectIsHome(document: Document): boolean {
   // 自チームのロゴ要素を検索（src と data-src 両方をサポート）
   const myTeamLogo = document.querySelector(
     'img[src*="logo_2004001"], img[data-src*="logo_2004001"]',

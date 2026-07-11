@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
-import type { Game } from "@/types/game";
+import type { Game } from "#/types/game";
 import {
   buildGame,
   resultFromScores,
   toIsoDate,
   isFutureDate,
   withResolvedIds,
-} from "@/lib/ingestCore";
-import { loadTestHTML, TEST_PATTERNS } from "@/tests/helpers/testHtmlLoader";
+} from "#/lib/ingest/ingestCore";
+import { loadTestHTML, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("resultFromScores", () => {
   it("勝敗を判定する", () => {

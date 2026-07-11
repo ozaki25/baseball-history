@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validateGameSearch, searchToFilter, filterToSearch } from "@/lib/search";
-import { emptyFilter, type GameFilter } from "@/lib/filters";
+import { validateGameSearch, searchToFilter, filterToSearch } from "#/lib/search";
+import { emptyFilter, type GameFilter } from "#/lib/filters";
 
 describe("validateGameSearch", () => {
   it("正しい値を通す", () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import type { Game } from "@/types/game";
-import { mergeIngest } from "@/lib/ingestCore";
-import { loadTestHTML, TEST_PATTERNS } from "@/tests/helpers/testHtmlLoader";
+import type { Game } from "#/types/game";
+import { mergeIngest } from "#/lib/ingest/ingestCore";
+import { loadTestHTML, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 const NOW = new Date("2026-07-11T00:00:00Z");
 const HOME_WIN = loadTestHTML(TEST_PATTERNS.HOME_WIN); // 千葉ロッテ 5-1 勝
@@ -109,13 +109,24 @@ describe("mergeIngest", () => {
     expect(r.failures).toHaveLength(1);
   });
 
-  it("解析不能でも中止表記なら cancelled として保存", async () => {
-    const { fetchHtml } = makeFetch({ "20250601": "<div>本日の試合は中止となりました</div>" });
+  it("解析不能でも試合詳細領域に中止表記があれば cancelled として保存", async () => {
+    const { fetchHtml } = makeFetch({ "20250601": "<main>本日の試合は中止となりました</main>" });
     const r = await mergeIngest({ "2025": ["0601"] }, new Map(), {
       fetchHtml,
       now: NOW,
     });
     expect(r.games[0]!.result).toBe("cancelled");
+  });
+
+  it("試合詳細の外(ナビ等)にだけ中止表記がある場合は cancelled と誤確定しない", async () => {
+    // 解析不能かつ中止判定も false → 失敗として記録（誤って cancelled にしない）
+    const { fetchHtml } = makeFetch({ "20250601": "<nav>順延情報はこちら</nav><div>本文</div>" });
+    const r = await mergeIngest({ "2025": ["0601"] }, new Map(), {
+      fetchHtml,
+      now: NOW,
+    });
+    expect(r.games).toHaveLength(0);
+    expect(r.failures).toHaveLength(1);
   });
 
   it("--year 指定時、対象外の年は既存を維持しfetchしない", async () => {

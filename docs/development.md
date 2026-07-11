@@ -28,7 +28,7 @@
   "typecheck": "tsc --noEmit",
   "test": "vitest --run",
   "test:watch": "vitest",
-  "ingest": "node scripts/ingest.mjs",
+  "ingest": "tsx scripts/ingest.ts",
   "add-date": "node scripts/add-date.mjs",
   "prepare": "husky",
 }
@@ -41,6 +41,17 @@
   - oxfmt は 0.x のため整形挙動が更新で変わりうる。CI で `format:check` を回し差分を検知。
 - **Husky + lint-staged**: コミット前に対象ファイルへ `oxlint --fix` / `oxfmt --write`。
 - 純関数（`stats.ts` / `filters.ts` / `parsers/*`）に単体テストを付ける。
+
+### スタイリング規約
+
+- 色はすべて `styles.css` のデザイントークン（CSS 変数）を単一の定義元とする。ライト/ダークは
+  `@media (prefers-color-scheme)` と `:root[data-theme]` の両方で切り替える。
+- **静的なトークン参照は Tailwind の arbitrary value**（例: `text-[var(--muted)]`）、
+  **要素固有・動的な色は inline `style`**（例: `style={{ borderColor: "var(--line)" }}`）で書く。
+  クラスと inline を混在させる場合はこの基準に従う（動的値のみ inline）。
+- 勝敗バッジの色はライト/ダーク共通の固定色として `ResultBadge.tsx` に集約（`styles.css` には置かない）。
+- 取り込み専用モジュールは `src/lib/ingest/`（jsdom 依存）に隔離し、`components`/`routes` からの
+  import を oxlint（`no-restricted-imports`）で禁止する。クライアントバンドルへの jsdom 混入を防ぐため。
 
 ## 3. テスト戦略
 

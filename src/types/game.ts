@@ -1,4 +1,10 @@
 // 観戦ノートの中核データモデル（すべてスクレイピング由来・手入力項目は持たない）
+//
+// 欠損（不明）の表現方針:
+//   - 安定ID（opponentId/stadiumId）… 空文字 "" が「不明」を表す。
+//   - homeAway … null が「不定」（中止/予定）を表す。
+//   - score … fighters/opponent が null（中止/予定）。
+// 集計側は空文字IDやnullを集計対象外として扱う（stats.ts / filters.ts 参照）。
 
 export type HomeAway = "home" | "away";
 

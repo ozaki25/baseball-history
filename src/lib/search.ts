@@ -11,7 +11,8 @@ export interface GameSearch {
   result?: GameResult[];
 }
 
-const RESULTS: readonly string[] = ["win", "lose", "draw", "cancelled", "scheduled"];
+// 絞り込み可能な勝敗。予定(scheduled)は別枠表示で勝敗軸に載せないため URL でも受理しない。
+const RESULTS: readonly string[] = ["win", "lose", "draw", "cancelled"];
 
 function toStringArray(value: unknown): string[] | undefined {
   if (Array.isArray(value)) {

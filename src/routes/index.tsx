@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
-import type { GamesData, Game } from "#/types/game";
+import type { GamesData, Game, DatesData } from "#/types/game";
 import gamesData from "../../data/games.json";
+import datesData from "../../data/dates.json";
 import { validateGameSearch, searchToFilter, filterToSearch } from "#/lib/search";
 import { applyFilters, deriveOptions, type GameFilter } from "#/lib/filters";
 import { StatsSummary } from "#/components/StatsSummary";
@@ -18,26 +19,27 @@ export const Route = createFileRoute("/")({
 });
 
 const ALL_GAMES: Game[] = (gamesData as GamesData).games;
-const FILTER_OPTIONS = deriveOptions(ALL_GAMES);
+// dates.json の全年度（記録なしの空配列年を含む）を年度候補の源にする。
+const ALL_YEARS: string[] = Object.keys(datesData as DatesData);
+const FILTER_OPTIONS = deriveOptions(ALL_GAMES, ALL_YEARS);
 
 function Home() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const filter = searchToFilter(search);
+  const filter = useMemo(() => searchToFilter(search), [search]);
 
   const { attended, scheduled } = useMemo(() => {
-    const current = searchToFilter(search);
-    const filtered = applyFilters(ALL_GAMES, current);
+    const filtered = applyFilters(ALL_GAMES, filter);
     // 予定は結果未確定で相手/球場/主催が不定なため、年度だけで抽出して別枠表示する。
     const scheduledView = ALL_GAMES.filter(
       (g) =>
-        g.result === "scheduled" && (current.year === "all" || g.date.slice(0, 4) === current.year),
+        g.result === "scheduled" && (filter.year === "all" || g.date.slice(0, 4) === filter.year),
     );
     return {
       attended: filtered.filter((g) => g.result !== "scheduled"),
       scheduled: scheduledView,
     };
-  }, [search]);
+  }, [filter]);
 
   const setFilter = (next: GameFilter) => {
     // フィルタ変更で履歴を積まない（戻る連打を防ぐ）
@@ -84,7 +86,8 @@ function Home() {
         <GameTable games={attended} />
 
         <h2 className="mt-2 text-sm font-bold text-[var(--muted)]">軸別集計</h2>
-        <CrossStats games={attended} />
+        {/* 年度別は未フィルタ時のみ全年度（空白年含む）を明示。単一年に絞り込み中は文脈上不要。 */}
+        <CrossStats games={attended} years={filter.year === "all" ? FILTER_OPTIONS.years : []} />
       </main>
     </div>
   );

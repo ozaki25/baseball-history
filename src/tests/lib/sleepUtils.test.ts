@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { sleep, SCRAPING_DELAY_MS } from "@/lib/sleepUtils";
+import { sleep, SCRAPING_DELAY_MS } from "#/lib/ingest/sleepUtils";
 
 describe("sleepUtils", () => {
   describe("sleep", () => {

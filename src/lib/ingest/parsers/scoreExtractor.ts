@@ -1,22 +1,18 @@
-import { JSDOM } from "jsdom";
 import { ParseError } from "#/types/parsing";
 
 /**
  * ファイターズ視点でスコアを抽出
- * @param html - 解析対象のHTML
+ * @param document - 解析対象の Document
  * @param isHome - ファイターズがホームかどうか
  * @returns ファイターズのスコアと相手のスコア
  */
 export function extractGameScore(
-  html: string,
+  document: Document,
   isHome: boolean,
 ): {
   myScore: number;
   vsScore: number;
 } {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
-
   const scoreElement = document.querySelector(".game-vs-teams__team-score");
   if (!scoreElement) {
     throw new ParseError("スコア要素が見つかりません", "extractGameScore");

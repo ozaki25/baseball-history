@@ -2,8 +2,8 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CrossStats } from "@/components/CrossStats";
-import { makeGame } from "@/tests/helpers/makeGame";
+import { CrossStats } from "#/components/CrossStats";
+import { makeGame } from "#/tests/helpers/makeGame";
 
 // 表記ゆれ（西武ドーム / ベルーナドーム）が同一IDへ束ねられ、代表名で1行に集約されることも確認。
 const GAMES = [
@@ -80,5 +80,16 @@ describe("CrossStats", () => {
   it("データが無ければ「データなし」を表示", () => {
     render(<CrossStats games={[]} />);
     expect(screen.getByText("データなし")).toBeInTheDocument();
+  });
+
+  it("年度別: 記録の無い年度も 0 件行として明示する（隠さない）", async () => {
+    const user = userEvent.setup();
+    // games は 2013/2025 のみ。years に 2017（空白年）を渡す。
+    render(<CrossStats games={GAMES} years={["2025", "2017", "2013"]} />);
+    await user.click(screen.getByRole("tab", { name: "年度別" }));
+    // 空白年 2017 が末尾に 0 件で現れる
+    const cells = statsRow("2017");
+    expect(cells[0]).toHaveTextContent("0"); // 観戦
+    expect(cells[5]).toHaveTextContent("-"); // 勝率（勝敗なし）
   });
 });

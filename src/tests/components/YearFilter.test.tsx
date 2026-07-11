@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { YearFilter } from "@/components/YearFilter";
+import { YearFilter } from "#/components/YearFilter";
 
 const YEARS = ["2025", "2024", "2013"];
 

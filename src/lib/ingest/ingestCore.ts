@@ -1,20 +1,13 @@
 import type { DatesData, Game, GameResult } from "#/types/game";
-import { parseGameHTML } from "./parsers/gameParser";
-import { normalizeText } from "./normalize";
-import { resolveTeam, resolveStadium } from "./masters";
+import { parseGameHTML, looksCancelled } from "./parsers/gameParser";
+import { normalizeText } from "../normalize";
+import { resolveTeam, resolveStadium } from "../masters";
 
 /** ファイターズ視点のスコアから勝敗を判定 */
 export function resultFromScores(fightersScore: number, opponentScore: number): GameResult {
   if (fightersScore > opponentScore) return "win";
   if (fightersScore < opponentScore) return "lose";
   return "draw";
-}
-
-const CANCELLED_RE = /中止|延期|ノーゲーム|順延/;
-
-/** 中止・延期っぽいページかの簡易判定（実データで要調整） */
-export function looksCancelled(html: string): boolean {
-  return CANCELLED_RE.test(html);
 }
 
 /** "2025", "0401" → "2025-04-01" */
