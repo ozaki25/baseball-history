@@ -13,8 +13,9 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatesData, Game, GamesData } from "#/types/game";
-import { mergeIngest } from "#/lib/ingest/ingestCore";
+import { mergeIngest, toIsoDate } from "#/lib/ingest/ingestCore";
 import { sleep, SCRAPING_DELAY_MS } from "#/lib/ingest/sleepUtils";
+import { gameSourceUrl } from "#/lib/labels";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATES_PATH = resolve(root, "data/dates.json");
@@ -37,7 +38,7 @@ function parseArgs(argv: string[]): Args {
 }
 
 function gameUrl(year: string, mmdd: string): string {
-  return `https://www.fighters.co.jp/gamelive/result/${year}${mmdd}01/`;
+  return gameSourceUrl(toIsoDate(year, mmdd));
 }
 
 async function fetchHtml(year: string, mmdd: string): Promise<string> {

@@ -7,17 +7,33 @@ import {
   flexRender,
   type SortingState,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink } from "lucide-react";
 import type { Game } from "#/types/game";
-import { formatDateJa, formatScore, HOME_AWAY_LABEL } from "#/lib/labels";
+import { formatDateJa, formatScore, gameSourceUrl, HOME_AWAY_LABEL } from "#/lib/labels";
 import { ResultBadge } from "./ResultBadge";
 
 const columnHelper = createColumnHelper<Game>();
 
+/** 日付＝取得元（公式サイトの試合結果）へのリンク */
+function SourceDate({ date }: { date: string }) {
+  return (
+    <a
+      href={gameSourceUrl(date)}
+      target="_blank"
+      rel="noopener noreferrer"
+      title="公式サイトの試合結果ページを開く"
+      className="tnum inline-flex items-center gap-1 whitespace-nowrap text-[var(--brand)] hover:underline"
+    >
+      {formatDateJa(date)}
+      <ExternalLink size={11} aria-hidden />
+    </a>
+  );
+}
+
 const columns = [
   columnHelper.accessor("date", {
     header: "日付",
-    cell: (c) => <span className="tnum whitespace-nowrap">{formatDateJa(c.getValue())}</span>,
+    cell: (c) => <SourceDate date={c.getValue()} />,
   }),
   columnHelper.accessor("opponent", {
     header: "対戦相手",
@@ -143,27 +159,35 @@ export function GameTable({ games }: { games: Game[] }) {
         {rows.map((row, i) => {
           const g = row.original;
           return (
-            <li
-              key={row.id}
-              className="flex items-center gap-3 px-3 py-2.5"
-              style={i > 0 ? { borderTop: "1px solid var(--line)" } : undefined}
-            >
-              <div className="flex flex-col">
-                <span className="tnum text-xs text-[var(--muted)]">{formatDateJa(g.date)}</span>
-                <span className="font-medium">
-                  {g.opponent || "—"}
-                  {g.homeAway && (
-                    <span className="ml-1.5 text-xs text-[var(--faint)]">
-                      {HOME_AWAY_LABEL[g.homeAway]}
-                    </span>
-                  )}
-                </span>
-                <span className="text-xs text-[var(--faint)]">{g.stadium || "—"}</span>
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                <span className="tnum text-sm">{formatScore(g)}</span>
-                <ResultBadge result={g.result} />
-              </div>
+            <li key={row.id} style={i > 0 ? { borderTop: "1px solid var(--line)" } : undefined}>
+              {/* カード全体を取得元（公式サイト）へのリンクにする */}
+              <a
+                href={gameSourceUrl(g.date)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="公式サイトの試合結果ページを開く"
+                className="flex items-center gap-3 px-3 py-2.5"
+              >
+                <div className="flex flex-col">
+                  <span className="tnum inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                    {formatDateJa(g.date)}
+                    <ExternalLink size={11} aria-hidden />
+                  </span>
+                  <span className="font-medium">
+                    {g.opponent || "—"}
+                    {g.homeAway && (
+                      <span className="ml-1.5 text-xs text-[var(--faint)]">
+                        {HOME_AWAY_LABEL[g.homeAway]}
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-xs text-[var(--faint)]">{g.stadium || "—"}</span>
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  <span className="tnum text-sm">{formatScore(g)}</span>
+                  <ResultBadge result={g.result} />
+                </div>
+              </a>
             </li>
           );
         })}

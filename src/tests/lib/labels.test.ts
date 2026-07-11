@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import type { Game } from "#/types/game";
-import { formatDateJa, formatScore, RESULT_LABEL, HOME_AWAY_LABEL } from "#/lib/labels";
+import {
+  formatDateJa,
+  formatScore,
+  gameSourceUrl,
+  RESULT_LABEL,
+  HOME_AWAY_LABEL,
+} from "#/lib/labels";
 
 function game(score: Game["score"]): Game {
   return {
@@ -32,6 +38,17 @@ describe("formatScore", () => {
   });
   it("中止・予定など null は —", () => {
     expect(formatScore(game({ fighters: null, opponent: null }))).toBe("—");
+  });
+});
+
+describe("gameSourceUrl", () => {
+  it("日付から公式サイトの試合結果URLを復元（第1試合）", () => {
+    expect(gameSourceUrl("2006-06-02")).toBe(
+      "https://www.fighters.co.jp/gamelive/result/2006060201/",
+    );
+    expect(gameSourceUrl("2025-10-04")).toBe(
+      "https://www.fighters.co.jp/gamelive/result/2025100401/",
+    );
   });
 });
 
