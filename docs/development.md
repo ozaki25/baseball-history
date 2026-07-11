@@ -101,7 +101,7 @@ jobs:
 
 ## 6. デプロイ（Vercel）
 
-- **TanStack Start の Vercel ターゲット**を使用（Start が Vercel 用の出力を生成）。
+- **完全静的（SSG/prerender）** で出力し、**TanStack Start の Vercel ターゲット**で配信。
 - スクレイピングはビルドに含めない（`games.json` 同梱を読むだけ）。
 - プレビュー: PR ごとの Vercel Preview を活用。
 

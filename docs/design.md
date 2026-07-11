@@ -33,7 +33,7 @@
 
 | レイヤ | 採用 | 版(確認時) | 選定理由 |
 |---|---|---|---|
-| フレームワーク | **TanStack Start** | 1.168 | TanStack 一式（Router 基盤）を中核に。Vercel を公式サポート。今回は静的化(prerender)寄りで運用 |
+| フレームワーク | **TanStack Start** | 1.168 | TanStack 一式（Router 基盤）を中核に。Vercel を公式サポート。**完全静的（SSG/prerender）で運用** |
 | ルーティング/状態 | **TanStack Router**（Start 内蔵） | 1.170 | 絞り込み条件を**型安全に URL（search params）へ保持**。ファイルベースルーティング |
 | テーブル/集計 | **TanStack Table** | 8.21 | 並べ替え・絞り込み・グルーピング・集計の中核。多条件クロス集計を宣言的に実装 |
 | 言語 | **TypeScript** | 7.0 | strict。型は単一定義 |
@@ -268,7 +268,7 @@ npm run ingest -- --year 2026
 
 - `vite-plugin-pwa`（`registerType: 'autoUpdate'`）を TanStack Start（Vite 基盤）構成に組み込む。
 - キャッシュ対象: アプリシェル一式 + `games.json`。
-- Manifest: 名称・**刷新した新アイコン**（フェーズ5作成）・テーマカラー `#016298`・`display: standalone`。
+- Manifest: 名称「観戦ノート」・**刷新した新アイコン**（フェーズ5作成）・テーマカラー `#016298`・`display: standalone`。
 
 ## 9b. 観戦日の登録（Claude 経由スキル）
 
