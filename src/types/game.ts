@@ -9,7 +9,9 @@
 export type HomeAway = "home" | "away";
 
 // scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される。
-export type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled";
+// unknown  = 詳細不明。観戦した記録は残すが、試合詳細が信頼できず日付のみ残す
+//            （例: 現行サイトでは正しく取得できない古い試合）。data/date-only.json で指定。
+export type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled" | "unknown";
 
 export interface Game {
   /** "YYYY-MM-DD"（第1試合のみ扱う） */

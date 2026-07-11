@@ -6,6 +6,7 @@ export const RESULT_LABEL: Record<GameResult, string> = {
   draw: "分",
   cancelled: "中止",
   scheduled: "予定",
+  unknown: "詳細不明",
 };
 
 export const HOME_AWAY_LABEL: Record<HomeAway, string> = {

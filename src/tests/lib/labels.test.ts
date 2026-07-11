@@ -57,6 +57,7 @@ describe("ラベル", () => {
     expect(RESULT_LABEL.win).toBe("勝");
     expect(RESULT_LABEL.cancelled).toBe("中止");
     expect(RESULT_LABEL.scheduled).toBe("予定");
+    expect(RESULT_LABEL.unknown).toBe("詳細不明");
   });
   it("主催/ビジター", () => {
     expect(HOME_AWAY_LABEL.home).toBe("主催");
