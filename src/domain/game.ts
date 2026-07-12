@@ -4,7 +4,7 @@
 //   - 安定ID（opponentId/stadiumId）… 空文字 "" が「不明」を表す。
 //   - homeAway … null が「不定」（中止/予定）を表す。
 //   - score … fighters/opponent が null（中止/予定）。
-// 集計側は空文字IDやnullを集計対象外として扱う（stats.ts / filters.ts 参照）。
+// 集計側は空文字IDや null を集計対象外として扱う（`domain/stats/` と `domain/query/filter` を参照）。
 
 export type HomeAway = "home" | "away";
 
