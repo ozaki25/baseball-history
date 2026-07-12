@@ -1,4 +1,5 @@
 import type { Game, GameResult, HomeAway } from "#/domain/game";
+import { yearOf } from "#/domain/game";
 import { teamLabel, stadiumLabel } from "#/domain/masters";
 
 /** 絞り込み状態。URL(search params) と 1:1 対応。stadiums/opponents は安定ID。 */
@@ -20,7 +21,7 @@ export const emptyFilter: GameFilter = {
 
 export function applyFilters(games: Game[], filter: GameFilter): Game[] {
   return games.filter((game) => {
-    if (filter.year !== "all" && game.date.slice(0, 4) !== filter.year) return false;
+    if (filter.year !== "all" && yearOf(game) !== filter.year) return false;
     if (filter.stadiums.length > 0 && !filter.stadiums.includes(game.stadiumId)) return false;
     if (filter.opponents.length > 0 && !filter.opponents.includes(game.opponentId)) return false;
     if (filter.homeAway !== "all" && game.homeAway !== filter.homeAway) return false;
@@ -77,7 +78,7 @@ function collect(
  */
 export function deriveOptions(games: Game[], allYears: string[] = []): FilterOptions {
   const years = new Set<string>(allYears);
-  for (const g of games) years.add(g.date.slice(0, 4));
+  for (const g of games) years.add(yearOf(g));
   return {
     years: [...years].sort((a, b) => b.localeCompare(a)),
     stadiums: collect(games, (g) => g.stadiumId, stadiumLabel),

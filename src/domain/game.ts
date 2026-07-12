@@ -11,7 +11,37 @@ export type HomeAway = "home" | "away";
 // scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される。
 // unknown  = 詳細不明。観戦した記録は残すが、試合詳細が信頼できず日付のみ残す
 //            （例: 現行サイトでは正しく取得できない古い試合）。data/date-only.json で指定。
-export type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled" | "unknown";
+//
+// 列挙は const 配列を単一定義元にする（Game.result 型・URL 受理・UI 順序を全て導出）。
+// as const satisfies で「値追加漏れがコンパイルエラー」になる保証を得る。
+export const GAME_RESULTS = ["win", "lose", "draw", "cancelled", "scheduled", "unknown"] as const;
+export type GameResult = (typeof GAME_RESULTS)[number];
+
+/**
+ * 絞り込み・URL で受理する勝敗値の列（＝UI 表示順）。
+ * scheduled は別枠（観戦予定）表示、unknown は詳細不明表示のため、勝敗軸に載せない。
+ */
+export const ATTENDED_RESULTS = [
+  "win",
+  "lose",
+  "draw",
+  "cancelled",
+] as const satisfies readonly GameResult[];
+
+/** その試合が「観戦予定（結果未確定）」か。 */
+export function isScheduled(g: Pick<Game, "result">): boolean {
+  return g.result === "scheduled";
+}
+/** その試合が「観戦済み」か（＝scheduled 以外。unknown・cancelled も含む）。 */
+export function isAttended(g: Pick<Game, "result">): boolean {
+  return !isScheduled(g);
+}
+
+/** ISO 日付("YYYY-MM-DD") または Game から年度文字列("YYYY")を取り出す。 */
+export function yearOf(dateOrGame: string | Pick<Game, "date">): string {
+  const iso = typeof dateOrGame === "string" ? dateOrGame : dateOrGame.date;
+  return iso.slice(0, 4);
+}
 
 export interface Game {
   /** "YYYY-MM-DD"（第1試合のみ扱う） */

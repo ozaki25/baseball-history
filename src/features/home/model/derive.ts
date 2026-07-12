@@ -1,4 +1,5 @@
 import type { Game } from "#/domain/game";
+import { isAttended, isScheduled, yearOf } from "#/domain/game";
 import { applyFilters, type GameFilter } from "#/features/filters/model/filters";
 
 /**
@@ -13,11 +14,10 @@ export function partitionGames(
 ): { attended: Game[]; scheduled: Game[] } {
   const filtered = applyFilters(games, filter);
   const scheduled = games.filter(
-    (g) =>
-      g.result === "scheduled" && (filter.year === "all" || g.date.slice(0, 4) === filter.year),
+    (g) => isScheduled(g) && (filter.year === "all" || yearOf(g) === filter.year),
   );
   return {
-    attended: filtered.filter((g) => g.result !== "scheduled"),
+    attended: filtered.filter(isAttended),
     scheduled,
   };
 }

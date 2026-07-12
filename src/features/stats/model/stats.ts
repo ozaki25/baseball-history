@@ -1,6 +1,10 @@
 import type { Game } from "#/domain/game";
+import { isScheduled, yearOf } from "#/domain/game";
 import { teamLabel, stadiumLabel } from "#/domain/masters";
 import { HOME_AWAY_LABEL } from "#/domain/labels";
+
+// 勝率整形は表示語彙として domain/labels に集約（stats.ts では re-export のみ維持）。
+export { formatWinRate } from "#/domain/labels";
 
 /**
  * 集計の定義（野球の通例）:
@@ -27,7 +31,7 @@ export function summarize(games: Game[]): Summary {
   let attended = 0;
 
   for (const game of games) {
-    if (game.result === "scheduled") continue;
+    if (isScheduled(game)) continue;
     attended += 1;
     switch (game.result) {
       case "win":
@@ -58,7 +62,7 @@ export interface GroupRow extends Summary {
 function groupValue(game: Game, key: GroupKey): string | null {
   switch (key) {
     case "year":
-      return game.date.slice(0, 4);
+      return yearOf(game);
     case "homeAway":
       return game.homeAway; // null（中止/予定など）は集計から除外
     case "stadium":
@@ -90,12 +94,6 @@ export function groupBy(
   return [...buckets.entries()]
     .map(([groupKey, groupGames]) => ({ key: groupKey, ...summarize(groupGames) }))
     .sort((a, b) => b.attended - a.attended || labelOf(a.key).localeCompare(labelOf(b.key), "ja"));
-}
-
-/** 勝率を ".xxx" 形式に整形（null は "-"）。 */
-export function formatWinRate(rate: number | null): string {
-  if (rate === null) return "-";
-  return rate.toFixed(3).replace(/^0/, "");
 }
 
 /** 軸別集計の行ラベルを解決する（球場/相手は安定ID→代表名、主催/ビジターは日本語、年度はそのまま）。 */
