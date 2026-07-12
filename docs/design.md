@@ -85,8 +85,10 @@ baseball-history/
 │  │     ├─ summary.ts     # Summary 型・summarize・groupBy
 │  │     ├─ axes.ts        # 軸レジストリ AXES / AXIS_ORDER（単一定義元）
 │  │     └─ rows.ts        # buildRows / rowLabel（表示行の空白年パディング）
-│  ├─ data/                # ビルド時データゲートウェイ
+│  ├─ data/                # ビルド時データゲートウェイ（JSON 境界の形状ガード）
 │  │  └─ games.ts          # ALL_GAMES / ALL_YEARS / GAMES_GENERATED_AT
+│                          # JSON 直読みはここのみの特権（oxlint で強制）。
+│                          # SSG につき不正データはビルド時 fail-fast。
 │  ├─ ingest/              # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
 │  │  ├─ ingestCore.ts     # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
 │  │  ├─ parsing.ts        # パーサ用の型（GameInfo / ParseError）
@@ -122,7 +124,7 @@ routes ─▶ screens ─▶ { app, features, ui, domain }
 - `screens → { app, features, ui, domain, data }` — 画面合成層。**feature 横断はここのみ**
 - `app → { ui, domain }` — アプリ外殻（AppShell）
 - `features → { domain, ui }` — 画面部品。**兄弟 feature 依存禁止・data 直依存禁止**
-- `data → { domain }` — JSON 境界の形状ガード（JSON 直読みはここのみの特権）
+- `data → { domain }` — JSON 境界の形状ガード（JSON 直読みはここのみの特権・不正データはビルド時 fail-fast）
 - `ui → ∅` — ドメイン非依存の再利用 UI。**最下層**
 - `domain → ∅` — framework 非依存のドメイン中核。**最下層**
 - `ingest → { domain }` — 取り込み専用（クライアントに import されない）

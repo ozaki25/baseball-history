@@ -58,6 +58,28 @@
 - **domain / ui は最下層**（上位のいかなる層にも依存しない）。
 - **ingest はクライアントに import しない**（jsdom 混入防止・安全規則。相対パス回避も `**/ingest/**` で機械捕捉）。
 
+### container / composition / presentational（linter で強制されない規約）
+
+- **routes（container）**: データ取得・URL 検証・`navigate` 結線のみ。View を描かない。
+- **screens（composition）**: 画面合成層。feature 横断はここのみ。
+- **features（presentational）**: 画面部品。**props で受け、`onNavigate` コールバックで返す**。
+  ルーター依存を feature に持ち込まない（screen の `search` / `onNavigate` seam を維持）。
+  新しい画面は route に結線だけ置き、View（合成）は screens、部品は features に置く。
+
+### `src/ui/` の採録基準
+
+- ドメインに依存しない再利用可能な UI 部品（コンポーネント / hooks）。
+- **副作用（`localStorage` 等）は部品内で完結**させる（親に漏らさない）。
+- **domain に依存する部品は `features/` に置く**（`ui/` ではない）。
+- 表示語彙（`labels.ts`）は `domain/` に置く（個人アプリで i18n しない前提のため、
+  表示ラベルもドメイン語彙として扱う）。
+
+### 新しい feature を追加するとき
+
+`.oxlintrc.json` の編集は**原則不要**。feature 兄弟一律禁止（`#/features/**`）は既にワイルドカードで
+縮約されているため、`src/features/新feature/` ディレクトリを作れば `src/features/**` override が自動適用される。
+（相対パス回避は文字列マッチでは原理的に捕捉できないため、ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる規約で補完する。）
+
 ### 層追加時のチェックリスト
 
 新しい層を追加するとき、`.oxlintrc.json` に override を 1 つ足すだけでは不十分。
@@ -183,7 +205,11 @@ jobs:
 ```yaml
 on:
   push:
-    paths: ["data/dates.json"] # 観戦日を足したら起動
+    branches: ["main"]
+    paths:
+      - "data/dates.json" # 観戦日を足したら起動
+      - "data/date-only.json" # 詳細不明の宣言追加でも再走
+      - ".github/workflows/ingest.yml"
   workflow_dispatch: # 手動実行（force / 年指定）
 permissions:
   contents: write # games.json を push するため
@@ -192,8 +218,11 @@ jobs:
     steps:
       - checkout / setup-node / setup-pnpm / pnpm install --frozen-lockfile
       - pnpm ingest # 未確定分だけ取得（scheduled/失敗も対象・--force で全件）
-      - 差分があれば data/games.json をコミット & push（[skip ci]）
+      - 差分があれば data/games.json と data/ingest-report.json をコミット & push
 ```
+
+CI ループ防止は `ci.yml` 側の `paths-ignore: [data/games.json, data/ingest-report.json]` で行う
+（ingest 側で `[skip ci]` を付ける方式ではない）。
 
 ### 5.3 Visual Regression（`vrt.yml`）— 視覚回帰
 
@@ -235,14 +264,14 @@ ingest が該当日を fetch せず `result: "unknown"` として日付のみ保
 
 ## 8. リスクと対応
 
-| リスク                                       | 影響                   | 対応                                                                       |
-| -------------------------------------------- | ---------------------- | -------------------------------------------------------------------------- |
-| 開発環境 / Vercel が `fighters.co.jp` 不到達 | その場では取り込めない | 取り込みは GitHub Actions で実行。アプリのビルドは `games.json` のみに依存 |
-| Actions の自動コミットが CI をループ起動     | 無駄実行               | ingest のコミットは CI 対象パスから除外／`[skip ci]` を付ける              |
-| 公式サイトの HTML 構造変更                   | パーサ破損             | フィクスチャ + テストで検知、パーサを修正して再取り込み                    |
-| 20 年分の年代差による表記ゆれ                | 絞り込み / 集計が分裂  | 最小限の正規化 + `masters.ts` の別名解決（データ駆動で追加）               |
-| データ欠損年（2017-2019, 2023 等）           | 集計の空白             | 「データなし（0件）」として明示表示（隠さない）                            |
-| oxfmt が 0.x で整形挙動が変わる              | 差分ノイズ             | CI で `format:check`                                                       |
+| リスク                                       | 影響                   | 対応                                                                               |
+| -------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| 開発環境 / Vercel が `fighters.co.jp` 不到達 | その場では取り込めない | 取り込みは GitHub Actions で実行。アプリのビルドは `games.json` のみに依存         |
+| Actions の自動コミットが CI をループ起動     | 無駄実行               | `ci.yml` の `paths-ignore` で `data/games.json` / `data/ingest-report.json` を除外 |
+| 公式サイトの HTML 構造変更                   | パーサ破損             | フィクスチャ + テストで検知、パーサを修正して再取り込み                            |
+| 20 年分の年代差による表記ゆれ                | 絞り込み / 集計が分裂  | 最小限の正規化 + `masters.ts` の別名解決（データ駆動で追加）                       |
+| データ欠損年（2017-2019, 2023 等）           | 集計の空白             | 「データなし（0件）」として明示表示（隠さない）                                    |
+| oxfmt が 0.x で整形挙動が変わる              | 差分ノイズ             | CI で `format:check`                                                               |
 
 ## 9. 未対応の backlog
 
