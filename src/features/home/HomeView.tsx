@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import type { Game } from "#/domain/game";
-import type { GameSearch } from "#/features/filters/model/search";
-import { searchToFilter, filterToSearch } from "#/features/filters/model/search";
-import { deriveOptions, type GameFilter } from "#/features/filters/model/filters";
-import { partitionGames } from "./model/derive";
+import type { GameSearch } from "#/domain/query/search";
+import { searchToFilter, filterToSearch } from "#/domain/query/search";
+import type { GameFilter } from "#/domain/query/filter";
+import { deriveOptions } from "#/domain/query/options";
+import { partitionGames } from "#/domain/query/partition";
 import { StatsSummary } from "#/features/stats/StatsSummary";
 import { ScheduledList } from "./ScheduledList";
 import { Filters } from "#/features/filters/Filters";
