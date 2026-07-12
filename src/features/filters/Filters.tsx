@@ -1,14 +1,12 @@
 import { useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
-import type { GameResult, HomeAway } from "#/domain/game";
+import type { HomeAway } from "#/domain/game";
+import { ATTENDED_RESULTS } from "#/domain/game";
 import type { GameFilter, FilterOptions } from "./model/filters";
 import { emptyFilter, isFilterActive, countActiveFilters } from "./model/filters";
-import { RESULT_LABEL } from "#/domain/labels";
+import { RESULT_LABEL, HOME_AWAY_LABEL } from "#/domain/labels";
 import { Chip } from "#/ui/Chip";
 import { useDialogA11y } from "#/ui/useDialogA11y";
-
-// 予定(scheduled)は「勝敗」ではなく別枠(観戦予定)で扱うため、絞り込み選択肢には含めない
-const RESULT_ORDER: GameResult[] = ["win", "lose", "draw", "cancelled"];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -48,10 +46,11 @@ export function Filters({
   const active = isFilterActive(filter);
   const activeCount = countActiveFilters(filter);
 
+  // 表示語は HOME_AWAY_LABEL を単一定義元にする（重複ハードコードを解消）。
   const homeAwayOptions: { value: HomeAway | "all"; label: string }[] = [
     { value: "all", label: "すべて" },
-    { value: "home", label: "主催" },
-    { value: "away", label: "ビジター" },
+    { value: "home", label: HOME_AWAY_LABEL.home },
+    { value: "away", label: HOME_AWAY_LABEL.away },
   ];
 
   return (
@@ -147,7 +146,7 @@ export function Filters({
               </Section>
 
               <Section title="勝敗">
-                {RESULT_ORDER.map((r) => (
+                {ATTENDED_RESULTS.map((r) => (
                   <Chip
                     key={r}
                     variant="tint"

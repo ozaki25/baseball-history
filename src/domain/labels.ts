@@ -33,3 +33,9 @@ export function formatScore(game: Game): string {
 export function gameSourceUrl(isoDate: string): string {
   return `https://www.fighters.co.jp/gamelive/result/${isoDate.replaceAll("-", "")}01/`;
 }
+
+/** 勝率を ".xxx" 形式に整形（null は "-"）。 */
+export function formatWinRate(rate: number | null): string {
+  if (rate === null) return "-";
+  return rate.toFixed(3).replace(/^0/, "");
+}

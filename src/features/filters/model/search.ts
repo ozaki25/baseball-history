@@ -1,4 +1,5 @@
 import type { GameResult, HomeAway } from "#/domain/game";
+import { ATTENDED_RESULTS } from "#/domain/game";
 import type { GameFilter } from "./filters";
 import { resolveStadium, resolveTeam } from "#/domain/masters";
 
@@ -11,8 +12,8 @@ export interface GameSearch {
   result?: GameResult[];
 }
 
-// 絞り込み可能な勝敗。予定(scheduled)は別枠表示で勝敗軸に載せないため URL でも受理しない。
-const RESULTS: readonly string[] = ["win", "lose", "draw", "cancelled"];
+// 絞り込み可能な勝敗（＝観戦済み表示に載る値）。予定(scheduled)・詳細不明(unknown)は URL でも受理しない。
+// 単一定義元は domain/game.ts の ATTENDED_RESULTS（型で保証された GameResult のサブセット）。
 
 function toStringArray(value: unknown): string[] | undefined {
   if (Array.isArray(value)) {
@@ -37,7 +38,9 @@ export function validateGameSearch(search: Record<string, unknown>): GameSearch 
 
   if (search.home === "home" || search.home === "away") out.home = search.home;
 
-  const result = toStringArray(search.result)?.filter((r): r is GameResult => RESULTS.includes(r));
+  const result = toStringArray(search.result)?.filter((r): r is GameResult =>
+    (ATTENDED_RESULTS as readonly string[]).includes(r),
+  );
   if (result && result.length > 0) out.result = result;
 
   return out;
