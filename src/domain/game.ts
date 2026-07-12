@@ -28,6 +28,12 @@ export const ATTENDED_RESULTS = [
   "cancelled",
 ] as const satisfies readonly GameResult[];
 
+/**
+ * スコアから決まる「勝敗確定」値。ingest が「取り込み済みで再取得しない」判定に使う
+ * （中止・予定・詳細不明は確定でない）。単一定義元。
+ */
+export const DECIDED_RESULTS = ["win", "lose", "draw"] as const satisfies readonly GameResult[];
+
 /** その試合が「観戦予定（結果未確定）」か。 */
 export function isScheduled(g: Pick<Game, "result">): boolean {
   return g.result === "scheduled";

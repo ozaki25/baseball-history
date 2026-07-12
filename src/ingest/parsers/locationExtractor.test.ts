@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractGameLocation } from "#/lib/ingest/parsers/locationExtractor";
+import { extractGameLocation } from "#/ingest/parsers/locationExtractor";
 import { loadTestDoc, htmlToDoc, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("locationExtractor", () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectIsHome } from "#/lib/ingest/parsers/homeDetector";
+import { detectIsHome } from "#/ingest/parsers/homeDetector";
 import { loadTestDoc, htmlToDoc, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("homeDetector", () => {

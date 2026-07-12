@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parseGameHTML } from "#/lib/ingest/parsers/gameParser";
-import { resultFromScores } from "#/lib/ingest/ingestCore";
+import { parseGameHTML } from "#/ingest/parsers/gameParser";
+import { resultFromScores } from "#/ingest/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("gameParser integration tests", () => {

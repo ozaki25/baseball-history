@@ -1,4 +1,4 @@
-import { ParseError } from "#/types/parsing";
+import { ParseError } from "#/ingest/parsing";
 
 /**
  * 自チーム名を取得

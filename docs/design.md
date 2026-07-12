@@ -70,17 +70,16 @@ baseball-history/
 │  │  └─ games/           # GameTable / ResultBadge
 │  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
 │  ├─ domain/             # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）
-│  │  ├─ game.ts          # Game 型・GameResult/HomeAway ほか
+│  │  ├─ game.ts          # Game 型・GameResult/HomeAway・列挙(GAME_RESULTS/ATTENDED_RESULTS/DECIDED_RESULTS)・
+│  │  │                   # 述語(isScheduled/isAttended)・yearOf。単一定義元。
 │  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
-│  │  ├─ labels.ts        # ドメイン語彙（表示ラベル・日付/スコア整形・取得元URL。全feature/scripts共有）
+│  │  ├─ labels.ts        # ドメイン語彙（表示ラベル・日付/スコア整形・勝率整形・取得元URL。全feature/scripts共有）
 │  │  └─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
-│  ├─ lib/                # 取り込み基盤（※PR6で src/ingest/ へ独立予定）
-│  │  └─ ingest/          # 取り込み専用（jsdom 依存・クライアントから import 禁止）
-│  │     ├─ ingestCore.ts # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
-│  │     ├─ parsers/      # 公式サイト HTML パーサ（Document を受け取る抽出器群）
-│  │     └─ sleepUtils.ts # レート制御
-│  ├─ types/
-│  │  └─ parsing.ts       # 取り込みパーサ用の型（※PR6で ingest/ へ移動予定）
+│  ├─ ingest/             # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
+│  │  ├─ ingestCore.ts    # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
+│  │  ├─ parsing.ts       # 取り込みパーサ用の型（GameInfo / ParseError）
+│  │  ├─ parsers/         # 公式サイト HTML パーサ（Document を受け取る抽出器群）
+│  │  └─ sleepUtils.ts    # レート制御
 │  └─ styles.css          # Tailwind エントリ・デザイントークン（ライト/ダーク）
 ├─ src/tests/             # Vitest（lib 単体・パーサ・コンポーネント[jsdom]）
 ├─ public/                # PWA アイコン・manifest・sw.js

@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
-import type { GameInfo } from "#/types/parsing";
-import { ParseError } from "#/types/parsing";
+import type { GameInfo } from "#/ingest/parsing";
+import { ParseError } from "#/ingest/parsing";
 import { extractVsTeam, extractMyTeam } from "./teamExtractor";
 import { extractGameScore } from "./scoreExtractor";
 import { extractGameLocation } from "./locationExtractor";

@@ -15,8 +15,8 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DatesData, Game, GamesData } from "#/domain/game";
-import { mergeIngest, toIsoDate } from "#/lib/ingest/ingestCore";
-import { sleep, SCRAPING_DELAY_MS } from "#/lib/ingest/sleepUtils";
+import { mergeIngest, toIsoDate } from "#/ingest/ingestCore";
+import { sleep, SCRAPING_DELAY_MS } from "#/ingest/sleepUtils";
 import { gameSourceUrl } from "#/domain/labels";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");

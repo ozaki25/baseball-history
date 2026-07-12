@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   GAME_RESULTS,
   ATTENDED_RESULTS,
+  DECIDED_RESULTS,
   isScheduled,
   isAttended,
   yearOf,
@@ -26,6 +27,14 @@ describe("GAME_RESULTS / ATTENDED_RESULTS", () => {
       expect(r).not.toBe("scheduled");
       expect(r).not.toBe("unknown");
     }
+  });
+
+  it("DECIDED_RESULTS は ATTENDED_RESULTS から cancelled を除いた「勝敗確定」値", () => {
+    expect([...DECIDED_RESULTS]).toEqual(["win", "lose", "draw"]);
+    for (const r of DECIDED_RESULTS) {
+      expect(ATTENDED_RESULTS).toContain(r);
+    }
+    expect((DECIDED_RESULTS as readonly GameResult[]).includes("cancelled")).toBe(false);
   });
 });
 
