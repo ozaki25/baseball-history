@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { HomeView } from "#/features/home/HomeView";
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import { makeGame } from "#/tests/helpers/makeGame";
 
 // 固定フィクスチャ（live な games.json はingestで変わるため、baseline を安定させる目的で使わない）

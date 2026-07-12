@@ -1,6 +1,6 @@
-import type { Game } from "#/types/game";
-import { teamLabel, stadiumLabel } from "#/lib/masters";
-import { HOME_AWAY_LABEL } from "#/lib/labels";
+import type { Game } from "#/domain/game";
+import { teamLabel, stadiumLabel } from "#/domain/masters";
+import { HOME_AWAY_LABEL } from "#/domain/labels";
 
 /**
  * 集計の定義（野球の通例）:

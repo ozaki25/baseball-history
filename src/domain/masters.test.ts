@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import type { GamesData } from "#/types/game";
+import type { GamesData } from "#/domain/game";
 import gamesData from "../../data/games.json";
-import { resolveTeam, resolveStadium } from "#/lib/masters";
+import { resolveTeam, resolveStadium } from "#/domain/masters";
 
 describe("masters", () => {
   it("表記ゆれを同一IDに束ねる", () => {

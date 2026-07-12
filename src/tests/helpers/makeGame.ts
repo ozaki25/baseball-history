@@ -1,5 +1,5 @@
-import type { Game } from "#/types/game";
-import { resolveTeam, resolveStadium } from "#/lib/masters";
+import type { Game } from "#/domain/game";
+import { resolveTeam, resolveStadium } from "#/domain/masters";
 
 /**
  * テスト用の Game を組み立てる。opponent/stadium から安定IDを解決するので、

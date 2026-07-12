@@ -26,8 +26,24 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/lib/**", "#/routes/**", "#/types/**"],
-                "message": "ui/ はドメイン非依存の再利用UIです。domain型・lib・features に依存する部品は features/ に置いてください。"
+                "group": ["#/features/**", "#/domain/**", "#/lib/**", "#/routes/**", "#/types/**"],
+                "message": "ui/ はドメイン非依存の再利用UIです。domain・lib・features に依存する部品は features/ に置いてください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/domain/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/ui/**", "#/routes/**", "#/lib/**"],
+                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest に依存させないでください。"
               }
             ]
           }

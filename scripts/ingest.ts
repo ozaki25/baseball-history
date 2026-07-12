@@ -14,10 +14,10 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { DatesData, Game, GamesData } from "#/types/game";
+import type { DatesData, Game, GamesData } from "#/domain/game";
 import { mergeIngest, toIsoDate } from "#/lib/ingest/ingestCore";
 import { sleep, SCRAPING_DELAY_MS } from "#/lib/ingest/sleepUtils";
-import { gameSourceUrl } from "#/lib/labels";
+import { gameSourceUrl } from "#/domain/labels";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATES_PATH = resolve(root, "data/dates.json");

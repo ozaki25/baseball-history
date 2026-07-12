@@ -1,5 +1,5 @@
-import type { Game } from "#/types/game";
-import { formatDateJa } from "#/lib/labels";
+import type { Game } from "#/domain/game";
+import { formatDateJa } from "#/domain/labels";
 import { CalendarClock } from "lucide-react";
 
 // 抽出（result==="scheduled" と年度絞り込み）は呼び出し側の責務。ここは受け取った予定を並べるだけ。

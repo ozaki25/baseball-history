@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import { buildRows, rowLabel, formatWinRate, type GroupKey } from "./model/stats";
 
 const TABS: { key: GroupKey; label: string }[] = [
