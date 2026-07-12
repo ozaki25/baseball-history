@@ -5,6 +5,7 @@ import {
   deriveOptions,
   emptyFilter,
   isFilterActive,
+  countActiveFilters,
 } from "#/features/filters/model/filters";
 import { resolveTeam, resolveStadium } from "#/lib/masters";
 
@@ -90,5 +91,40 @@ describe("安定ID（表記ゆれの束ね）", () => {
     expect(resolveStadium("西武ドーム").id).toBe("seibu-dome");
     expect(resolveStadium("西武プリンス").id).toBe("seibu-dome");
     expect(resolveStadium("ベルーナドーム").id).toBe("seibu-dome");
+  });
+});
+
+describe("countActiveFilters / isFilterActive", () => {
+  it("空フィルタは 0 件・非アクティブ", () => {
+    expect(countActiveFilters(emptyFilter)).toBe(0);
+    expect(isFilterActive(emptyFilter)).toBe(false);
+  });
+
+  it("年度・主催は各1、球場/相手/勝敗は選択数を数える", () => {
+    expect(countActiveFilters({ ...emptyFilter, year: "2025" })).toBe(1);
+    expect(countActiveFilters({ ...emptyFilter, homeAway: "home" })).toBe(1);
+    expect(countActiveFilters({ ...emptyFilter, stadiums: ["a", "b"] })).toBe(2);
+    expect(
+      countActiveFilters({
+        ...emptyFilter,
+        year: "2025",
+        homeAway: "away",
+        stadiums: ["a"],
+        opponents: ["x", "y"],
+        results: ["win"],
+      }),
+    ).toBe(1 + 1 + 1 + 2 + 1);
+  });
+
+  it("isFilterActive は countActiveFilters > 0 と一致する（バッジ数と乖離しない）", () => {
+    const filters = [
+      emptyFilter,
+      { ...emptyFilter, year: "2025" },
+      { ...emptyFilter, results: ["draw" as const] },
+      { ...emptyFilter, opponents: ["x"] },
+    ];
+    for (const f of filters) {
+      expect(isFilterActive(f)).toBe(countActiveFilters(f) > 0);
+    }
   });
 });

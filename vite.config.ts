@@ -26,6 +26,8 @@ export default defineConfig({
           name: "unit",
           globals: true,
           setupFiles: ["./src/tests/setup.ts"],
+          // 命名規約を機械的に固定する（*.spec 等の別名がカバレッジ分母へ紛れ込むのを防ぐ）。
+          include: ["src/**/*.test.{ts,tsx}"],
           exclude: [vrtPattern, ...defaultExclude],
         },
       },

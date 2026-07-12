@@ -5,6 +5,7 @@ import {
   filterToSearch,
 } from "#/features/filters/model/search";
 import { emptyFilter, type GameFilter } from "#/features/filters/model/filters";
+import { resolveStadium, resolveTeam } from "#/lib/masters";
 
 describe("validateGameSearch", () => {
   it("正しい値を通す", () => {
@@ -98,5 +99,22 @@ describe("filterToSearch", () => {
       results: ["win", "draw"],
     };
     expect(searchToFilter(filterToSearch(f))).toEqual(f);
+  });
+});
+
+describe("filter ⇔ search ラウンドトリップ", () => {
+  it("安定IDで組んだフィルタは search→filter で往復同一（項目追加時の変換漏れ検知）", () => {
+    // stadiums/opponents は resolve で正準IDに解決した値を使う（往復の不動点）。
+    const stadiums = [resolveStadium("エスコンフィールド").id, resolveStadium("ベルーナドーム").id];
+    const opponents = [resolveTeam("千葉ロッテ").id, resolveTeam("オリックス").id];
+    const filters: GameFilter[] = [
+      emptyFilter,
+      { year: "2025", stadiums: [], opponents: [], homeAway: "all", results: [] },
+      { year: "2013", stadiums, opponents, homeAway: "away", results: ["win", "cancelled"] },
+      { ...emptyFilter, homeAway: "home", results: ["draw"] },
+    ];
+    for (const f of filters) {
+      expect(searchToFilter(filterToSearch(f))).toEqual(f);
+    }
   });
 });

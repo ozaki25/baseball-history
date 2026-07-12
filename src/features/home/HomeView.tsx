@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import type { Game } from "#/types/game";
 import type { GameSearch } from "#/features/filters/model/search";
 import { searchToFilter, filterToSearch } from "#/features/filters/model/search";
-import { applyFilters, deriveOptions, type GameFilter } from "#/features/filters/model/filters";
+import { deriveOptions, type GameFilter } from "#/features/filters/model/filters";
+import { partitionGames } from "./model/derive";
 import { StatsSummary } from "#/features/stats/StatsSummary";
 import { ScheduledList } from "./ScheduledList";
 import { Filters } from "#/features/filters/Filters";
@@ -30,18 +31,7 @@ export function HomeView({
   const options = useMemo(() => deriveOptions(games, allYears), [games, allYears]);
   const filter = useMemo(() => searchToFilter(search), [search]);
 
-  const { attended, scheduled } = useMemo(() => {
-    const filtered = applyFilters(games, filter);
-    // 予定は結果未確定で相手/球場/主催が不定なため、年度だけで抽出して別枠表示する。
-    const scheduledView = games.filter(
-      (g) =>
-        g.result === "scheduled" && (filter.year === "all" || g.date.slice(0, 4) === filter.year),
-    );
-    return {
-      attended: filtered.filter((g) => g.result !== "scheduled"),
-      scheduled: scheduledView,
-    };
-  }, [games, filter]);
+  const { attended, scheduled } = useMemo(() => partitionGames(games, filter), [games, filter]);
 
   const setFilter = (next: GameFilter) => onNavigate(filterToSearch(next));
 
