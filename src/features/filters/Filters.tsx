@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import type { GameResult, HomeAway } from "#/types/game";
 import type { GameFilter, FilterOptions } from "./model/filters";
 import { emptyFilter, isFilterActive, countActiveFilters } from "./model/filters";
 import { RESULT_LABEL } from "#/lib/labels";
 import { Chip } from "#/ui/Chip";
+import { useDialogA11y } from "#/ui/useDialogA11y";
 
 // 予定(scheduled)は「勝敗」ではなく別枠(観戦予定)で扱うため、絞り込み選択肢には含めない
 const RESULT_ORDER: GameResult[] = ["win", "lose", "draw", "cancelled"];
@@ -41,35 +42,8 @@ export function Filters({
     triggerRef.current?.focus();
   };
 
-  useEffect(() => {
-    if (!open) return;
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        triggerRef.current?.focus();
-        return;
-      }
-      if (e.key !== "Tab" || !dialogRef.current) return;
-      // フォーカストラップ: ダイアログ内で Tab を循環させる
-      const items = dialogRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      );
-      if (items.length === 0) return;
-      const first = items[0]!;
-      const last = items[items.length - 1]!;
-      const activeEl = document.activeElement;
-      if (e.shiftKey && activeEl === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && activeEl === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  // 初期フォーカス移動・Escape で閉じる・Tab のフォーカストラップは汎用フックに委譲（DOM 不変）。
+  useDialogA11y({ open, onClose: close, dialogRef, initialFocusRef: closeRef });
 
   const active = isFilterActive(filter);
   const activeCount = countActiveFilters(filter);
