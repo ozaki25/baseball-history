@@ -1,6 +1,6 @@
 # 開発フロー — 観戦履歴アプリ（再構築）
 
-> ステータス: **ドラフト（レビュー中）** / 最終更新: 2026-07-10
+> ステータス: **反映済み（構造化リファクタ PR1〜PR6 = 白紙PR-1〜PR-6 完了時点）** / 最終更新: 2026-07-12
 > 要件は `requirements.md`、設計は `design.md` を参照。
 
 ## 1. 開発環境
@@ -102,6 +102,11 @@ src/
   編集は**原則不要**。新 feature 用のディレクトリを作れば `src/features/**` override が自動適用される。相対パス回避は
   文字列マッチでは原理的に捕捉できないため（例: `../filters/...` に `features` が含まれない）、ディレクトリ跨ぎの
   import は必ず `#/` エイリアスを用いる規約で補完する（境界の限界として明記）。
+- **新しい層（app/screens 等）を追加するとき**: 新 override を1つ追加するだけでは不十分。**下層の override 全て
+  （ui/domain/data/ingest/scripts）に「新層を禁止する」パターンを追記**しないと、下層→新層の import が lint 素通り
+  になる（例: `ui → app` が許されると循環すら検出不能）。追記漏れは違反注入で必ず検証する（`../new-layer/thing`
+  を挿入して oxlint が落ちるか）。過去に PR-5/PR-6 で連続的にこの穴を踏んだため、境界改修は**常に下層の全 override
+  を同時に更新するチェックリストを回す**こと。
 
 ## 3. テスト戦略
 
@@ -261,3 +266,24 @@ jobs:
 
 - 論点はすべて確定済み（要件 §7）。**フェーズ 1（足場）着手待ち**。
 - 実装着手時に各依存の最新版をレジストリで確認してから固定する。
+
+## 11. 未対応の backlog（Fable レビューの後回し可指摘）
+
+構造化リファクタ（PR1〜PR6・白紙PR-1〜PR-6）で Fable が発見したが「後回し可」として本体には
+含めなかった項目。次回関連箇所を触るときに一緒に片付ける。
+
+- **summarize の switch 網羅性強制**: `domain/stats/summary.ts` の switch に
+  `default: assertNever(...)` を追加すると、`GAME_RESULTS` 拡張時に集計側もコンパイルエラー
+  で追従を強制できる（現状は unknown/scheduled が暗黙 pass）。
+- **useTheme の cycle が stale closure の theme を参照**: 元実装の忠実移植で本 PR 群の範囲では
+  正しいが、`setTheme(t => NEXT[t])` + effect 永続化に直すとより堅牢。
+- **useDialogA11y test の stale onClose ケース**: 現テストは onClose の identity 変化のみ検証。
+  effect 再購読が起きない状況を突く「ref 方式であること」を一意に固定するテストを追加すると
+  実装差の検知度が上がる。
+- **screens 兄弟の依存禁止**: 現状 screens 直下は home 1画面。将来複数 screen になったら
+  `#/screens/**` 一律禁止を features と対称に設定するか判断（screens が唯一の合成層のため
+  兄弟合成は禁じるべき）。
+- **`git log --follow` の履歴断絶**: 大きな書き換えを伴う移動（PR-6 の HomeView 等）は git の
+  rename 検出閾値を下回るので `--follow` が途切れる。関連 PR は「pure git mv コミット + 書き換え
+  コミット」の2段に分けると `--follow` が生きる。squash merge の運用下でも重要な移動なら
+  検討する。

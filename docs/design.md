@@ -1,7 +1,7 @@
 # 設計書 — 観戦履歴アプリ（再構築）
 
-> ステータス: **ドラフト（レビュー中）** / 最終更新: 2026-07-10
-> 対応する要件は `requirements.md` を参照。
+> ステータス: **反映済み（構造化リファクタ PR1〜PR6 = 白紙PR-1〜PR-6 完了時点）** / 最終更新: 2026-07-12
+> 対応する要件は `requirements.md` を参照。開発運用は `development.md` を参照。
 
 ## 1. アーキテクチャ方針
 
@@ -111,21 +111,29 @@ baseball-history/
 ```ts
 type HomeAway = "home" | "away";
 // scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される
-type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled";
+// unknown   = 詳細不明。観戦した記録は残すが、試合詳細が信頼できず日付のみ残す
+//             （現行サイトで正しく取得できない古い試合。data/date-only.json で指定）
+type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled" | "unknown";
 
 interface Game {
   id: string; // "2025-04-01"
   date: string; // ISO "YYYY-MM-DD"
-  opponent: string; // 当時の表示名（正規化済み。scheduled/cancelled 時は空になりうる）
+  opponent: string; // 当時の表示名（正規化済み。scheduled/cancelled/unknown 時は空になりうる）
   opponentId: string; // 安定ID（表記ゆれを束ねる。不明時は空文字）
   stadium: string; // 当時の表示名（正規化済み）
   stadiumId: string; // 安定ID（球場の命名権変更を束ねる。不明時は空文字）
-  homeAway: HomeAway | null; // 中止/予定など不定時は null
+  homeAway: HomeAway | null; // 中止/予定/詳細不明など不定時は null
   result: GameResult;
-  score: { fighters: number | null; opponent: number | null }; // 中止/予定時は null
+  score: { fighters: number | null; opponent: number | null }; // 中止/予定/詳細不明時は null
 }
 ```
 
+> **列挙の単一定義元**: `GAME_RESULTS` / `ATTENDED_RESULTS`(勝敗軸に載る4値) / `DECIDED_RESULTS`(勝敗確定3値) を
+> `domain/game.ts` で `as const satisfies readonly GameResult[]` として定義。値追加漏れはコンパイルエラー化される。
+>
+> **date-only.json**: 現行サイトで取得できない古い試合を「詳細不明(unknown)」として日付のみ残す。
+> ingest は該当日を fetch せず `unknown` で保存。集計は観戦数に含めるが勝敗軸には数えない。
+>
 > 全項目がスクレイピング由来。手入力項目（メモ等）は持たない。
 >
 > **安定ID（`masters.ts`）**: チーム・球場は年代で表示名が変わりうる（球団改称・球場の命名権）。
