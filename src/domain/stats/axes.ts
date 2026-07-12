@@ -17,7 +17,7 @@ export interface Axis {
   label: string;
   /** テーブル列ヘッダ（例: "球場"） */
   columnLabel: string;
-  /** Game から集計キーを取り出す。null は集計対象外（不明/中止/予定など） */
+  /** Game から集計キーを取り出す。null は集計対象外（不明/予定など） */
   valueOf: (game: Game) => string | null;
   /** 集計キー→行ラベル */
   labelOf: (key: string) => string;
@@ -57,7 +57,7 @@ export const AXES = {
     key: "homeAway",
     label: "主催/ビジター",
     columnLabel: "主催/ビジター",
-    valueOf: (g) => g.homeAway, // null（中止/予定など）は集計から除外
+    valueOf: (g) => g.homeAway, // null（予定など）は集計から除外
     labelOf: (k) => HOME_AWAY_LABEL[k as keyof typeof HOME_AWAY_LABEL] ?? k,
   },
 } as const satisfies Record<GroupKey, Axis>;

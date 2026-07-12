@@ -56,7 +56,8 @@ describe("gameSourceUrl", () => {
 describe("ラベル", () => {
   it("結果ラベル", () => {
     expect(RESULT_LABEL.win).toBe("勝");
-    expect(RESULT_LABEL.cancelled).toBe("中止");
+    expect(RESULT_LABEL.lose).toBe("負");
+    expect(RESULT_LABEL.draw).toBe("分");
     expect(RESULT_LABEL.scheduled).toBe("予定");
     expect(RESULT_LABEL.unknown).toBe("詳細不明");
   });

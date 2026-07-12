@@ -31,7 +31,7 @@ export function CrossStats({ games, years = [] }: { games: Game[]; years?: strin
               aria-selected={active}
               aria-controls="crossstats-panel"
               onClick={() => setTab(t.key)}
-              className="whitespace-nowrap px-3 py-2 text-sm font-medium"
+              className="whitespace-nowrap px-3 py-2 text-base font-medium"
               style={
                 active
                   ? { color: "var(--brand)", borderBottom: "2px solid var(--brand)" }
@@ -45,28 +45,25 @@ export function CrossStats({ games, years = [] }: { games: Game[]; years?: strin
       </div>
 
       <div id="crossstats-panel" role="tabpanel" aria-labelledby={`crossstats-tab-${tab}`}>
-        <table className="w-full text-sm">
+        <table className="w-full text-base">
           <thead>
-            <tr className="text-[11px] text-[var(--muted)]">
-              <th scope="col" className="px-3 py-1.5 text-left font-medium">
+            <tr className="text-xs text-[var(--muted)]">
+              <th scope="col" className="px-3 py-2 text-left font-medium">
                 {AXES[tab].columnLabel}
               </th>
-              <th scope="col" className="px-2 py-1.5 text-right font-medium">
+              <th scope="col" className="px-2 py-2 text-right font-medium">
                 観戦
               </th>
-              <th scope="col" className="px-2 py-1.5 text-right font-medium">
+              <th scope="col" className="px-2 py-2 text-right font-medium">
                 勝
               </th>
-              <th scope="col" className="px-2 py-1.5 text-right font-medium">
+              <th scope="col" className="px-2 py-2 text-right font-medium">
                 敗
               </th>
-              <th scope="col" className="px-2 py-1.5 text-right font-medium">
+              <th scope="col" className="px-2 py-2 text-right font-medium">
                 分
               </th>
-              <th scope="col" className="px-2 py-1.5 text-right font-medium">
-                中止
-              </th>
-              <th scope="col" className="px-3 py-1.5 text-right font-medium">
+              <th scope="col" className="px-3 py-2 text-right font-medium">
                 勝率
               </th>
             </tr>
@@ -74,22 +71,19 @@ export function CrossStats({ games, years = [] }: { games: Game[]; years?: strin
           <tbody>
             {rows.map((r) => (
               <tr key={r.key} className="border-t" style={{ borderColor: "var(--line)" }}>
-                <th scope="row" className="px-3 py-1.5 text-left font-normal">
+                <th scope="row" className="px-3 py-2 text-left font-normal">
                   {rowLabel(tab, r.key)}
                 </th>
-                <td className="tnum px-2 py-1.5 text-right">{r.attended}</td>
-                <td className="tnum px-2 py-1.5 text-right">{r.win}</td>
-                <td className="tnum px-2 py-1.5 text-right">{r.lose}</td>
-                <td className="tnum px-2 py-1.5 text-right">{r.draw}</td>
-                <td className="tnum px-2 py-1.5 text-right text-[var(--muted)]">{r.cancelled}</td>
-                <td className="tnum px-3 py-1.5 text-right font-bold">
-                  {formatWinRate(r.winRate)}
-                </td>
+                <td className="tnum px-2 py-2 text-right">{r.attended}</td>
+                <td className="tnum px-2 py-2 text-right">{r.win}</td>
+                <td className="tnum px-2 py-2 text-right">{r.lose}</td>
+                <td className="tnum px-2 py-2 text-right">{r.draw}</td>
+                <td className="tnum px-3 py-2 text-right font-bold">{formatWinRate(r.winRate)}</td>
               </tr>
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-[var(--faint)]">
+                <td colSpan={6} className="px-3 py-6 text-center text-[var(--faint)]">
                   データなし
                 </td>
               </tr>

@@ -109,18 +109,10 @@ describe("mergeIngest", () => {
     expect(r.failures).toHaveLength(1);
   });
 
-  it("解析不能でも試合詳細領域に中止表記があれば cancelled として保存", async () => {
+  it("解析不能の場合は games.json に入れず ingest-report に失敗として記録", async () => {
+    // 中止試合は dates.json に載せない前提のため、パース不能 = 失敗扱いのみ
+    // （games.json に cancelled を作らない）
     const { fetchHtml } = makeFetch({ "20250601": "<main>本日の試合は中止となりました</main>" });
-    const r = await mergeIngest({ "2025": ["0601"] }, new Map(), {
-      fetchHtml,
-      now: NOW,
-    });
-    expect(r.games[0]!.result).toBe("cancelled");
-  });
-
-  it("試合詳細の外(ナビ等)にだけ中止表記がある場合は cancelled と誤確定しない", async () => {
-    // 解析不能かつ中止判定も false → 失敗として記録（誤って cancelled にしない）
-    const { fetchHtml } = makeFetch({ "20250601": "<nav>順延情報はこちら</nav><div>本文</div>" });
     const r = await mergeIngest({ "2025": ["0601"] }, new Map(), {
       fetchHtml,
       now: NOW,
@@ -160,15 +152,5 @@ describe("mergeIngest", () => {
       stadiumId: "",
       homeAway: null,
     });
-  });
-
-  it("既存の cancelled は再取得し、結果が出れば確定へ自己修復する", async () => {
-    const existing = new Map([
-      ["2025-06-01", { ...confirmed("2025-06-01"), result: "cancelled" as const }],
-    ]);
-    const { fetchHtml, calls } = makeFetch({ "20250601": HOME_WIN });
-    const r = await mergeIngest({ "2025": ["0601"] }, existing, { fetchHtml, now: NOW });
-    expect(calls).toEqual(["20250601"]); // cancelled は確定扱いしないので再取得
-    expect(r.games[0]).toMatchObject({ result: "win", opponent: "千葉ロッテ" });
   });
 });

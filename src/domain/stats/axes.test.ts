@@ -76,7 +76,7 @@ describe("AXES.valueOf", () => {
       AXES.homeAway.valueOf(game({ date: "2025-04-01", result: "win", homeAway: "home" })),
     ).toBe("home");
     expect(
-      AXES.homeAway.valueOf(game({ date: "2025-04-01", result: "cancelled", homeAway: null })),
+      AXES.homeAway.valueOf(game({ date: "2025-04-01", result: "unknown", homeAway: null })),
     ).toBeNull();
   });
 });

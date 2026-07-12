@@ -30,7 +30,7 @@ const GAMES = [
   }),
 ];
 
-// 行(rowheader)から同じ <tr> の数値セルを取り出す。列順: 観戦/勝/敗/分/中止/勝率
+// 行(rowheader)から同じ <tr> の数値セルを取り出す。列順: 観戦/勝/敗/分/勝率
 function statsRow(name: string) {
   const panel = screen.getByRole("tabpanel");
   const row = within(panel).getByRole("rowheader", { name }).closest("tr")!;
@@ -90,6 +90,6 @@ describe("CrossStats", () => {
     // 空白年 2017 が末尾に 0 件で現れる
     const cells = statsRow("2017");
     expect(cells[0]).toHaveTextContent("0"); // 観戦
-    expect(cells[5]).toHaveTextContent("-"); // 勝率（勝敗なし）
+    expect(cells[4]).toHaveTextContent("-"); // 勝率（勝敗なし）
   });
 });

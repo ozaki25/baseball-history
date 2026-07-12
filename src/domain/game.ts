@@ -2,9 +2,13 @@
 //
 // 欠損（不明）の表現方針:
 //   - 安定ID（opponentId/stadiumId）… 空文字 "" が「不明」を表す。
-//   - homeAway … null が「不定」（中止/予定）を表す。
-//   - score … fighters/opponent が null（中止/予定）。
+//   - homeAway … null が「不定」（予定・詳細不明）を表す。
+//   - score … fighters/opponent が null（予定・詳細不明）。
 // 集計側は空文字IDや null を集計対象外として扱う（`domain/stats/` と `domain/query/filter` を参照）。
+//
+// 中止は概念として扱わない: 観戦ノートは「現地で観戦した記録」のみを対象にするため、
+// 中止試合は dates.json に載せない前提。万一 ingest が中止試合に当たった場合は取り込み失敗
+// として ingest-report.json に記録し、games.json には入れない（scripts/ingest.ts 参照）。
 
 export type HomeAway = "home" | "away";
 
@@ -14,23 +18,18 @@ export type HomeAway = "home" | "away";
 //
 // 列挙は const 配列を単一定義元にする（Game.result 型・URL 受理・UI 順序を全て導出）。
 // as const satisfies で「値追加漏れがコンパイルエラー」になる保証を得る。
-export const GAME_RESULTS = ["win", "lose", "draw", "cancelled", "scheduled", "unknown"] as const;
+export const GAME_RESULTS = ["win", "lose", "draw", "scheduled", "unknown"] as const;
 export type GameResult = (typeof GAME_RESULTS)[number];
 
 /**
  * 絞り込み・URL で受理する勝敗値の列（＝UI 表示順）。
  * scheduled は別枠（観戦予定）表示、unknown は詳細不明表示のため、勝敗軸に載せない。
  */
-export const ATTENDED_RESULTS = [
-  "win",
-  "lose",
-  "draw",
-  "cancelled",
-] as const satisfies readonly GameResult[];
+export const ATTENDED_RESULTS = ["win", "lose", "draw"] as const satisfies readonly GameResult[];
 
 /**
  * スコアから決まる「勝敗確定」値。ingest が「取り込み済みで再取得しない」判定に使う
- * （中止・予定・詳細不明は確定でない）。単一定義元。
+ * （予定・詳細不明は確定でない）。単一定義元。
  */
 export const DECIDED_RESULTS = ["win", "lose", "draw"] as const satisfies readonly GameResult[];
 
@@ -38,7 +37,7 @@ export const DECIDED_RESULTS = ["win", "lose", "draw"] as const satisfies readon
 export function isScheduled(g: Pick<Game, "result">): boolean {
   return g.result === "scheduled";
 }
-/** その試合が「観戦済み」か（＝scheduled 以外。unknown・cancelled も含む）。 */
+/** その試合が「観戦済み」か（＝scheduled 以外。unknown も含む）。 */
 export function isAttended(g: Pick<Game, "result">): boolean {
   return !isScheduled(g);
 }

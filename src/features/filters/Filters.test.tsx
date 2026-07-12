@@ -18,11 +18,20 @@ const OPTIONS: FilterOptions = {
   ],
 };
 
-function setup(filter: GameFilter = emptyFilter) {
+function setup(filter: GameFilter = emptyFilter, defaultYear?: string) {
   const onChange = vi.fn();
+  const onReset = vi.fn();
   const user = userEvent.setup();
-  render(<Filters filter={filter} options={OPTIONS} onChange={onChange} />);
-  return { onChange, user };
+  render(
+    <Filters
+      filter={filter}
+      options={OPTIONS}
+      defaultYear={defaultYear}
+      onChange={onChange}
+      onReset={onReset}
+    />,
+  );
+  return { onChange, onReset, user };
 }
 
 async function openDialog(user: ReturnType<typeof userEvent.setup>) {
@@ -99,19 +108,29 @@ describe("Filters", () => {
     );
   });
 
-  it("勝敗チップは予定(scheduled)を含まない", async () => {
+  it("勝敗チップは 勝/負/分 の3値のみで、予定・詳細不明を含まない", async () => {
     const { user } = setup();
     const dialog = await openDialog(user);
     expect(within(dialog).getByRole("button", { name: "勝" })).toBeInTheDocument();
-    expect(within(dialog).getByRole("button", { name: "中止" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "負" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "分" })).toBeInTheDocument();
     expect(within(dialog).queryByRole("button", { name: "予定" })).not.toBeInTheDocument();
+    expect(within(dialog).queryByRole("button", { name: "詳細不明" })).not.toBeInTheDocument();
   });
 
-  it("リセットボタンで emptyFilter を渡す", async () => {
-    const { onChange, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
+  it("リセットボタンで onReset を呼ぶ（onChange は呼ばない）", async () => {
+    const { onChange, onReset, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
     const dialog = await openDialog(user);
     await user.click(within(dialog).getByRole("button", { name: "リセット" }));
-    expect(onChange).toHaveBeenCalledExactlyOnceWith(emptyFilter);
+    expect(onReset).toHaveBeenCalledOnce();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("条件をクリア(トリガー横)でも onReset を呼ぶ", async () => {
+    const { onChange, onReset, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
+    await user.click(screen.getByRole("button", { name: "条件をクリア" }));
+    expect(onReset).toHaveBeenCalledOnce();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it("Escape でダイアログを閉じ、トリガーへフォーカスを返す", async () => {
@@ -170,5 +189,11 @@ describe("Filters", () => {
     // stadiums1 + opponents1 + homeAway1 = 3。バッジはトリガーの名前に含まれる。
     expect(screen.getByRole("button", { name: /絞り込み\s*3/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "条件をクリア" })).toBeInTheDocument();
+  });
+
+  it("filter.year === defaultYear（初期状態）はバッジも「条件をクリア」も出さない", () => {
+    setup({ ...emptyFilter, year: "2026" }, "2026");
+    expect(screen.queryByRole("button", { name: /絞り込み\s*\d/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "条件をクリア" })).not.toBeInTheDocument();
   });
 });

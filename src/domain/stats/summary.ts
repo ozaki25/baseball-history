@@ -4,8 +4,8 @@ import { AXES, type GroupKey } from "./axes";
 
 /**
  * 集計の定義（野球の通例）:
- * - 観戦数(attended): scheduled を除く（中止・詳細不明は現地に行ったため含める）
- * - 勝率(winRate): 勝 / (勝 + 敗)。引分・中止・予定・詳細不明は分母から除外。該当なしは null。
+ * - 観戦数(attended): scheduled を除く（詳細不明は現地に行ったため含める）
+ * - 勝率(winRate): 勝 / (勝 + 敗)。引分・予定・詳細不明は分母から除外。該当なしは null。
  * - scheduled（観戦予定）はすべての集計から除外する。
  * - unknown（詳細不明）は観戦数に含めるが、勝敗・軸別集計には数えない
  *   （opponentId/stadiumId/homeAway が空のため軸別からは自然に除外される）。
@@ -15,7 +15,6 @@ export interface Summary {
   win: number;
   lose: number;
   draw: number;
-  cancelled: number;
   winRate: number | null;
 }
 
@@ -23,7 +22,6 @@ export function summarize(games: Game[]): Summary {
   let win = 0;
   let lose = 0;
   let draw = 0;
-  let cancelled = 0;
   let attended = 0;
 
   for (const game of games) {
@@ -39,14 +37,11 @@ export function summarize(games: Game[]): Summary {
       case "draw":
         draw += 1;
         break;
-      case "cancelled":
-        cancelled += 1;
-        break;
     }
   }
 
   const decided = win + lose;
-  return { attended, win, lose, draw, cancelled, winRate: decided > 0 ? win / decided : null };
+  return { attended, win, lose, draw, winRate: decided > 0 ? win / decided : null };
 }
 
 export interface GroupRow extends Summary {

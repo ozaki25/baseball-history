@@ -1,6 +1,6 @@
 import type { DatesData, Game, GameResult } from "#/domain/game";
 import { DECIDED_RESULTS } from "#/domain/game";
-import { parseGameHTML, looksCancelled } from "./parsers/gameParser";
+import { parseGameHTML } from "./parsers/gameParser";
 import { normalizeText } from "#/domain/normalize";
 import { resolveTeam, resolveStadium } from "#/domain/masters";
 
@@ -73,11 +73,6 @@ export function scheduledGame(id: string, isoDate: string): Game {
   return placeholderGame(id, isoDate, "scheduled");
 }
 
-/** 解析不能だが中止と判断できたときの受け皿 */
-export function cancelledGame(id: string, isoDate: string): Game {
-  return placeholderGame(id, isoDate, "cancelled");
-}
-
 /** 詳細不明（記録は残すが試合詳細は信頼できない）。日付のみの受け皿。fetch しない。 */
 export function unknownGame(id: string, isoDate: string): Game {
   return placeholderGame(id, isoDate, "unknown");
@@ -109,9 +104,12 @@ export interface IngestResult {
 /**
  * 取り込みの中核（IO 非依存・fetch を注入）。
  * - dateOnly 指定日は最優先で unknown(詳細不明)にする（取得しない／誤った既存も上書き）。
- * - 確定(win/lose/draw)は再取得せず保持（ID は再解決）。scheduled/cancelled は再取得。
- * - 未来日は scheduled。過去日は取得→解析、解析不能かつ中止表記なら cancelled。
- * - 取得失敗時は既存レコードを保持（データ消失防止）、無ければ失敗記録のみ。
+ * - 確定(win/lose/draw)は再取得せず保持（ID は再解決）。scheduled は再取得。
+ * - 未来日は scheduled。過去日は取得→解析。
+ * - 取得失敗・解析失敗は failures に記録。既存レコードがあれば消失防止のため保持する
+ *   （その結果は次回実行で再取得される）。既存がなければ games には入れない。
+ * - 中止試合は「観戦していない」扱いのため dates.json に載せない前提。万一 dates に紛れた
+ *   場合は上記の解析失敗経路（＝ failures 記録 + 新規なら games に入れない）で扱う。
  */
 export async function mergeIngest(
   dates: DatesData,
@@ -162,12 +160,7 @@ export async function mergeIngest(
       try {
         const html = await fetchHtml(year, mmdd);
         fetched += 1;
-        try {
-          games.push(buildGame(id, isoDate, html));
-        } catch (parseErr) {
-          if (looksCancelled(html)) games.push(cancelledGame(id, isoDate));
-          else throw parseErr;
-        }
+        games.push(buildGame(id, isoDate, html));
       } catch (err) {
         failures.push({ id, error: err instanceof Error ? err.message : String(err) });
         if (prev) games.push(withResolvedIds(prev));

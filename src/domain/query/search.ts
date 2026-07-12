@@ -28,7 +28,11 @@ function toStringArray(value: unknown): string[] | undefined {
 export function validateGameSearch(search: Record<string, unknown>): GameSearch {
   const out: GameSearch = {};
 
-  if (typeof search.year === "string" && /^\d{4}$/.test(search.year)) out.year = search.year;
+  // year は "YYYY"（4桁）または "all"（明示的にすべての年）を受理する。
+  // 未指定は defaultYear で解決するため、ここでは URL に無い状態を保つ（省略）。
+  if (typeof search.year === "string" && (/^\d{4}$/.test(search.year) || search.year === "all")) {
+    out.year = search.year;
+  }
 
   const stadium = toStringArray(search.stadium);
   if (stadium) out.stadium = stadium;
@@ -52,9 +56,14 @@ function toIds(values: string[] | undefined, resolveId: (v: string) => string): 
   return values ? [...new Set(values.map(resolveId))] : [];
 }
 
-export function searchToFilter(search: GameSearch): GameFilter {
+/**
+ * URL(search) から GameFilter を作る。
+ * URL に year が無い場合は `defaultYear` を採用する（＝アプリ開始時のデフォルト年）。
+ * `defaultYear` も未指定なら "all"（全年表示）にフォールバックする。
+ */
+export function searchToFilter(search: GameSearch, defaultYear?: string): GameFilter {
   return {
-    year: search.year ?? "all",
+    year: search.year ?? defaultYear ?? "all",
     stadiums: toIds(search.stadium, (v) => resolveStadium(v).id),
     opponents: toIds(search.opponent, (v) => resolveTeam(v).id),
     homeAway: search.home ?? "all",
@@ -62,9 +71,16 @@ export function searchToFilter(search: GameSearch): GameFilter {
   };
 }
 
-export function filterToSearch(filter: GameFilter): GameSearch {
+/**
+ * GameFilter を URL(search) に写す。`defaultYear` と一致する年は URL 省略
+ * （＝アプリ開始時のデフォルト状態は URL に見えない）。"all" は明示的に `year=all` を書く。
+ */
+export function filterToSearch(filter: GameFilter, defaultYear?: string): GameSearch {
   const search: GameSearch = {};
-  if (filter.year !== "all") search.year = filter.year;
+  if (filter.year !== defaultYear) {
+    // defaultYear と違うときのみ URL に載せる。"all"（全年表示）も明示のため書く。
+    search.year = filter.year;
+  }
   if (filter.stadiums.length > 0) search.stadium = filter.stadiums;
   if (filter.opponents.length > 0) search.opponent = filter.opponents;
   if (filter.homeAway !== "all") search.home = filter.homeAway;

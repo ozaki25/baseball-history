@@ -22,19 +22,23 @@ export function HomeView({
   games,
   allYears,
   search,
+  defaultYear,
   onNavigate,
 }: {
   games: Game[];
   allYears: string[];
   search: GameSearch;
+  /** URL に year が指定されていないときのデフォルト年（現在年など）。routes 側で決める。 */
+  defaultYear?: string;
   onNavigate: (search: GameSearch) => void;
 }) {
   const options = useMemo(() => deriveOptions(games, allYears), [games, allYears]);
-  const filter = useMemo(() => searchToFilter(search), [search]);
+  const filter = useMemo(() => searchToFilter(search, defaultYear), [search, defaultYear]);
 
   const { attended, scheduled } = useMemo(() => partitionGames(games, filter), [games, filter]);
 
-  const setFilter = (next: GameFilter) => onNavigate(filterToSearch(next));
+  const setFilter = (next: GameFilter) => onNavigate(filterToSearch(next, defaultYear));
+  const resetFilters = () => onNavigate({});
 
   return (
     <AppShell>
@@ -48,7 +52,13 @@ export function HomeView({
 
       <StatsSummary games={attended} />
 
-      <Filters filter={filter} options={options} onChange={setFilter} />
+      <Filters
+        filter={filter}
+        options={options}
+        defaultYear={defaultYear}
+        onChange={setFilter}
+        onReset={resetFilters}
+      />
 
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold text-[var(--muted)]">

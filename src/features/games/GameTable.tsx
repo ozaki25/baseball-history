@@ -25,7 +25,7 @@ function SourceDate({ date }: { date: string }) {
       className="tnum inline-flex items-center gap-1 whitespace-nowrap text-[var(--brand)] hover:underline"
     >
       {formatDateJa(date)}
-      <ExternalLink size={11} aria-hidden />
+      <ExternalLink size={12} aria-hidden />
     </a>
   );
 }
@@ -91,14 +91,14 @@ export function GameTable({ games }: { games: Game[] }) {
       {/* デスクトップ: 罫線テーブル */}
       <table
         aria-label="観戦記録"
-        className="hidden w-full border text-sm md:table"
+        className="hidden w-full border text-base md:table"
         style={{ borderColor: "var(--line)", background: "var(--panel)" }}
       >
         <thead>
           {table.getHeaderGroups().map((hg) => (
             <tr
               key={hg.id}
-              className="border-b text-left text-xs"
+              className="border-b text-left text-sm"
               style={{ borderColor: "var(--line)" }}
             >
               {hg.headers.map((h) => {
@@ -169,22 +169,22 @@ export function GameTable({ games }: { games: Game[] }) {
                 className="flex items-center gap-3 px-3 py-2.5"
               >
                 <div className="flex flex-col">
-                  <span className="tnum inline-flex items-center gap-1 text-xs text-[var(--muted)]">
+                  <span className="tnum inline-flex items-center gap-1 text-sm text-[var(--muted)]">
                     {formatDateJa(g.date)}
-                    <ExternalLink size={11} aria-hidden />
+                    <ExternalLink size={12} aria-hidden />
                   </span>
-                  <span className="font-medium">
+                  <span className="text-base font-medium">
                     {g.opponent || "—"}
                     {g.homeAway && (
-                      <span className="ml-1.5 text-xs text-[var(--faint)]">
+                      <span className="ml-1.5 text-sm text-[var(--faint)]">
                         {HOME_AWAY_LABEL[g.homeAway]}
                       </span>
                     )}
                   </span>
-                  <span className="text-xs text-[var(--faint)]">{g.stadium || "—"}</span>
+                  <span className="text-sm text-[var(--faint)]">{g.stadium || "—"}</span>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                  <span className="tnum text-sm">{formatScore(g)}</span>
+                  <span className="tnum text-lg font-bold">{formatScore(g)}</span>
                   <ResultBadge result={g.result} />
                 </div>
               </a>

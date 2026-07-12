@@ -3,7 +3,7 @@ import { SlidersHorizontal, X } from "lucide-react";
 import type { HomeAway } from "#/domain/game";
 import { ATTENDED_RESULTS } from "#/domain/game";
 import type { GameFilter } from "#/domain/query/filter";
-import { emptyFilter, isFilterActive, countActiveFilters } from "#/domain/query/filter";
+import { isFilterActive, countActiveFilters } from "#/domain/query/filter";
 import type { FilterOptions } from "#/domain/query/options";
 import { RESULT_LABEL, HOME_AWAY_LABEL } from "#/domain/labels";
 import { Chip } from "#/ui/Chip";
@@ -25,11 +25,17 @@ function toggle<T>(list: T[], value: T): T[] {
 export function Filters({
   filter,
   options,
+  defaultYear,
   onChange,
+  onReset,
 }: {
   filter: GameFilter;
   options: FilterOptions;
+  /** デフォルト状態の年（active 判定で「デフォルト = 未指定と等価」を認識するため）。 */
+  defaultYear?: string;
   onChange: (next: GameFilter) => void;
+  /** 「条件をクリア」「リセット」で呼ばれる。デフォルト状態（URL 空）へ戻す責務は呼び出し側が持つ。 */
+  onReset: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -44,8 +50,8 @@ export function Filters({
   // 初期フォーカス移動・Escape で閉じる・Tab のフォーカストラップは汎用フックに委譲（DOM 不変）。
   useDialogA11y({ open, onClose: close, dialogRef, initialFocusRef: closeRef });
 
-  const active = isFilterActive(filter);
-  const activeCount = countActiveFilters(filter);
+  const active = isFilterActive(filter, defaultYear);
+  const activeCount = countActiveFilters(filter, defaultYear);
 
   // 表示語は HOME_AWAY_LABEL を単一定義元にする（重複ハードコードを解消）。
   const homeAwayOptions: { value: HomeAway | "all"; label: string }[] = [
@@ -78,7 +84,7 @@ export function Filters({
         {active && (
           <button
             type="button"
-            onClick={() => onChange(emptyFilter)}
+            onClick={onReset}
             className="text-sm text-[var(--muted)] underline underline-offset-2"
           >
             条件をクリア
@@ -117,12 +123,6 @@ export function Filters({
 
             <div className="divide-y" style={{ borderColor: "var(--line)" }}>
               <Section title="年度">
-                <Chip
-                  variant="tint"
-                  label="すべて"
-                  active={filter.year === "all"}
-                  onClick={() => onChange({ ...filter, year: "all" })}
-                />
                 {options.years.map((y) => (
                   <Chip
                     key={y}
@@ -132,6 +132,12 @@ export function Filters({
                     onClick={() => onChange({ ...filter, year: y })}
                   />
                 ))}
+                <Chip
+                  variant="tint"
+                  label="すべて"
+                  active={filter.year === "all"}
+                  onClick={() => onChange({ ...filter, year: "all" })}
+                />
               </Section>
 
               <Section title="主催 / ビジター">
@@ -188,7 +194,7 @@ export function Filters({
             <div className="mt-3 flex items-center justify-between gap-2">
               <button
                 type="button"
-                onClick={() => onChange(emptyFilter)}
+                onClick={onReset}
                 className="px-2 py-1.5 text-sm text-[var(--muted)]"
               >
                 リセット

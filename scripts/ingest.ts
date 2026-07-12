@@ -8,8 +8,10 @@
  * - 例外: data/date-only.json に挙げた日は「詳細不明(unknown)」として日付のみ残す
  *   （現行サイトで正しく取得できない古い試合向け。値の override ではなく
  *   「詳細を持たないことの宣言」。集計は観戦数に含めるが勝敗軸には数えない）。
- * - 確定済み(win/lose/draw)は再取得しない。scheduled・cancelled・失敗分は再取得（自己修復）。
+ * - 確定済み(win/lose/draw)は再取得しない。scheduled・失敗分は再取得（自己修復）。
  * - 試合前の日は scheduled として保存（事前登録の受け皿）。
+ * - 中止試合は取り込み対象外（観戦していないため dates.json に載せない前提）。
+ *   万一 dates.json に紛れた場合、解析失敗として ingest-report.json に記録される。
  * - --force で全件再取得。--year YYYY で対象年を限定。
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";

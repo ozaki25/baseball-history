@@ -6,7 +6,6 @@ const SOLID: Record<GameResult, string> = {
   win: "#1a7a46",
   lose: "#b0433b",
   draw: "#5b656f",
-  cancelled: "#5f6b76",
   scheduled: "#016298",
   unknown: "#54606b",
 };
