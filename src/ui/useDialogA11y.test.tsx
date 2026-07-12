@@ -76,4 +76,51 @@ describe("useDialogA11y", () => {
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).not.toHaveBeenCalled();
   });
+
+  it("open のまま再レンダー（onClose の identity 変化）でも初期フォーカスを奪わない", () => {
+    const dom = setupDom();
+    const props = {
+      open: true,
+      onClose: () => {},
+      dialogRef: { current: dom.dialog },
+      initialFocusRef: { current: dom.mid },
+    };
+    const { rerender } = renderHook((p: typeof props) => useDialogA11y(p), {
+      initialProps: props,
+    });
+    expect(document.activeElement).toBe(dom.mid); // open 時に初期フォーカス
+
+    // ユーザーが別要素へフォーカスを移した後、親再レンダーで onClose が作り直される状況
+    dom.last.focus();
+    rerender({ ...props, onClose: () => {} });
+    expect(document.activeElement).toBe(dom.last); // 初期フォーカスへ引き戻さない
+  });
+
+  it("最新の onClose を呼ぶ（ref 経由で stale にならない）", () => {
+    const dom = setupDom();
+    const first = vi.fn();
+    const second = vi.fn();
+    const props = {
+      open: true,
+      onClose: first,
+      dialogRef: { current: dom.dialog },
+      initialFocusRef: { current: dom.mid },
+    };
+    const { rerender } = renderHook((p: typeof props) => useDialogA11y(p), {
+      initialProps: props,
+    });
+    rerender({ ...props, onClose: second });
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it("unmount 後は Escape で onClose を呼ばない（リスナ解除）", () => {
+    const dom = setupDom();
+    const onClose = vi.fn();
+    const { unmount } = renderDialog(dom, true, onClose);
+    unmount();
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
 });
