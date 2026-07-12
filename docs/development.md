@@ -106,7 +106,7 @@ src/
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
 - **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/features/filters/model/filters.test.ts`、
-  `src/features/games/GameTable.test.tsx`、`src/lib/masters.test.ts`、`src/lib/ingest/parsers/teamExtractor.test.ts` など）。
+  `src/features/games/GameTable.test.tsx`、`src/domain/masters.test.ts`、`src/lib/ingest/parsers/teamExtractor.test.ts` など）。
   実装の移動時にテストが一緒に動き、対応関係が一目で分かる。一方、**共有アセットは `src/tests/` に集約**する:
   `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
   実装の隣ではないため、`__screenshots__` ごと集約。CI ワークフローも `src/tests/vrt` を参照）。

@@ -42,8 +42,15 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/ui/**", "#/routes/**", "#/lib/**"],
-                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest に依存させないでください。"
+                "group": [
+                  "#/features/**",
+                  "#/ui/**",
+                  "#/routes/**",
+                  "#/lib/**",
+                  "**/lib/ingest/**",
+                  "#/types/**"
+                ],
+                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest/types に依存させないでください（相対パス回避も禁止）。"
               }
             ]
           }
@@ -119,7 +126,7 @@
               },
               {
                 "group": ["#/features/home/**", "#/features/stats/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
               }
             ]
           }
@@ -143,7 +150,7 @@
               },
               {
                 "group": ["#/features/home/**", "#/features/filters/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
               }
             ]
           }
@@ -167,7 +174,7 @@
               },
               {
                 "group": ["#/features/home/**", "#/features/filters/**", "#/features/stats/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは lib/ へ。"
+                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
               }
             ]
           }
@@ -183,7 +190,7 @@
             "patterns": [
               {
                 "group": ["#/features/**", "#/ui/**", "#/routes/**"],
-                "message": "scripts(ビルド/取り込み)はUI層に依存しないでください。共有ロジックは lib/ へ置いてください。"
+                "message": "scripts(ビルド/取り込み)はUI層に依存しないでください。共有ロジックは domain/ へ置いてください。"
               }
             ]
           }
