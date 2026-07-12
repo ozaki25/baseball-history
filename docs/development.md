@@ -61,10 +61,10 @@ framework 非依存の中核を `domain/` に集約している:
 ```
 src/
   routes/        # ルーター結線（container）。file-based。data import / validateSearch / navigate のみ
-  features/      # 画面単位。{home, filters, stats, games}。薄い表示層
-    <feature>/
-      *.tsx      # その画面固有のコンポーネント（presentational）
-      # (model/ 現状無し。共有ドメインロジックは domain/{query,stats} に集約済み)
+  app/           # アプリ外殻。AppShell(ヘッダ・タイトル・ThemeToggle・幅制約)。画面追加時も複製されない
+  screens/       # 画面合成層（feature 横断はここのみ）。routes → screens → features
+  features/      # 画面部品（薄い表示層・兄弟 feature 依存禁止・共有は domain へ）
+                 # {filters, stats, games, scheduled}
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
   domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
                  # game(列挙・型・述語)・masters・normalize・labels・query/・stats/
@@ -73,8 +73,10 @@ src/
   ingest/        # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）。parsers/ と parsing.ts を含む
 ```
 
-- **依存方向**: `routes → { data, features } → { domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
+- **依存方向**: `routes → { app, screens, data } → { features, domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
   `data/*.json` の直読みは `src/data/**` のみに機械的に制限（oxlint）。画面が増えても JSON 直読みが複製されない。
+- **feature 兄弟の依存は一律禁止**: `features/**` から `#/features/**` の import は禁止（screens/ が唯一の合成層）。
+  従来の O(n²) 明示列挙が消え、feature 追加時に oxlint の編集は不要になった。
   `domain`/`ui` は最下層で上位（features/routes/ingest）へ依存しない。`features/home` は画面合成層として他 feature の
   **View** を横断 import してよいが、**兄弟 feature 相互のロジック import は禁止**（共有ロジックは `domain/` へ）。
   これらは `.oxlintrc.json` の `no-restricted-imports` で機械的に強制する（違反 import を一時挿入して発火確認する運用）。

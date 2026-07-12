@@ -63,11 +63,14 @@ baseball-history/
 │  ├─ routes/             # TanStack Start ファイルベースルーティング（container）
 │  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
 │  │  └─ index.tsx        # データ取得・URL検証・navigate 結線 → HomeView へ委譲
-│  ├─ features/           # 画面単位（依存は routes → features → {domain,ui} の一方向・薄い表示層）
-│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
+│  ├─ app/                # アプリ全体の外殻。AppShell(ヘッダ・タイトル・ThemeToggle・幅制約)
+│  ├─ screens/            # 画面合成層（feature 横断はここのみ）。routes → screens → features
+│  │  └─ home/            # HomeView（ホーム画面の合成のみ）
+│  ├─ features/           # 画面部品（薄い表示層・兄弟 feature 間の依存は禁止・共有は domain へ）
 │  │  ├─ filters/         # Filters / YearFilter（表示部品のみ・ロジックは domain/query）
 │  │  ├─ stats/           # StatsSummary / CrossStats（表示部品のみ・ロジックは domain/stats）
-│  │  └─ games/           # GameTable / ResultBadge
+│  │  ├─ games/           # GameTable / ResultBadge
+│  │  └─ scheduled/       # ScheduledList（観戦予定の別枠表示）
 │  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
 │  ├─ domain/             # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）
 │  │  ├─ game.ts          # Game 型・GameResult/HomeAway・列挙(GAME_RESULTS/ATTENDED_RESULTS/DECIDED_RESULTS)・

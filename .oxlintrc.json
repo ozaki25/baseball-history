@@ -139,7 +139,32 @@
       }
     },
     {
-      "files": ["src/features/home/**"],
+      "files": ["src/app/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "#/features/**",
+                  "#/screens/**",
+                  "#/routes/**",
+                  "#/data/**",
+                  "#/ingest/**",
+                  "**/ingest/**",
+                  "**/data/**/*.json",
+                  "**/data/**/*.json?*"
+                ],
+                "message": "app/ はアプリ全体の外殻(AppShell 等)。features/screens/routes/data/ingest には依存させないでください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/screens/**"],
       "rules": {
         "no-restricted-imports": [
           "error",
@@ -151,7 +176,7 @@
               },
               {
                 "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+                "message": "screens は routes に依存させないでください（依存は routes → screens → features の一方向）。"
               },
               {
                 "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
@@ -163,7 +188,7 @@
       }
     },
     {
-      "files": ["src/features/filters/**"],
+      "files": ["src/features/**"],
       "rules": {
         "no-restricted-imports": [
           "error",
@@ -174,72 +199,16 @@
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+                "group": ["#/routes/**", "#/screens/**", "#/app/**"],
+                "message": "features は routes/screens/app に依存させないでください（依存は routes → app/screens → features の一方向）。"
               },
               {
                 "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
                 "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               },
               {
-                "group": ["#/features/home/**", "#/features/stats/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/features/stats/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/ingest/**", "**/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
-              },
-              {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
-              },
-              {
-                "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
-                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
-              },
-              {
-                "group": ["#/features/home/**", "#/features/filters/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/features/games/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/ingest/**", "**/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
-              },
-              {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
-              },
-              {
-                "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
-                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
-              },
-              {
-                "group": ["#/features/home/**", "#/features/filters/**", "#/features/stats/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
+                "group": ["#/features/**"],
+                "message": "feature 兄弟の import は禁止（同一 feature 内は相対 import で完結）。画面横断の合成は screens/ の役割・共有ロジックは domain/ へ。"
               }
             ]
           }
