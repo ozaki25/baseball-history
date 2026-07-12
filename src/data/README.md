@@ -29,7 +29,3 @@
 新しい JSON ソースが増えるケースは稀。既存の `games.ts` を編集するか、
 どうしても必要なら同じパターン（読み込み → ガード → typed export）で `.ts` を追加する。
 専用スキルは用意していない。
-
-## 現状のファイル
-
-- `games.ts` — `ALL_GAMES` / `ALL_YEARS` / `GAMES_GENERATED_AT` を公開

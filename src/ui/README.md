@@ -31,10 +31,3 @@
 3. `pnpm test` で緑を確認
 
 ただし、**ドメインを触りたくなった時点で `src/features/` へ移す**こと。「便利だから ui に置く」で domain 依存が入り込むと ui の役割が崩れる。
-
-## 現状のファイル
-
-- `Chip.tsx` — 汎用チップ
-- `ThemeToggle.tsx` — テーマ切替ボタン
-- `useTheme.ts` — テーマ状態と永続化
-- `useDialogA11y.ts` — ダイアログの初期フォーカス・Esc クローズ・フォーカストラップ

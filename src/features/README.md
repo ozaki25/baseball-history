@@ -33,10 +33,3 @@ props で受け、`onNavigate` などのコールバックで返す。
 
 `.oxlintrc.json` の編集は **原則不要**。feature 兄弟一律禁止 `#/features/**` はワイルドカードなので、
 `src/features/新feature/` を作れば自動適用される。
-
-## 現状のフォルダ
-
-- `filters/` — `Filters` / `YearFilter`（絞り込み UI）
-- `stats/` — `StatsSummary` / `CrossStats`（集計サマリ / 軸別テーブル）
-- `games/` — `GameTable` / `ResultBadge`（試合一覧・勝敗バッジ）
-- `scheduled/` — `ScheduledList`（観戦予定の別枠表示）
