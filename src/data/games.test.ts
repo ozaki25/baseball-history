@@ -66,7 +66,7 @@ describe("parseGamesData（境界の形状ガード）", () => {
     // null は許容
     const ok = parseGamesData({
       generatedAt: "x",
-      games: [{ ...validGame, homeAway: null, result: "cancelled" }],
+      games: [{ ...validGame, homeAway: null, result: "unknown" }],
     });
     expect(ok.games[0]!.homeAway).toBeNull();
   });

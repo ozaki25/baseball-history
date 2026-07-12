@@ -131,18 +131,19 @@ type HomeAway = "home" | "away";
 // scheduled = 事前登録済みで結果未確定（試合前 / 未反映）。結果が出たら他の値に更新される
 // unknown   = 詳細不明。観戦した記録は残すが、試合詳細が信頼できず日付のみ残す
 //             （現行サイトで正しく取得できない古い試合。data/date-only.json で指定）
-type GameResult = "win" | "lose" | "draw" | "cancelled" | "scheduled" | "unknown";
+// 中止試合は取り扱わない（observation なし）ため result の列挙に含めない。
+type GameResult = "win" | "lose" | "draw" | "scheduled" | "unknown";
 
 interface Game {
   id: string; // "2025-04-01"
   date: string; // ISO "YYYY-MM-DD"
-  opponent: string; // 当時の表示名（scheduled/cancelled/unknown 時は空になりうる）
+  opponent: string; // 当時の表示名（scheduled/unknown 時は空になりうる）
   opponentId: string; // 安定ID（表記ゆれを束ねる。不明時は空文字）
   stadium: string; // 当時の表示名
   stadiumId: string; // 安定ID（命名権変更を束ねる。不明時は空文字）
-  homeAway: HomeAway | null; // 中止/予定/詳細不明など不定時は null
+  homeAway: HomeAway | null; // 予定/詳細不明など不定時は null
   result: GameResult;
-  score: { fighters: number | null; opponent: number | null }; // 中止/予定/詳細不明時は null
+  score: { fighters: number | null; opponent: number | null }; // 予定/詳細不明時は null
 }
 
 interface GamesData {
@@ -154,8 +155,10 @@ interface GamesData {
 **列挙の単一定義元は `domain/game.ts`**:
 
 - `GAME_RESULTS`（`as const`）から `GameResult` 型を導出
-- `ATTENDED_RESULTS`（勝敗軸に載る 4 値）と `DECIDED_RESULTS`（勝敗確定 3 値）は
+- `ATTENDED_RESULTS`（勝敗軸に載る 3 値 = 勝敗確定 3 値）と `DECIDED_RESULTS` は
   `as const satisfies readonly GameResult[]` で定義し、値追加漏れをコンパイルエラー化
+- 中止試合は observation として扱わないため、列挙にもレコードにも入れない
+  （`games.json` に cancelled レコードは 0 件が正常）
 
 集計軸も `domain/stats/axes.ts` の `AXES: Record<GroupKey, Axis>` + `AXIS_ORDER` に単一定義元化する
 （`AXIS_ORDER` 網羅性はコンパイル時 exhaustiveness assertion で強制）。
@@ -282,7 +285,7 @@ interface GamesData {
 1. `dates.json` を読み、`{year, MMDD}` を列挙。
 2. `date-only.json` に該当する日は fetch せず `result: "unknown"` として保存。
 3. 既存 `games.json` があれば読み、**未確定の試合のみ**対象にする
-   （確定済み = 再取得しない。`scheduled` / `cancelled` / 失敗分は対象。`--force` で全再取得）。
+   （確定済み = 再取得しない。`scheduled` / 失敗分は対象。`--force` で全再取得）。
 4. 未来日 or 当日で結果未確定なら、取得を試みず（または結果なしを検知して）`result: "scheduled"` として記録。
 5. 過去日は URL `https://www.fighters.co.jp/gamelive/result/{year}{MMDD}01/` を取得。
 6. 既存パーサ（team / score / location / home / gameParser）で解析。
@@ -322,8 +325,8 @@ interface GamesData {
 構成:
 
 - `summary.ts`:
-  - `summarize(games): Summary` → `{ attended, win, lose, draw, cancelled, winRate }`
-    （勝率は中止・予定・詳細不明を除いた分母で算出。該当なしは `null`）
+  - `summarize(games): Summary` → `{ attended, win, lose, draw, winRate }`
+    （勝率は予定・詳細不明を除いた分母で算出。該当なしは `null`）
   - `groupBy(games, key)` → 軸別集計配列（値抽出は `AXES[key].valueOf` 経由）
 - `axes.ts`: **軸レジストリ** `AXES` と `AXIS_ORDER`
   （軸追加時の同期漏れをコンパイルエラー化。追加は 1 エントリで完結）

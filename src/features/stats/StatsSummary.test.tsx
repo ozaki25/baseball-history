@@ -10,7 +10,6 @@ const GAMES = [
   makeGame({ id: "2025-04-02", date: "2025-04-02", result: "win" }),
   makeGame({ id: "2025-04-03", date: "2025-04-03", result: "lose" }),
   makeGame({ id: "2025-04-04", date: "2025-04-04", result: "draw" }),
-  makeGame({ id: "2025-04-05", date: "2025-04-05", result: "cancelled" }),
   makeGame({ id: "2025-05-01", date: "2025-05-01", result: "scheduled" }),
 ];
 
@@ -22,20 +21,19 @@ function cell(label: string): string {
 }
 
 describe("StatsSummary", () => {
-  it("観戦・勝敗・中止・勝率を表示する（予定は観戦数から除外）", () => {
+  it("観戦・勝敗・勝率を表示する（予定は観戦数から除外）", () => {
     render(<StatsSummary games={GAMES} />);
-    // 観戦=win2+lose1+draw1+cancelled1=5（scheduledは除外）
-    expect(cell("観戦")).toBe("5");
+    // 観戦=win2+lose1+draw1=4（scheduledは除外）
+    expect(cell("観戦")).toBe("4");
     expect(cell("勝")).toBe("2");
     expect(cell("敗")).toBe("1");
     expect(cell("分")).toBe("1");
-    expect(cell("中止")).toBe("1");
     // 勝率 = 勝2/(勝2+敗1) = .667
     expect(cell("勝率")).toBe(".667");
   });
 
   it("勝敗ゼロなら勝率は - 表示", () => {
-    render(<StatsSummary games={[makeGame({ result: "cancelled" })]} />);
+    render(<StatsSummary games={[makeGame({ result: "unknown" })]} />);
     expect(cell("勝率")).toBe("-");
   });
 });

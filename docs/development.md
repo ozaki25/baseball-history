@@ -99,7 +99,7 @@
 | 単体           | パーサ（team/score/location/home/gameParser）                                                         | 既存フィクスチャ（勝/負×主催/ビジター・引分・サヨナラ）を流用         |
 | 単体           | 集計 `domain/stats/*`（勝率・軸別集計・軸レジストリ）                                                 | 代表データで期待値検証                                                |
 | 単体           | 絞り込み `domain/query/*`（filter/search/options/partition）・URL スキーマ                            | 条件 → 抽出結果、URL 相互変換                                         |
-| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled / 確定 / 失敗保持 / 中止 / self-heal を網羅                 |
+| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled / 確定 / 失敗保持 / self-heal を網羅                        |
 | 単体           | 安定 ID `masters.ts`（表記ゆれ束ね・衝突検知）                                                        | alias 解決 + 実データ ID 整合の回帰                                   |
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会             |
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`（標準環境で baseline 比較） |

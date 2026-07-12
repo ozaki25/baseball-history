@@ -17,9 +17,9 @@ const GAMES = [
   makeGame({
     id: "2025-05-03",
     date: "2025-05-03",
-    opponent: "埼玉西武",
+    opponent: "",
     stadium: "",
-    result: "cancelled",
+    result: "unknown",
     homeAway: null,
     score: { fighters: null, opponent: null },
   }),
@@ -70,11 +70,11 @@ describe("GameTable", () => {
     expect(tableRows()[2]).toHaveTextContent("2025.6.15");
   });
 
-  it("中止試合は主催/V・球場・スコアが — 、対戦相手は表示する", () => {
+  it("詳細不明(unknown)試合は主催/V・球場・対戦相手・スコアが全て — 表示", () => {
     render(<GameTable games={[GAMES[2]!]} />);
     // 列順: 日付 / 対戦相手 / 主催V / 球場 / 結果 / スコア
     const cells = within(tableRows()[0]!).getAllByRole("cell");
-    expect(cells[1]).toHaveTextContent("埼玉西武"); // 対戦相手は残る
+    expect(cells[1]).toHaveTextContent("—"); // 対戦相手（空）
     expect(cells[2]).toHaveTextContent("—"); // 主催/V（homeAway=null）
     expect(cells[3]).toHaveTextContent("—"); // 球場（空）
     expect(cells[5]).toHaveTextContent("—"); // スコア（null）

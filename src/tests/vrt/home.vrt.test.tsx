@@ -24,8 +24,8 @@ const GAMES: Game[] = [
     opponent: "埼玉西武",
     stadium: "ベルーナドーム",
     homeAway: "away",
-    result: "cancelled",
-    score: { fighters: null, opponent: null },
+    result: "lose",
+    score: { fighters: 1, opponent: 5 },
   }),
   makeGame({
     id: "2026-08-10",

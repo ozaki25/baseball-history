@@ -3,7 +3,7 @@ import { AXES, type GroupKey } from "./axes";
 import { groupBy, type GroupRow } from "./summary";
 
 /** 集計行の 0 件雛形（表示行の空白年パディング等で使う）。 */
-const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, cancelled: 0, winRate: null };
+const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, winRate: null };
 
 /**
  * 表示行を作る。年度別のときは記録の無い年度も「データなし(0件)」として明示する

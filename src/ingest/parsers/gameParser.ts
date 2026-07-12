@@ -6,11 +6,12 @@ import { extractGameScore } from "./scoreExtractor";
 import { extractGameLocation } from "./locationExtractor";
 import { detectIsHome } from "./homeDetector";
 
-const CANCELLED_RE = /中止|延期|ノーゲーム|順延/;
-
 /**
  * HTMLから試合データを抽出するメインパーサー。
  * HTML のパースは一度だけ行い、同じ Document を各抽出器で共有する。
+ * 中止試合は取り込み対象外（そもそも観戦していないので dates.json に載らない前提）。
+ * 万一 fetch した HTML が試合詳細を持たなければ抽出器が ParseError を throw し、
+ * ingest-report.json に失敗として記録される。
  */
 export function parseGameHTML(html: string): GameInfo {
   try {
@@ -30,15 +31,4 @@ export function parseGameHTML(html: string): GameInfo {
       originalError: error,
     });
   }
-}
-
-/**
- * 中止・延期っぽいページかの簡易判定（実データで要調整）。
- * ページ全体ではなく試合詳細の領域に限定し、ナビ・ニュース見出し等の
- * 無関係な「延期/中止」語での誤検知を避ける。該当領域が無ければ false。
- */
-export function looksCancelled(html: string): boolean {
-  const document = new JSDOM(html).window.document;
-  const scope = document.querySelector(".c-game-detail, .game-vs, main");
-  return CANCELLED_RE.test(scope?.textContent ?? "");
 }

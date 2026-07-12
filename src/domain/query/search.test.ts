@@ -106,7 +106,7 @@ describe("filter ⇔ search ラウンドトリップ", () => {
     const filters: GameFilter[] = [
       emptyFilter,
       { year: "2025", stadiums: [], opponents: [], homeAway: "all", results: [] },
-      { year: "2013", stadiums, opponents, homeAway: "away", results: ["win", "cancelled"] },
+      { year: "2013", stadiums, opponents, homeAway: "away", results: ["win", "lose"] },
       { ...emptyFilter, homeAway: "home", results: ["draw"] },
     ];
     for (const f of filters) {

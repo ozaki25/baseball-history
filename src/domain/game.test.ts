@@ -10,15 +10,15 @@ import {
 } from "./game";
 
 describe("GAME_RESULTS / ATTENDED_RESULTS", () => {
-  it("GAME_RESULTS は Game.result 型と一致し、6値すべてを含む", () => {
+  it("GAME_RESULTS は Game.result 型と一致し、5値すべてを含む", () => {
     // typeof の網羅性は型で担保。ここでは値の完全性を回帰で固定する。
     const all: GameResult[] = [...GAME_RESULTS];
-    expect(all.sort()).toEqual(["cancelled", "draw", "lose", "scheduled", "unknown", "win"].sort());
+    expect(all.sort()).toEqual(["draw", "lose", "scheduled", "unknown", "win"].sort());
   });
 
   it("ATTENDED_RESULTS は勝敗チップ表示順・URL 受理順として順序ごと固定（load-bearing）", () => {
     // 順序を並び替えると Filters のチップ表示が変わるため、順序込みで固定する。
-    expect([...ATTENDED_RESULTS]).toEqual(["win", "lose", "draw", "cancelled"]);
+    expect([...ATTENDED_RESULTS]).toEqual(["win", "lose", "draw"]);
   });
 
   it("ATTENDED_RESULTS は GAME_RESULTS の部分集合で scheduled/unknown を除く", () => {
@@ -29,17 +29,16 @@ describe("GAME_RESULTS / ATTENDED_RESULTS", () => {
     }
   });
 
-  it("DECIDED_RESULTS は ATTENDED_RESULTS から cancelled を除いた「勝敗確定」値", () => {
+  it("DECIDED_RESULTS は ATTENDED_RESULTS と同一（勝敗が決着する 3 値）", () => {
     expect([...DECIDED_RESULTS]).toEqual(["win", "lose", "draw"]);
     for (const r of DECIDED_RESULTS) {
       expect(ATTENDED_RESULTS).toContain(r);
     }
-    expect((DECIDED_RESULTS as readonly GameResult[]).includes("cancelled")).toBe(false);
   });
 });
 
 describe("isScheduled / isAttended", () => {
-  it("scheduled のみ非観戦、他は観戦（unknown/cancelled も観戦）", () => {
+  it("scheduled のみ非観戦、他は観戦（unknown も観戦扱い）", () => {
     expect(isScheduled({ result: "scheduled" })).toBe(true);
     for (const r of GAME_RESULTS) {
       if (r === "scheduled") continue;

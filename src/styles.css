@@ -8,7 +8,6 @@
 @theme {
   --font-sans:
     "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, system-ui, sans-serif;
-  --font-mono: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Courier New", monospace;
 }
 
 :root {
@@ -91,12 +90,13 @@ body {
 }
 
 body {
-  font-size: 15px;
+  font-size: 16px;
 }
 
+/* 「帳簿」感の要は等幅数字。フォントは日本語ゴシック(--font-sans)のまま、
+ * font-variant-numeric: tabular-nums で数字だけ字幅を揃える。 */
 .tnum {
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-mono);
 }
 
 /* フォーカスの可視化（キーボード操作） */

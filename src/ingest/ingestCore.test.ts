@@ -79,8 +79,8 @@ describe("withResolvedIds", () => {
     expect(fixed.stadium).toBe("西武ドーム");
   });
 
-  it("表示名が空（中止/予定）ならIDも空", () => {
-    const cancelled: Game = {
+  it("表示名が空（予定・詳細不明）ならIDも空", () => {
+    const scheduled: Game = {
       id: "2025-07-14",
       date: "2025-07-14",
       opponent: "",
@@ -88,10 +88,10 @@ describe("withResolvedIds", () => {
       stadium: "",
       stadiumId: "x",
       homeAway: null,
-      result: "cancelled",
+      result: "scheduled",
       score: { fighters: null, opponent: null },
     };
-    const fixed = withResolvedIds(cancelled);
+    const fixed = withResolvedIds(scheduled);
     expect(fixed.opponentId).toBe("");
     expect(fixed.stadiumId).toBe("");
   });

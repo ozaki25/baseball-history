@@ -99,12 +99,14 @@ describe("Filters", () => {
     );
   });
 
-  it("勝敗チップは予定(scheduled)を含まない", async () => {
+  it("勝敗チップは 勝/負/分 の3値のみで、予定・詳細不明を含まない", async () => {
     const { user } = setup();
     const dialog = await openDialog(user);
     expect(within(dialog).getByRole("button", { name: "勝" })).toBeInTheDocument();
-    expect(within(dialog).getByRole("button", { name: "中止" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "負" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "分" })).toBeInTheDocument();
     expect(within(dialog).queryByRole("button", { name: "予定" })).not.toBeInTheDocument();
+    expect(within(dialog).queryByRole("button", { name: "詳細不明" })).not.toBeInTheDocument();
   });
 
   it("リセットボタンで emptyFilter を渡す", async () => {
