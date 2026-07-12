@@ -58,8 +58,14 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/domain/**", "#/routes/**", "#/ingest/**"],
-                "message": "ui/ はドメイン非依存の再利用UIです。domain・features に依存する部品は features/ に置いてください。"
+                "group": [
+                  "#/features/**",
+                  "#/domain/**",
+                  "#/routes/**",
+                  "#/ingest/**",
+                  "**/ingest/**"
+                ],
+                "message": "ui/ はドメイン非依存の再利用UIです。domain・features・ingest に依存する部品は features/ に置いてください（相対パスでの ingest 回避も禁止）。"
               }
             ]
           }

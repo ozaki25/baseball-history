@@ -3,7 +3,7 @@
  * 取り込み(ingest): data/dates.json の観戦日をもとに公式サイトを取得・解析し、
  * data/games.json を生成する。GitHub Actions 上で実行する想定（外部ネット必須）。
  *
- * ルール（詳細・分岐は src/lib/ingestCore.ts の mergeIngest を参照）:
+ * ルール（詳細・分岐は src/ingest/ingestCore.ts の mergeIngest を参照）:
  * - 試合詳細のデータ源はスクレイピングのみ（値の手編集はしない）。
  * - 例外: data/date-only.json に挙げた日は「詳細不明(unknown)」として日付のみ残す
  *   （現行サイトで正しく取得できない古い試合向けの信頼性 override。詳細値は捏造しない）。

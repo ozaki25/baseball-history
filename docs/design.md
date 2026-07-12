@@ -307,6 +307,6 @@ npm run ingest -- --year 2026
 
 - 削除: `next.config.ts`・Next 関連依存・`src/app/*`・旧 `HomeClient` 等・旧設計ドキュメント
   （`PROJECT_REQUIREMENTS.md` / `FUNCTIONAL_DESIGN.md` / `DETAILED_DESIGN.md`）。
-- 流用: `src/lib/parsers/*`・`src/tests/fixtures/*`・`scripts/add-date.mjs`・`COLOR_PALETTE.md`。
+- 流用: `src/lib/parsers/*`（→ 現 `src/ingest/parsers/`）・`src/tests/fixtures/*`・`scripts/add-date.mjs`・`COLOR_PALETTE.md`。
 - 置換: ルーティング/エントリ（Next App Router → TanStack Start）、パッケージ管理（npm → pnpm）、Lint/Format（ESLint/Prettier → oxlint/oxfmt）。
 - アイコン: 旧アイコンは刷新（フェーズ5で新規作成）。
