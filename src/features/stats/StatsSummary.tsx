@@ -1,5 +1,6 @@
 import type { Game } from "#/domain/game";
-import { summarize, formatWinRate } from "./model/stats";
+import { summarize } from "#/domain/stats/summary";
+import { formatWinRate } from "#/domain/labels";
 
 function Cell({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (

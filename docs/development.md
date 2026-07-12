@@ -64,7 +64,7 @@ src/
   features/      # 画面単位。{home, filters, stats, games}。薄い表示層
     <feature>/
       *.tsx      # その画面固有のコンポーネント（presentational）
-      model/     # その画面固有の純ロジック（現状は stats/model のみ・後続 PR で domain/stats へ集約予定）
+      # (model/ 現状無し。共有ドメインロジックは domain/{query,stats} に集約済み)
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
   domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
                  # game(列挙・型・述語)・masters・normalize・labels

@@ -1,13 +1,8 @@
 import { useState } from "react";
 import type { Game } from "#/domain/game";
-import { buildRows, rowLabel, formatWinRate, type GroupKey } from "./model/stats";
-
-const TABS: { key: GroupKey; label: string }[] = [
-  { key: "stadium", label: "球場別" },
-  { key: "opponent", label: "相手別" },
-  { key: "year", label: "年度別" },
-  { key: "homeAway", label: "主催/ビジター" },
-];
+import { AXES, AXIS_ORDER, type GroupKey } from "#/domain/stats/axes";
+import { buildRows, rowLabel } from "#/domain/stats/rows";
+import { formatWinRate } from "#/domain/labels";
 
 export function CrossStats({ games, years = [] }: { games: Game[]; years?: string[] }) {
   const [tab, setTab] = useState<GroupKey>("stadium");
@@ -25,7 +20,8 @@ export function CrossStats({ games, years = [] }: { games: Game[]; years?: strin
         className="flex overflow-x-auto border-b"
         style={{ borderColor: "var(--line)" }}
       >
-        {TABS.map((t) => {
+        {AXIS_ORDER.map((k) => {
+          const t = AXES[k];
           const active = t.key === tab;
           return (
             <button
@@ -53,7 +49,7 @@ export function CrossStats({ games, years = [] }: { games: Game[]; years?: strin
           <thead>
             <tr className="text-[11px] text-[var(--muted)]">
               <th scope="col" className="px-3 py-1.5 text-left font-medium">
-                {TABS.find((t) => t.key === tab)!.label.replace("別", "")}
+                {AXES[tab].columnLabel}
               </th>
               <th scope="col" className="px-2 py-1.5 text-right font-medium">
                 観戦

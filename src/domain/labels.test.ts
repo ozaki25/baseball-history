@@ -3,6 +3,7 @@ import type { Game } from "#/domain/game";
 import {
   formatDateJa,
   formatScore,
+  formatWinRate,
   gameSourceUrl,
   RESULT_LABEL,
   HOME_AWAY_LABEL,
@@ -62,5 +63,12 @@ describe("ラベル", () => {
   it("主催/ビジター", () => {
     expect(HOME_AWAY_LABEL.home).toBe("主催");
     expect(HOME_AWAY_LABEL.away).toBe("ビジター");
+  });
+});
+
+describe("formatWinRate", () => {
+  it("先頭の0を省いた .xxx 形式", () => {
+    expect(formatWinRate(0.667)).toBe(".667");
+    expect(formatWinRate(null)).toBe("-");
   });
 });
