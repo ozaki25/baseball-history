@@ -4,8 +4,10 @@ import { teamLabel, stadiumLabel } from "#/domain/masters";
 import { HOME_AWAY_LABEL } from "#/domain/labels";
 
 /**
- * 軸別集計の軸。追加時は AXES に1エントリ追加するだけで、
- * 型(GroupKey)・タブ表示・列ヘッダ・値抽出・行ラベルが同時に増える単一定義元。
+ * 軸別集計の軸。追加時は GroupKey に値を加え・AXES にエントリを・AXIS_ORDER に順序を、
+ * この3箇所を編集する（いずれの漏れもコンパイルエラーで検知される）。
+ * これらは同一ファイルに置き型で相互に強制する構造で、集計・タブ表示・列ヘッダ・
+ * 値抽出・行ラベルの単一定義元として機能する。
  */
 export type GroupKey = "stadium" | "opponent" | "year" | "homeAway";
 
@@ -67,3 +69,10 @@ export const AXIS_ORDER = [
   "year",
   "homeAway",
 ] as const satisfies readonly GroupKey[];
+
+// AXIS_ORDER が GroupKey を網羅していることをコンパイル時に強制する。
+// 追加した GroupKey を AXIS_ORDER に足し忘れると、Exclude<...> が never にならず
+// 下記の代入で TS エラーになる（軸が UI に現れないままリリースされるのを防ぐ）。
+type _AxisOrderExhaustive = Exclude<GroupKey, (typeof AXIS_ORDER)[number]>;
+const _assertAxisOrderExhaustive: _AxisOrderExhaustive extends never ? true : false = true;
+void _assertAxisOrderExhaustive;

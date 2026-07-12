@@ -11,7 +11,8 @@ const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, cancelled: 0, winRate
  * ラベル解決は AXES[tab].labelOf に一元化されている。
  */
 export function buildRows(games: Game[], tab: GroupKey, years: string[] = []): GroupRow[] {
-  const rows = groupBy(games, tab, AXES[tab].labelOf);
+  // groupBy の既定 labelOf は AXES[tab].labelOf なので第3引数は省略できる。
+  const rows = groupBy(games, tab);
   if (tab !== "year" || years.length === 0) return rows;
   const present = new Set(rows.map((r) => r.key));
   const empties = years

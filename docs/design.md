@@ -66,7 +66,6 @@ baseball-history/
 │  ├─ features/           # 画面単位（依存は routes → features → {domain,ui} の一方向・薄い表示層）
 │  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
 │  │  ├─ filters/         # Filters / YearFilter（表示部品のみ・ロジックは domain/query）
-│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（※後続 PR で domain/stats へ集約）
 │  │  ├─ stats/           # StatsSummary / CrossStats（表示部品のみ・ロジックは domain/stats）
 │  │  └─ games/           # GameTable / ResultBadge
 │  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
