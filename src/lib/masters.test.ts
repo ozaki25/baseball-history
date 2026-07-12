@@ -25,3 +25,21 @@ describe("games.json の安定IDが masters と整合（再解決と一致）", 
     }
   });
 });
+
+describe("resolve の冪等性（往復の不動点）", () => {
+  // search の filter⇔URL 往復は「安定IDが resolve の不動点である」ことに依存する。
+  // ID に正規化で変わる文字（大文字/空白等）を持つマスタを足すと静かに壊れるため回帰で固定する。
+  const teamNames = ["千葉ロッテ", "ロッテ", "日ハム", "横浜DeNA", "近鉄", "__未知の球団__"];
+  const stadiumNames = ["エスコンフィールド", "西武ドーム", "ZOZOマリン", "__未知の球場__"];
+
+  it("resolve(resolve(name).id).id === resolve(name).id（IDは往復で不変）", () => {
+    for (const n of teamNames) {
+      const id = resolveTeam(n).id;
+      expect(resolveTeam(id).id).toBe(id);
+    }
+    for (const n of stadiumNames) {
+      const id = resolveStadium(n).id;
+      expect(resolveStadium(id).id).toBe(id);
+    }
+  });
+});

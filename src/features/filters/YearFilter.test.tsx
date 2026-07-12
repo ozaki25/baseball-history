@@ -63,8 +63,4 @@ describe("visibleYears（純関数）", () => {
   it("選択中の年が直近外なら末尾に足して可視化する", () => {
     expect(visibleYears(YEARS, "2013")).toEqual(["2026", "2025", "2024", "2013"]);
   });
-
-  it("recentCount を変えられる", () => {
-    expect(visibleYears(YEARS, "all", 2)).toEqual(["2026", "2025"]);
-  });
 });

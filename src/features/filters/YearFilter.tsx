@@ -11,12 +11,8 @@ const RECENT_COUNT = 3;
  * （＝絞り込みシートで古い年を選んだ）場合はその年も可視化して解除できるようにする。
  * years は新しい順の前提。
  */
-export function visibleYears(
-  years: string[],
-  value: YearValue,
-  recentCount = RECENT_COUNT,
-): string[] {
-  const recent = years.slice(0, recentCount);
+export function visibleYears(years: string[], value: YearValue): string[] {
+  const recent = years.slice(0, RECENT_COUNT);
   return value !== "all" && !recent.includes(value) ? [...recent, value] : recent;
 }
 

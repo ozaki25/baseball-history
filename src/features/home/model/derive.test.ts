@@ -47,4 +47,14 @@ describe("partitionGames", () => {
     expect(y2026.attended).toEqual([]);
     expect(y2026.scheduled.map((g) => g.id)).toEqual(["c"]);
   });
+
+  it("予定は勝敗・主催の条件を無視して年度一致なら残る（予定は勝敗軸に載せない仕様）", () => {
+    const { attended, scheduled } = partitionGames(games, {
+      ...emptyFilter,
+      results: ["win"],
+      homeAway: "away",
+    });
+    expect(attended).toEqual([]); // win×away の観戦は無い
+    expect(scheduled.map((g) => g.id)).toEqual(["c"]); // 予定は勝敗/主催条件を無視して残る
+  });
 });

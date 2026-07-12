@@ -7,7 +7,7 @@ import {
   buildRows,
   rowLabel,
 } from "#/features/stats/model/stats";
-import { resolveTeam, resolveStadium } from "#/lib/masters";
+import { resolveTeam, resolveStadium, teamLabel, stadiumLabel } from "#/lib/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {
   const opponent = partial.opponent ?? "オリックス";
@@ -94,13 +94,22 @@ describe("formatWinRate", () => {
 });
 
 describe("rowLabel", () => {
-  it("主催/ビジターは日本語、球場/相手は安定IDから代表名、年度はそのまま", () => {
+  it("主催/ビジターは日本語、年度はそのまま、未知キーはフォールバック", () => {
     expect(rowLabel("homeAway", "home")).toBe("主催");
     expect(rowLabel("homeAway", "away")).toBe("ビジター");
     expect(rowLabel("year", "2025")).toBe("2025");
-    // 実在の安定IDに解決される（未知キーはそのまま返る＝フォールバック）
     expect(rowLabel("stadium", "__unknown__")).toBe("__unknown__");
     expect(rowLabel("opponent", "__unknown__")).toBe("__unknown__");
+  });
+
+  it("球場/相手はそれぞれ stadiumLabel/teamLabel で解決する（軸を取り違えない）", () => {
+    const sid = resolveStadium("エスコンフィールド").id;
+    const oid = resolveTeam("千葉ロッテ").id;
+    expect(rowLabel("stadium", sid)).toBe(stadiumLabel(sid));
+    expect(rowLabel("opponent", oid)).toBe(teamLabel(oid));
+    // 解決関数が入れ替わると値が変わることをこのテスト自身の前提として固定
+    expect(stadiumLabel(sid)).not.toBe(teamLabel(sid));
+    expect(teamLabel(oid)).not.toBe(stadiumLabel(oid));
   });
 });
 

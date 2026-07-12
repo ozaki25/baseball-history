@@ -106,6 +106,7 @@ src/
   `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
   実装の隣ではないため、`__screenshots__` ごと集約。CI ワークフローも `src/tests/vrt` を参照）。
 - コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
+- **副作用ロジックはフックに切り出して単体テストする**: テーマ同期（`ui/useTheme`）やダイアログの a11y（初期フォーカス・Escape・フォーカストラップ、`ui/useDialogA11y`）は `renderHook` で状態遷移・副作用を直接検証する。コンポーネントは薄い表示に保ち、壊れやすい副作用はフック側のテストで固定する。
 - **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
   課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
   ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。コロケーションしたテスト本体
