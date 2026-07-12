@@ -67,11 +67,14 @@ src/
       # (model/ 現状無し。共有ドメインロジックは domain/{query,stats} に集約済み)
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
   domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
-                 # game(列挙・型・述語)・masters・normalize・labels
+                 # game(列挙・型・述語)・masters・normalize・labels・query/・stats/
+  data/          # ビルド時データゲートウェイ。JSON 直読み(games.json/dates.json)はここのみの特権。
+                 # 形状ガード込みで ALL_GAMES/ALL_YEARS を公開。SSG につきビルド時 fail-fast
   ingest/        # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）。parsers/ と parsing.ts を含む
 ```
 
-- **依存方向**: `routes → features → { domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
+- **依存方向**: `routes → { data, features } → { domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
+  `data/*.json` の直読みは `src/data/**` のみに機械的に制限（oxlint）。画面が増えても JSON 直読みが複製されない。
   `domain`/`ui` は最下層で上位（features/routes/ingest）へ依存しない。`features/home` は画面合成層として他 feature の
   **View** を横断 import してよいが、**兄弟 feature 相互のロジック import は禁止**（共有ロジックは `domain/` へ）。
   これらは `.oxlintrc.json` の `no-restricted-imports` で機械的に強制する（違反 import を一時挿入して発火確認する運用）。
