@@ -1,7 +1,7 @@
-import type { DatesData, Game, GameResult } from "#/types/game";
+import type { DatesData, Game, GameResult } from "#/domain/game";
 import { parseGameHTML, looksCancelled } from "./parsers/gameParser";
-import { normalizeText } from "../normalize";
-import { resolveTeam, resolveStadium } from "../masters";
+import { normalizeText } from "#/domain/normalize";
+import { resolveTeam, resolveStadium } from "#/domain/masters";
 
 /** ファイターズ視点のスコアから勝敗を判定 */
 export function resultFromScores(fightersScore: number, opponentScore: number): GameResult {

@@ -1,4 +1,4 @@
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import { applyFilters, type GameFilter } from "#/features/filters/model/filters";
 
 /**

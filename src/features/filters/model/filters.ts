@@ -1,5 +1,5 @@
-import type { Game, GameResult, HomeAway } from "#/types/game";
-import { teamLabel, stadiumLabel } from "#/lib/masters";
+import type { Game, GameResult, HomeAway } from "#/domain/game";
+import { teamLabel, stadiumLabel } from "#/domain/masters";
 
 /** 絞り込み状態。URL(search params) と 1:1 対応。stadiums/opponents は安定ID。 */
 export interface GameFilter {

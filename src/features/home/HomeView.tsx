@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import type { GameSearch } from "#/features/filters/model/search";
 import { searchToFilter, filterToSearch } from "#/features/filters/model/search";
 import { deriveOptions, type GameFilter } from "#/features/filters/model/filters";

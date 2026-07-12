@@ -1,4 +1,4 @@
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import { summarize, formatWinRate } from "./model/stats";
 
 function Cell({ label, value, accent }: { label: string; value: string; accent?: boolean }) {

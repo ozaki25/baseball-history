@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { Game } from "#/types/game";
+import type { Game } from "#/domain/game";
 import {
   buildGame,
   resultFromScores,

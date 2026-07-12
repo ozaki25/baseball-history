@@ -8,8 +8,8 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink } from "lucide-react";
-import type { Game } from "#/types/game";
-import { formatDateJa, formatScore, gameSourceUrl, HOME_AWAY_LABEL } from "#/lib/labels";
+import type { Game } from "#/domain/game";
+import { formatDateJa, formatScore, gameSourceUrl, HOME_AWAY_LABEL } from "#/domain/labels";
 import { ResultBadge } from "./ResultBadge";
 
 const columnHelper = createColumnHelper<Game>();

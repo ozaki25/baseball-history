@@ -1,6 +1,6 @@
-import type { GameResult, HomeAway } from "#/types/game";
+import type { GameResult, HomeAway } from "#/domain/game";
 import type { GameFilter } from "./filters";
-import { resolveStadium, resolveTeam } from "#/lib/masters";
+import { resolveStadium, resolveTeam } from "#/domain/masters";
 
 /** URL search params と 1:1 の絞り込み表現（未指定はキーごと省略） */
 export interface GameSearch {

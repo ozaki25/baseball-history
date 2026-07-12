@@ -1,4 +1,4 @@
-import type { Game, GameResult, HomeAway } from "#/types/game";
+import type { Game, GameResult, HomeAway } from "#/domain/game";
 
 export const RESULT_LABEL: Record<GameResult, string> = {
   win: "勝",

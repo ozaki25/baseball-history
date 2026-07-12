@@ -5,7 +5,7 @@ import {
   filterToSearch,
 } from "#/features/filters/model/search";
 import { emptyFilter, type GameFilter } from "#/features/filters/model/filters";
-import { resolveStadium, resolveTeam } from "#/lib/masters";
+import { resolveStadium, resolveTeam } from "#/domain/masters";
 
 describe("validateGameSearch", () => {
   it("正しい値を通す", () => {

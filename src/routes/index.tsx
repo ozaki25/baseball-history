@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { GamesData, Game, DatesData } from "#/types/game";
+import type { GamesData, Game, DatesData } from "#/domain/game";
 import gamesData from "../../data/games.json";
 import datesData from "../../data/dates.json";
 import { validateGameSearch } from "#/features/filters/model/search";

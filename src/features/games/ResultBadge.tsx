@@ -1,5 +1,5 @@
-import type { GameResult } from "#/types/game";
-import { RESULT_LABEL } from "#/lib/labels";
+import type { GameResult } from "#/domain/game";
+import { RESULT_LABEL } from "#/domain/labels";
 
 // 白文字でも WCAG AA を満たす濃色ソリッド（ライト/ダーク共通の固定色）。
 const SOLID: Record<GameResult, string> = {

@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
-import type { GameResult, HomeAway } from "#/types/game";
+import type { GameResult, HomeAway } from "#/domain/game";
 import type { GameFilter, FilterOptions } from "./model/filters";
 import { emptyFilter, isFilterActive, countActiveFilters } from "./model/filters";
-import { RESULT_LABEL } from "#/lib/labels";
+import { RESULT_LABEL } from "#/domain/labels";
 import { Chip } from "#/ui/Chip";
 import { useDialogA11y } from "#/ui/useDialogA11y";
 

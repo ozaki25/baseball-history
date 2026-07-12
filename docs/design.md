@@ -63,22 +63,24 @@ baseball-history/
 │  ├─ routes/             # TanStack Start ファイルベースルーティング（container）
 │  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
 │  │  └─ index.tsx        # データ取得・URL検証・navigate 結線 → HomeView へ委譲
-│  ├─ features/           # 画面単位（依存は routes → features → {ui,lib,types} の一方向）
-│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
-│  │  ├─ filters/         # Filters / YearFilter + model/{filters,search}.ts（絞り込み・URL相互変換）
-│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（集計・scheduled除外）
+│  ├─ features/           # 画面単位（依存は routes → features → {domain,ui} の一方向）
+│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList + model/derive.ts（予定の別枠表示ポリシー）
+│  │  ├─ filters/         # Filters / YearFilter + model/{filters,search}.ts（絞り込み・URL相互変換）※PR7でdomain/queryへ
+│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（集計・scheduled除外）※PR7でdomainへ
 │  │  └─ games/           # GameTable / ResultBadge
-│  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle。hooks も可）
-│  ├─ lib/                # 全 feature が使う共有下層
-│  │  ├─ ingest/          # 取り込み専用（jsdom 依存・クライアントから import 禁止）
-│  │  │  ├─ ingestCore.ts # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
-│  │  │  ├─ parsers/      # 公式サイト HTML パーサ（Document を受け取る抽出器群）
-│  │  │  └─ sleepUtils.ts # レート制御
+│  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
+│  ├─ domain/             # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）
+│  │  ├─ game.ts          # Game 型・GameResult/HomeAway ほか
 │  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
-│  │  ├─ labels.ts        # 表示ラベル・日付/スコア整形・取得元URL（全feature/scriptsの共有語彙）
+│  │  ├─ labels.ts        # ドメイン語彙（表示ラベル・日付/スコア整形・取得元URL。全feature/scripts共有）
 │  │  └─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
+│  ├─ lib/                # 取り込み基盤（※PR6で src/ingest/ へ独立予定）
+│  │  └─ ingest/          # 取り込み専用（jsdom 依存・クライアントから import 禁止）
+│  │     ├─ ingestCore.ts # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
+│  │     ├─ parsers/      # 公式サイト HTML パーサ（Document を受け取る抽出器群）
+│  │     └─ sleepUtils.ts # レート制御
 │  ├─ types/
-│  │  └─ game.ts          # Game 型ほか（共有ドメイン型）
+│  │  └─ parsing.ts       # 取り込みパーサ用の型（※PR6で ingest/ へ移動予定）
 │  └─ styles.css          # Tailwind エントリ・デザイントークン（ライト/ダーク）
 ├─ src/tests/             # Vitest（lib 単体・パーサ・コンポーネント[jsdom]）
 ├─ public/                # PWA アイコン・manifest・sw.js

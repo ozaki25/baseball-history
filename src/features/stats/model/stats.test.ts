@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { Game, GameResult } from "#/types/game";
+import type { Game, GameResult } from "#/domain/game";
 import {
   summarize,
   groupBy,
@@ -7,7 +7,7 @@ import {
   buildRows,
   rowLabel,
 } from "#/features/stats/model/stats";
-import { resolveTeam, resolveStadium, teamLabel, stadiumLabel } from "#/lib/masters";
+import { resolveTeam, resolveStadium, teamLabel, stadiumLabel } from "#/domain/masters";
 
 function game(partial: Partial<Game> & { result: GameResult; date: string }): Game {
   const opponent = partial.opponent ?? "オリックス";
