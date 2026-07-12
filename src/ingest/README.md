@@ -29,10 +29,3 @@
 
 - 公式サイトの HTML 構造に**新しい抽出項目**が増えた: [`/add-parser`](../../.claude/commands/add-parser.md)
   （フィクスチャ追加 → 抽出器 → テスト → `mergeIngest` へ結線）
-
-## 現状のファイル
-
-- `ingestCore.ts` — 取り込み中核（`mergeIngest`, `toIsoDate` 等）
-- `parsing.ts` — パーサ共通型
-- `parsers/` — 個別抽出器（`teamExtractor`, `scoreExtractor`, `locationExtractor`, `homeDetector`, `gameParser`）
-- `sleepUtils.ts` — レート制御

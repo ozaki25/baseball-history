@@ -38,7 +38,3 @@
 現状 screen は `home/` の 1 個だけ。screen が 2 つ以上になったら、
 **screen 兄弟の import 禁止**（`#/screens/**` を screens 内から import 禁止）を feature と対称に導入する
 （backlog 参照）。「合成層が合成層を合成する」構造を防ぐため。
-
-## 現状のフォルダ
-
-- `home/` — `HomeView`（トップ画面の合成）

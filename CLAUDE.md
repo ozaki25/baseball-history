@@ -80,6 +80,21 @@ data/dates.json  ──(push)──▶  GitHub Actions(ingest)  ──▶  data/
 - 詳細取得できない古い試合は `data/date-only.json` に日付を挙げる（値の上書きではなく「詳細を持たないことの宣言」）。
 - ingest は外部ネット必須。開発環境や Vercel ビルドから公式サイトへ到達できなくてよい設計
   （実行は GitHub Actions が正）。
+- **中止試合は取り扱わない**。現地観戦していないため `data/dates.json` に載せない前提
+  （`GameResult` に `cancelled` は存在しない）。
+
+## 絞り込み年度のデフォルト
+
+初期表示は「今シーズン（現在年）」。今年のデータが無ければ観戦データ上の最新年にフォールバックする。
+
+| URL         | 意味                                                            |
+| ----------- | --------------------------------------------------------------- |
+| （未指定）  | デフォルト年（`domain/query/defaults.ts` の `pickDefaultYear`） |
+| `year=all`  | 明示的にすべての年                                              |
+| `year=YYYY` | その年に絞り込み                                                |
+
+「条件をクリア」「リセット」は `Filters` の `onReset` → 上位の `onNavigate({})` で URL を空にし、
+デフォルト状態へ戻す（`onChange(emptyFilter)` は使わない）。詳細は `docs/design.md` §5。
 
 ## Claude コマンド
 
