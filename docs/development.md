@@ -1,178 +1,192 @@
-# 開発フロー — 観戦履歴アプリ（再構築）
+# 開発フロー — 観戦ノート
 
-> ステータス: **反映済み（構造化リファクタ PR1〜PR6 = 白紙PR-1〜PR-6 完了時点）** / 最終更新: 2026-07-12
-> 要件は `requirements.md`、設計は `design.md` を参照。
+- 要件は [`requirements.md`](requirements.md)、設計は [`design.md`](design.md)。
+- ツール/依存/スクリプトの一次情報は [`package.json`](../package.json)。
+- 層の禁止ルールは [`.oxlintrc.json`](../.oxlintrc.json)。
+- Claude Code セッション向けの短い一次案内は [`CLAUDE.md`](../CLAUDE.md)。
 
 ## 1. 開発環境
 
-| 項目           | 内容                                                              |
-| -------------- | ----------------------------------------------------------------- |
-| ランタイム     | Node.js（oxlint 要件に合わせ `^20.19` または `>=22.12`）          |
-| パッケージ管理 | **pnpm**（`pnpm-lock.yaml`。`packageManager` フィールドで版固定） |
-| Lint / Format  | **oxlint / oxfmt**（ESLint・Prettier は使わない）                 |
+| 項目           | 内容                                                     |
+| -------------- | -------------------------------------------------------- |
+| ランタイム     | Node.js（oxlint 要件に合わせ `^20.19` または `>=22.12`） |
+| パッケージ管理 | **pnpm**（`packageManager` フィールドで版固定）          |
+| Lint / Format  | **oxlint** / **oxfmt**（ESLint・Prettier は使わない）    |
 
-> **バージョン方針**: 依存は実装着手時に `npm view <pkg> version` 等で最新を確認して採用する。
-> 知識ベースで古い版を選ばない。TypeScript 7 など新しい世代は互換を実地確認してから固定する。
+**バージョン方針**: 依存は実装着手時に `npm view <pkg> version` 等で最新を確認して採用する
+（知識ベースで古い版を選ばない）。採用済み版は `package.json` を単一定義元とする。
 
-### pnpm scripts（現状。詳細は `package.json`）
+### スクリプト（主要ゲート）
 
-```jsonc
-{
-  "dev": "vite dev --port 3000",
-  "build": "vite build", // SSG プリレンダー含む
-  "preview": "vite preview --port 3000",
-  "generate-routes": "tsr generate", // TanStack Router のルート生成
-  "lint": "oxlint",
-  "lint:fix": "oxlint --fix",
-  "format": "oxfmt .",
-  "format:check": "oxfmt --check .",
-  "typecheck": "tsr generate && tsc --noEmit",
-  "test": "vitest run --project unit", // unit/component（jsdom）
-  "test:watch": "vitest --project unit",
-  "test:coverage": "vitest run --project unit --coverage",
-  "test:visual": "vitest run --project vrt", // VRT 比較
-  "test:visual:update": "node scripts/vrt-guard.mjs && vitest run --project vrt --update", // 標準環境のみ
-  "ingest": "tsx scripts/ingest.ts",
-  "add-date": "node scripts/add-date.mjs",
-  "prepare": "husky",
-}
-```
+| コマンド                  | 内容                                                |
+| ------------------------- | --------------------------------------------------- |
+| `pnpm dev`                | 開発サーバー（`http://localhost:3000`）             |
+| `pnpm build`              | 本番ビルド（SSG プリレンダー含む）                  |
+| `pnpm preview`            | ビルド結果のプレビュー                              |
+| `pnpm lint`               | oxlint                                              |
+| `pnpm format:check`       | oxfmt（差分検知）                                   |
+| `pnpm typecheck`          | `tsr generate && tsc --noEmit`                      |
+| `pnpm test`               | 単体（`--project unit`・jsdom）                     |
+| `pnpm test:coverage`      | 単体 + カバレッジ（下限あり）                       |
+| `pnpm test:visual`        | 視覚回帰（`--project vrt`）                         |
+| `pnpm test:visual:update` | VRT baseline 更新（標準環境以外はガードでブロック） |
+| `pnpm ingest`             | 取り込み（外部ネット必須。GitHub Actions が正）     |
+| `pnpm add-date`           | 観戦日追加（`/add-date` コマンドから呼ばれる）      |
 
-## 2. コード品質
+コミット前の主要ゲート順: **lint → format:check → typecheck → test → build**。
+全スクリプトの実体は `package.json` を参照。
 
-- **TypeScript strict** を有効化。`any` を避け、`Game` 等の型を単一定義。
-- **oxlint**（Lint）＋ **oxfmt**（Format）で oxc に統一（`pnpm lint` / `pnpm format`）。
-  - oxfmt は 0.x のため整形挙動が更新で変わりうる。CI で `format:check` を回し差分を検知。
-- **Husky + lint-staged**: コミット前に対象ファイルへ `oxlint --fix` / `oxfmt --write`。
+## 2. コード品質と層規則
+
+- **TypeScript strict**（`any` を避け、`Game` 等の型を単一定義）。
+- **oxlint** / **oxfmt** で oxc 統一。CI で `format:check` を回し差分検知。
+- **Husky + lint-staged**: コミット前に対象ファイルへ `oxlint --fix` / `oxfmt`。
 - 純関数（`domain/stats/*` / `domain/query/*` / `ingest/parsers/*`）に単体テストを付ける。
+
+### 層と依存規則
+
+ディレクトリ構成と依存グラフは [`design.md` §3](design.md#3-ディレクトリ構成と層の依存) が唯一の定義元。
+機械強制は [`.oxlintrc.json`](../.oxlintrc.json) の `no-restricted-imports` overrides。
+
+**不変条件**:
+
+- **routes は URL 結線と data 取得のみ**。View 合成は screens に委譲する（features/ui/app へ直接 import しない）。
+- **screens が唯一の合成層**。feature 横断はここのみ。
+- **feature 兄弟の依存は一律禁止**（`#/features/**` を features 内から import しない）。
+  共有ロジックは domain へ、画面横断の合成は screens へ。
+- **data の JSON 直読みは data ゲートウェイのみの特権**（他層は `ALL_GAMES` / `ALL_YEARS` を import）。
+- **domain / ui は最下層**（上位のいかなる層にも依存しない）。
+- **ingest はクライアントに import しない**（jsdom 混入防止・安全規則。相対パス回避も `**/ingest/**` で機械捕捉）。
+
+### container / composition / presentational（linter で強制されない規約）
+
+- **routes（container）**: データ取得・URL 検証・`navigate` 結線のみ。View を描かない。
+- **screens（composition）**: 画面合成層。feature 横断はここのみ。
+- **features（presentational）**: 画面部品。**props で受け、`onNavigate` コールバックで返す**。
+  ルーター依存を feature に持ち込まない（screen の `search` / `onNavigate` seam を維持）。
+  新しい画面は route に結線だけ置き、View（合成）は screens、部品は features に置く。
+
+### `src/ui/` の採録基準
+
+- ドメインに依存しない再利用可能な UI 部品（コンポーネント / hooks）。
+- **副作用（`localStorage` 等）は部品内で完結**させる（親に漏らさない）。
+- **domain に依存する部品は `features/` に置く**（`ui/` ではない）。
+- 表示語彙（`labels.ts`）は `domain/` に置く（個人アプリで i18n しない前提のため、
+  表示ラベルもドメイン語彙として扱う）。
+
+### 新しい feature を追加するとき
+
+`.oxlintrc.json` の編集は**原則不要**。feature 兄弟一律禁止（`#/features/**`）は既にワイルドカードで
+縮約されているため、`src/features/新feature/` ディレクトリを作れば `src/features/**` override が自動適用される。
+（相対パス回避は文字列マッチでは原理的に捕捉できないため、ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる規約で補完する。）
+
+### 層追加時のチェックリスト
+
+新しい層を追加するとき、`.oxlintrc.json` に override を 1 つ足すだけでは不十分。
+**下層の override 全て**（`ui / domain / data / ingest / scripts`）に「新層を禁止する」パターンを追記しないと、
+下層 → 新層の import が lint 素通りになる（例: `ui → 新層` が許されると循環すら検出不能）。
+
+過去に PR-5 / PR-6 で連続してこの穴を踏んだため、以下を毎回実施する:
+
+1. 新層 override を追加
+2. 下層 override 全て（ui/domain/data/ingest/scripts）に禁止パターンを追記
+3. 違反 import を注入して oxlint が確実に落ちることを両方向で確認
+4. `docs/design.md` §3.2 の依存グラフを更新
 
 ### スタイリング規約
 
-- 色はすべて `styles.css` のデザイントークン（CSS 変数）を単一の定義元とする。ライト/ダークは
-  `@media (prefers-color-scheme)` と `:root[data-theme]` の両方で切り替える。
+- 色はすべて `styles.css` のデザイントークン（CSS 変数）を単一の定義元とする。
+  ライト/ダークは `@media (prefers-color-scheme)` と `:root[data-theme]` の両方で切り替える。
 - **静的なトークン参照は Tailwind の arbitrary value**（例: `text-[var(--muted)]`）、
   **要素固有・動的な色は inline `style`**（例: `style={{ borderColor: "var(--line)" }}`）で書く。
-  クラスと inline を混在させる場合はこの基準に従う（動的値のみ inline）。
-- 勝敗バッジの色はライト/ダーク共通の固定色として `ResultBadge.tsx` に集約（`styles.css` には置かない）。
-- 取り込み専用モジュールは `src/ingest/`（jsdom 依存）に隔離し、`features`/`routes` からの
-  import を oxlint（`no-restricted-imports`）で禁止する。クライアントバンドルへの jsdom 混入を防ぐため。
-
-### ディレクトリ構成と依存規則
-
-層構成（上 → 下の一方向依存のみ許可。循環は構造的に発生しない）。大規模化（画面・軸の追加）に向け、
-framework 非依存の中核を `domain/` に集約している:
-
-```
-src/
-  routes/        # ルーター結線（container）。file-based。data import / validateSearch / navigate のみ
-  app/           # アプリ外殻。AppShell(ヘッダ・タイトル・ThemeToggle・幅制約)。画面追加時も複製されない
-  screens/       # 画面合成層（feature 横断はここのみ）。routes → screens → features
-  features/      # 画面部品（薄い表示層・兄弟 feature 依存禁止・共有は domain へ）
-                 # {filters, stats, games, scheduled}
-  ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
-  domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
-                 # game(列挙・型・述語)・masters・normalize・labels・query/・stats/
-  data/          # ビルド時データゲートウェイ。JSON 直読み(games.json/dates.json)はここのみの特権。
-                 # 形状ガード込みで ALL_GAMES/ALL_YEARS を公開。SSG につきビルド時 fail-fast
-  ingest/        # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）。parsers/ と parsing.ts を含む
-```
-
-- **依存方向**（一方向・すべて oxlint で機械強制）:
-  - `routes → { screens, data }` — routes は URL 結線と data 取得のみ、View は screens に委譲
-  - `screens → { app, features, domain, ui, data }` — 画面合成層。**feature 横断はここのみ**
-  - `app → { ui }` — アプリ外殻(AppShell 等)は最小依存
-  - `features → { domain, ui }` — 画面部品。**兄弟 feature 依存禁止・data 直依存禁止**
-  - `data → { domain }` — JSON 境界の形状ガード
-  - `ui → ∅` / `domain → ∅` — 最下層。上位のいかなる層にも依存しない
-  - `ingest → domain` / `scripts → { ingest, domain }`
-- **feature 兄弟の依存は一律禁止**: `features/**` から `#/features/**` の import は禁止（screens/ が唯一の合成層）。
-  従来の O(n²) 明示列挙が消え、feature 追加時に oxlint の編集は不要になった。
-  違反 import を一時挿入して発火確認する運用は継続する（境界の全ルールに適用）。
-- **`src/domain/` の採録基準**: React/router/DOM に依存しない純粋なドメイン（型・参照データ・純ロジック）。全レイヤーの土台で、
-  何にも依存しない。個人アプリで i18n しない前提のため、表示語彙（labels）もドメイン語彙としてここに置く。
-- **`src/ui/` の採録基準**: ドメインに依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
-  副作用（localStorage 等）はその部品内で完結させる。domain に依存する部品は `features/` に置く。
-- **container / composition / presentational**: `routes/*` が container（データ取得・URL 検証・`navigate` 結線）、
-  `screens/*` が合成層（HomeView 等・**feature 横断はここのみ**）、`features/*` は presentational な画面部品
-  （props で受け、`onNavigate` コールバックで返す）。新しい画面は route に結線だけ置き、**View（合成）は
-  `screens/` に、部品は `features/` に**置く。ルーター依存は feature に持ち込まない（screen の `search`/`onNavigate`
-  seam を維持）。
-- ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる（`no-restricted-imports` は文字列マッチのため、相対パスでの
-  境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/ingest/**` を
-  併記して相対パス回避も機械的に捕捉する。feature 間の横断禁止は建築規約であり、相対パス（例 `../filters/...`）は
-  import 文字列に `features` を含まず文字列マッチでは原理的に捕捉できないため、上記のエイリアス規約で補完する。
-  境界は `domain/**`（最下層）・`scripts/**`（UI層非依存）にも適用する。テストファイル（`**/*.test.{ts,tsx}`）は
-  末尾 override で `no-restricted-imports` を off にして対象外（テストは境界を跨いで検証するのが正当で、クライアント
-  バンドルにも含まれないため）。
-- **feature を追加するとき**: 兄弟一律禁止（`#/features/**`）は既にワイルドカードで縮約されているため、`.oxlintrc.json` の
-  編集は**原則不要**。新 feature 用のディレクトリを作れば `src/features/**` override が自動適用される。相対パス回避は
-  文字列マッチでは原理的に捕捉できないため（例: `../filters/...` に `features` が含まれない）、ディレクトリ跨ぎの
-  import は必ず `#/` エイリアスを用いる規約で補完する（境界の限界として明記）。
-- **新しい層（app/screens 等）を追加するとき**: 新 override を1つ追加するだけでは不十分。**下層の override 全て
-  （ui/domain/data/ingest/scripts）に「新層を禁止する」パターンを追記**しないと、下層→新層の import が lint 素通り
-  になる（例: `ui → app` が許されると循環すら検出不能）。追記漏れは違反注入で必ず検証する（`../new-layer/thing`
-  を挿入して oxlint が落ちるか）。過去に PR-5/PR-6 で連続的にこの穴を踏んだため、境界改修は**常に下層の全 override
-  を同時に更新するチェックリストを回す**こと。
+- 勝敗バッジの色はライト/ダーク共通の固定色として `ResultBadge.tsx` に集約
+  （`styles.css` には置かない）。
 
 ## 3. テスト戦略
 
-| 種別           | 対象                                                                                                  | 手段                                                                              |
-| -------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| 単体           | パーサ（team/score/location/home/gameParser）                                                         | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用                            |
-| 単体           | 集計 `domain/stats/*`（勝率・軸別集計・軸レジストリ）                                                 | 代表データで期待値検証                                                            |
-| 単体           | 絞り込み `domain/query/*`（filter/search/options/partition）・URL スキーマ                            | 条件→抽出結果、URL 相互変換                                                       |
-| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled/確定/失敗保持/中止/self-heal を網羅                                     |
-| 単体           | 安定ID `masters.ts`（表記ゆれ束ね・衝突検知）                                                         | alias 解決＋実データ ID 整合の回帰テスト                                          |
-| コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
-| 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
+| 種別           | 対象                                                                                                  | 手段                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| 単体           | パーサ（team/score/location/home/gameParser）                                                         | 既存フィクスチャ（勝/負×主催/ビジター・引分・サヨナラ）を流用         |
+| 単体           | 集計 `domain/stats/*`（勝率・軸別集計・軸レジストリ）                                                 | 代表データで期待値検証                                                |
+| 単体           | 絞り込み `domain/query/*`（filter/search/options/partition）・URL スキーマ                            | 条件 → 抽出結果、URL 相互変換                                         |
+| 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled / 確定 / 失敗保持 / 中止 / self-heal を網羅                 |
+| 単体           | 安定 ID `masters.ts`（表記ゆれ束ね・衝突検知）                                                        | alias 解決 + 実データ ID 整合の回帰                                   |
+| コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会             |
+| 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`（標準環境で baseline 比較） |
 
-- **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/domain/query/filter.test.ts`、
-  `src/features/games/GameTable.test.tsx`、`src/domain/masters.test.ts`、`src/ingest/parsers/teamExtractor.test.ts` など）。
-  実装の移動時にテストが一緒に動き、対応関係が一目で分かる。一方、**共有アセットは `src/tests/` に集約**する:
-  `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
-  実装の隣ではないため、`__screenshots__` ごと集約。CI ワークフローも `src/tests/vrt` を参照）。
-- コンポーネントテストの方針: `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する（堅牢・持続可能）。`vite.config.ts` の `test.globals: true` で Testing Library の自動クリーンアップを有効化、`src/tests/setup.ts` で jest-dom マッチャを読み込む。jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
-- **副作用ロジックはフックに切り出して単体テストする**: テーマ同期（`ui/useTheme`）やダイアログの a11y（初期フォーカス・Escape・フォーカストラップ、`ui/useDialogA11y`）は `renderHook` で状態遷移・副作用を直接検証する。コンポーネントは薄い表示に保ち、壊れやすい副作用はフック側のテストで固定する。
-- **カバレッジ**: `pnpm test:coverage`（v8）。CI では下限（statements/functions/lines 90%・branches 85%）を
-  課してロジックの回帰を防ぐ。生成物・ルーター結線（`routeTree.gen.ts`/`router.tsx`/`__root.tsx`/`routes/index.tsx`）は
-  ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。コロケーションしたテスト本体
-  （`src/**/*.test.{ts,tsx}`）と `src/tests/**`（ヘルパ/フィクスチャ/setup/VRT）も計測対象外。現状 96%/92%/98%/97%。
-- **VRT（視覚回帰）**: Vitest 4 の Browser Mode（`@vitest/browser-playwright`）＋ `toMatchScreenshot` を使用。
-  単体とは別 project（`vrt`, `*.vrt.test.tsx`）に分離し、`pnpm test:visual`（比較）/ `pnpm test:visual:update`（更新）。
-  対象は `src/tests/vrt/`（トップ画面のモバイル/デスクトップ等）で、固定フィクスチャで描画して baseline を安定させる。
-  - **描画は環境差（フォント・OS・GPU）に敏感**なため、baseline は必ず**標準環境**で生成する。標準環境は
-    GitHub Actions の `Visual Regression` ワークフロー（**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`**）。
-  - baseline は `src/tests/vrt/__screenshots__/` にコミットする（生成物はCI所有）。**ローカルで生成した baseline はコミットしない**
-    （ローカルは `VRT_CHROMIUM_PATH=<chromium> pnpm test:visual` で挙動確認のみ・非正）。
-  - baseline が無い初回はCIが自動生成してPRへコミット（ブートストラップ）。生成直後に同一ジョブ内で比較して
-    自己検証する。**新規ケース（baseline 未生成の `toMatchScreenshot` キー）を追加した場合も、比較 fail を検知した
-    CIがその新規 baseline だけを標準環境で生成してコミットし、push 前に再比較してから push する**
-    （新規追加のたびの手動実行は不要）。このとき**既存 baseline は自動更新しない**（`git checkout` で復元）。
-    よって既存ケースの差分は「視覚回帰（または flaky）」として fail し、意図的なUI変更は `Visual Regression` を
-    `update=true` で手動実行して明示的に再生成する。差分はコミットされた画像としてPRでレビューする。
-  - **限界と運用**: (a) テストキーの**改名**は net-new 扱いとなり旧 baseline が孤児化する。改名時は `update=true` を
-    手動実行すること（CIは改名を検知せず孤児を自動承認もしない）。(b) **fork からのPR**は `GITHUB_TOKEN` が
-    read-only で baseline を push できないため自動生成は行わない（メンテナが `update=true` を実行する）。
-  - 比較 fail 時は `actual`/`diff` 画像が `vrt-diff` アーティファクトとして保存される（Actions からダウンロード可）。
-  - ローカルの `pnpm test:visual` は Hiragino 等が無くフォント差で fail しやすい（挙動確認用）。`test:visual:update` は
-    標準環境以外では既定でブロックする（`scripts/vrt-guard.mjs`。どうしてもローカルの Docker 内で更新する場合のみ
-    `VRT_UPDATE_OK=1`）。閾値は `allowedMismatchedPixels`（絶対数）で管理し、環境固定前提で小さく保つ。
-- CI で `lint`(oxlint) → `format:check`(oxfmt) → `typecheck`(tsc) → `test:coverage` → `build` を実行（後述）。
+### 配置（コロケーション）
+
+- unit / コンポーネントのテストは**実装の隣**に置く
+  （例: `src/domain/query/filter.test.ts`, `src/features/games/GameTable.test.tsx`）。
+- **共有アセットは `src/tests/` に集約**する:
+  - `helpers/`（`makeGame` 等）
+  - `fixtures/`（パーサ用 HTML）
+  - `setup.ts` / `setup.browser.ts`
+  - `vrt/`（VRT は画面単位で実装隣ではないため、`__screenshots__` ごと集約）
+- CI ワークフローも `src/tests/vrt` を参照する。
+
+### 方針
+
+- コンポーネントテストは `getByRole` などアクセシブルなクエリを基本とし、`userEvent` で操作を再現。
+  CSS クラスや DOM 構造ではなく「ユーザーに見える挙動」を検証する。
+- 副作用ロジックはフックに切り出して `renderHook` で単体テストする
+  （`ui/useTheme` / `ui/useDialogA11y`）。コンポーネントは薄い表示に保つ。
+- jsdom は対象ファイル先頭の `// @vitest-environment jsdom` で切り替える（既定は node）。
+- `test.globals: true` で Testing Library の自動クリーンアップを有効化、
+  `src/tests/setup.ts` で jest-dom マッチャを読み込む。
+
+### カバレッジ
+
+- `pnpm test:coverage`（v8）。CI では下限を課す（statements/functions/lines 90%, branches 85%）。
+- 生成物・ルーター結線（`routeTree.gen.ts` / `router.tsx` / `__root.tsx` / `routes/index.tsx`）は
+  ロジックを持たないため計測対象外（画面ロジックは `HomeView` に切り出してテスト）。
+- コロケーションしたテスト本体（`src/**/*.test.{ts,tsx}`）と `src/tests/**` も計測対象外。
+
+### VRT（視覚回帰）
+
+- Vitest の Browser Mode（`@vitest/browser-playwright`）+ `toMatchScreenshot`。
+- 単体とは別 project（`vrt`, `*.vrt.test.tsx`）に分離。
+- 対象は `src/tests/vrt/`（トップ画面のモバイル/デスクトップ等）。固定フィクスチャで描画して baseline を安定させる。
+
+**環境**: 描画は環境差（フォント・OS・GPU）に敏感なため、baseline は必ず**標準環境**で生成する。
+標準環境は GitHub Actions の Visual Regression ワークフロー
+（**Playwright 公式 Docker イメージ + `fonts-noto-cjk`**）。
+
+**baseline 運用**:
+
+- `src/tests/vrt/__screenshots__/` にコミットする（生成物は CI 所有）。
+- ローカルで生成した baseline はコミットしない（ローカルは `VRT_CHROMIUM_PATH=<chromium> pnpm test:visual` で挙動確認のみ・非正）。
+- baseline が無い初回は CI が自動生成して PR へコミット（ブートストラップ）。生成直後に同一ジョブ内で比較して自己検証する。
+- **新規ケース**（baseline 未生成の `toMatchScreenshot` キー）を追加した場合も、比較 fail を検知した CI が
+  その新規 baseline だけを標準環境で生成してコミットし、push 前に再比較してから push する。
+  このとき**既存 baseline は自動更新しない**（`git checkout` で復元）。
+- よって既存ケースの差分は「視覚回帰（または flaky）」として fail し、意図的な UI 変更は
+  Visual Regression を `update=true` で手動実行して明示的に再生成する。
+
+**限界と運用**:
+
+- テストキーの**改名**は net-new 扱いとなり旧 baseline が孤児化する。改名時は `update=true` を手動実行する。
+- **fork からの PR** は `GITHUB_TOKEN` が read-only で baseline を push できない
+  → メンテナが `update=true` を実行する。
+- 比較 fail 時は `actual` / `diff` 画像が `vrt-diff` アーティファクトとして保存される。
+- `pnpm test:visual:update` は標準環境以外では既定でブロックする（`scripts/vrt-guard.mjs`。
+  どうしてもローカルの Docker 内で更新する場合のみ `VRT_UPDATE_OK=1`）。
+- 閾値は `allowedMismatchedPixels`（絶対数）で管理し、環境固定前提で小さく保つ。
 
 ## 4. ブランチ / コミット
 
 - 作業ブランチ: `claude/repository-overview-77ggn9`（本案件の指定ブランチ）。
-- コミットは意味単位で分割し、明確なメッセージを付ける（例: `feat: TanStack Router で絞り込みURL状態を実装`）。
-- `main` へは PR 経由（ユーザーの明示指示があれば作成）。
+- コミットは意味単位で分割し、明確なメッセージを付ける
+  （例: `refactor(structure): screens/ + app/AppShell 骨格を新設`）。
+- `main` へは PR 経由。
 
-## 5. GitHub Actions（3 本立て）
+## 5. GitHub Actions
 
 ### 5.1 CI（`ci.yml`）— 品質チェック
 
 `push` / `pull_request` で実行。外部サイトへはアクセスしない。
 
 ```yaml
-# .github/workflows/ci.yml（案）
 jobs:
   build:
     steps:
@@ -180,7 +194,7 @@ jobs:
       - pnpm lint # oxlint
       - pnpm format:check # oxfmt
       - pnpm typecheck # tsc --noEmit
-      - pnpm test:coverage # 単体（--project unit）＋しきい値
+      - pnpm test:coverage # unit + しきい値
       - pnpm build
 ```
 
@@ -189,10 +203,13 @@ jobs:
 公式サイトから取得し、`games.json` を**リポジトリへ自動コミット**する（→ Vercel が自動デプロイ）。
 
 ```yaml
-# .github/workflows/ingest.yml（案）
 on:
   push:
-    paths: ["data/dates.json"] # 観戦日を足したら起動
+    branches: ["main"]
+    paths:
+      - "data/dates.json" # 観戦日を足したら起動
+      - "data/date-only.json" # 詳細不明の宣言追加でも再走
+      - ".github/workflows/ingest.yml"
   workflow_dispatch: # 手動実行（force / 年指定）
 permissions:
   contents: write # games.json を push するため
@@ -201,31 +218,31 @@ jobs:
     steps:
       - checkout / setup-node / setup-pnpm / pnpm install --frozen-lockfile
       - pnpm ingest # 未確定分だけ取得（scheduled/失敗も対象・--force で全件）
-      - 差分があれば data/games.json をコミット & push（[skip ci]）
+      - 差分があれば data/games.json と data/ingest-report.json をコミット & push
 ```
 
-> GitHub ランナーは外部ネットに出られるため公式サイトへ到達可能。
-> 開発環境や Vercel ビルドからは到達不可でも、取り込みは Actions 側で完結するので影響しない。
+CI ループ防止は `ci.yml` 側の `paths-ignore: [data/games.json, data/ingest-report.json]` で行う
+（ingest 側で `[skip ci]` を付ける方式ではない）。
 
 ### 5.3 Visual Regression（`vrt.yml`）— 視覚回帰
 
-`pull_request` で比較、`workflow_dispatch(update=true)` で baseline 更新。描画の環境差を排除するため
-**Playwright 公式 Docker イメージ ＋ `fonts-noto-cjk`** の固定環境で実行し、baseline はこの環境が生成して
-コミットする（初回は自動ブートストラップ）。詳細は §3 のVRT項を参照。
+`pull_request` で比較、`workflow_dispatch(update=true)` で baseline 更新。
+描画の環境差を排除するため **Playwright 公式 Docker イメージ + `fonts-noto-cjk`** の固定環境で実行し、
+baseline はこの環境が生成してコミットする（初回は自動ブートストラップ）。詳細は §3 の VRT 項。
 
 ## 6. デプロイ（Vercel）
 
-- **完全静的（SSG/prerender）** で出力し、**TanStack Start の Vercel ターゲット**で配信。
+- **完全静的（SSG / prerender）** で出力し、TanStack Start の Vercel ターゲットで配信。
 - スクレイピングはビルドに含めない（`games.json` 同梱を読むだけ）。
 - プレビュー: PR ごとの Vercel Preview を活用。
 
 ## 7. データ更新の運用フロー
 
-観戦記録を増やすときは、**Claude に観戦日を伝えるだけ**（add-date スキル経由）。
+観戦記録を増やすときは、**Claude に観戦日を伝えるだけ**（`/add-date` コマンド経由）。
 
 ```
 1. Claude に「7/5・7/6 の観戦を登録して」と依頼
-   → add-date スキルが dates.json に追記・ソート → commit & push
+   → /add-date が dates.json に追記・ソート → commit & push
    ↓（以降は自動）
    GitHub Actions(ingest) が未確定分をスクレイピング
    → games.json を自動コミット → Vercel が自動デプロイ
@@ -233,69 +250,41 @@ jobs:
 
 - **事前登録可**: まだ試合前の日も登録できる。取り込みでは `scheduled`（観戦予定）として保存し、
   後日結果が出た後の実行で自動的に確定へ更新される。
-- 観戦日を試合後に足せば、その push で結果まで取得できる。単独で予定を確定させたい時は
-  Claude に「取り込みを回して」と頼む（または Actions の Run workflow）。
+- 観戦日を試合後に足せば、その push で結果まで取得できる。
+  単独で予定を確定させたいときは Claude に「取り込みを回して」と頼む（または Actions の Run workflow）。
 - ローカル `pnpm ingest` もフォールバックとして利用可能。
 
-> **データ源はスクレイピングのみ**（試合内容の手入力・値の override は行わない）。取得失敗・解析失敗は
-> `ingest-report.json` に記録され、再実行でリトライされる。
->
-> **例外: 現行サイトで取得できない古い試合**は `data/date-only.json` に日付を挙げると、ingest は
-> それらを fetch せず `result: "unknown"` として**日付のみ**保存する（詳細値は捏造しない・
-> 「詳細を持たないことの宣言」であり値の override ではない）。集計では観戦数に含めるが勝敗軸には
-> 数えず、年度別軸では観戦数として現れる。
+### date-only.json（詳細不明の宣言）
 
-## 8. 実装フェーズ（ステップごとに確認）
+現行サイトで詳細取得できない古い試合は `data/date-only.json` に日付を挙げると、
+ingest が該当日を fetch せず `result: "unknown"` として日付のみ保存する。
 
-各フェーズ末に一旦止めてレビューする。
+- 値の上書き(override)ではなく **「詳細を持たないことの宣言」**（`design.md` §4.2, `requirements.md` §2）。
+- 集計は観戦数に含めるが勝敗軸には数えず、年度別軸では観戦数として現れる。
 
-| #   | フェーズ           | 完了条件（受け入れ基準）                                                                                    |
-| --- | ------------------ | ----------------------------------------------------------------------------------------------------------- |
-| 0   | 本ドキュメント確定 | 要件/設計/開発フローに合意（完了）                                                                          |
-| 1   | 足場（scaffold）   | pnpm 化、TanStack Start 起動、TanStack Table・Tailwind・oxlint/oxfmt・PWA 導入、ダミーデータ表示            |
-| 2   | データ層           | 型定義（`scheduled` 含む）・`games.json` スキーマ確定、ingest（既存パーサ流用・scheduled 対応）で生成できる |
-| 3   | 一覧＋絞り込み     | 5 軸の絞り込みが動作、条件が URL に保持。観戦予定を別枠表示                                                 |
-| 4   | 集計               | 絞り込み連動の基本統計＋軸別クロス集計（scheduled 除外）                                                    |
-| 5   | PWA / 仕上げ       | 新アイコン作成、インストール・オフライン確認、アクセシビリティ・レスポンシブ、AI生成感の排除確認            |
-| 6   | 撤去・移行         | 旧 Next.js 資産・旧設計ドキュメント・npm 資産を削除、README 刷新、add-date スキル整備                       |
-| 7   | デプロイ           | Vercel(TanStack Start ターゲット)設定、Actions(ci/ingest)稼働、本番確認                                     |
+## 8. リスクと対応
 
-## 9. リスクと対応
+| リスク                                       | 影響                   | 対応                                                                               |
+| -------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| 開発環境 / Vercel が `fighters.co.jp` 不到達 | その場では取り込めない | 取り込みは GitHub Actions で実行。アプリのビルドは `games.json` のみに依存         |
+| Actions の自動コミットが CI をループ起動     | 無駄実行               | `ci.yml` の `paths-ignore` で `data/games.json` / `data/ingest-report.json` を除外 |
+| 公式サイトの HTML 構造変更                   | パーサ破損             | フィクスチャ + テストで検知、パーサを修正して再取り込み                            |
+| 20 年分の年代差による表記ゆれ                | 絞り込み / 集計が分裂  | 最小限の正規化 + `masters.ts` の別名解決（データ駆動で追加）                       |
+| データ欠損年（2017-2019, 2023 等）           | 集計の空白             | 「データなし（0件）」として明示表示（隠さない）                                    |
+| oxfmt が 0.x で整形挙動が変わる              | 差分ノイズ             | CI で `format:check`                                                               |
 
-| リスク                                           | 影響                                  | 対応                                                                                                |
-| ------------------------------------------------ | ------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| 開発環境/Vercel から `fighters.co.jp` に到達不可 | その場では取り込めない                | 取り込みは GitHub Actions（外部ネット可）で実行。アプリのビルドは `games.json` のみに依存し影響なし |
-| Actions の自動コミットが CI をループ起動         | 無駄実行                              | ingest のコミットは CI 対象パスから除外／`[skip ci]` を付ける等で抑止                               |
-| 公式サイトの HTML 構造変更                       | パーサ破損                            | フィクスチャ＋テストで検知、パーサを修正して再取り込み                                              |
-| 20 年分の年代差による表記ゆれ                    | 絞り込み/集計が分裂                   | 最小限の正規化。distinct 値を確認し、実際に割れた分だけ名寄せ対応表を追加（データ駆動）             |
-| データ欠損年（2017-2019, 2023 等）               | 集計の空白                            | 「データなし（0件）」として明示表示（隠さない）                                                     |
-| oxfmt が 0.x で整形挙動が変わる                  | 差分ノイズ                            | CI で `format:check`。挙動が不安定なら一時的に Prettier へ退避可能                                  |
-| TanStack Start + PWA の統合                      | SW プリキャッシュが噛み合わない可能性 | Start(Vite 基盤)に vite-plugin-pwa を組み込み、フェーズ1で実地検証                                  |
-| TypeScript 7 の周辺ツール互換                    | ビルド/型チェック不具合               | スキャフォールド時に検証、詰まれば TS5 系へ退避                                                     |
+## 9. 未対応の backlog
 
-## 10. 次のアクション
+構造化リファクタで発見したが「後回し可」として本体に含めなかった項目。
+次回関連箇所を触るときに一緒に片付ける。
 
-- **フェーズ 1〜7（scaffold → 完成確認）は完了済み**（§8 参照）。以降の中規模改善は §11 backlog に集約。
-- 次に着手するのは backlog から優先度・関連箇所を選んで拾う運用。実装着手時に各依存の最新版を
-  レジストリで確認してから固定するルール（§1）は維持する。
-
-## 11. 未対応の backlog（Fable レビューの後回し可指摘）
-
-構造化リファクタ（PR1〜PR6・白紙PR-1〜PR-6）で Fable が発見したが「後回し可」として本体には
-含めなかった項目。次回関連箇所を触るときに一緒に片付ける。
-
-- **summarize の switch 網羅性強制**: `domain/stats/summary.ts` の switch に
-  `default: assertNever(...)` を追加すると、`GAME_RESULTS` 拡張時に集計側もコンパイルエラー
-  で追従を強制できる（現状は unknown/scheduled が暗黙 pass）。
-- **useTheme の cycle が stale closure の theme を参照**: 元実装の忠実移植で本 PR 群の範囲では
-  正しいが、`setTheme(t => NEXT[t])` + effect 永続化に直すとより堅牢。
-- **useDialogA11y test の stale onClose ケース**: 現テストは onClose の identity 変化のみ検証。
-  effect 再購読が起きない状況を突く「ref 方式であること」を一意に固定するテストを追加すると
-  実装差の検知度が上がる。
-- **screens 兄弟の依存禁止**: 現状 screens 直下は home 1画面。将来複数 screen になったら
-  `#/screens/**` 一律禁止を features と対称に設定するか判断（screens が唯一の合成層のため
-  兄弟合成は禁じるべき）。
-- **`git log --follow` の履歴断絶**: 大きな書き換えを伴う移動（PR-6 の HomeView 等）は git の
-  rename 検出閾値を下回るので `--follow` が途切れる。関連 PR は「pure git mv コミット + 書き換え
-  コミット」の2段に分けると `--follow` が生きる。squash merge の運用下でも重要な移動なら
-  検討する。
+- **`summarize` の switch 網羅性強制**: `domain/stats/summary.ts` の switch に `default: assertNever(...)` を追加すると、
+  `GAME_RESULTS` 拡張時に集計側もコンパイルエラーで追従を強制できる（現状は `unknown` / `scheduled` が暗黙 pass）。
+- **`useTheme` の `cycle` が stale closure の theme を参照**: 元実装の忠実移植で現状は正しいが、
+  `setTheme(t => NEXT[t])` + effect 永続化に直すとより堅牢。
+- **`useDialogA11y` テストの stale onClose ケース**: 現テストは onClose の identity 変化のみ検証。
+  effect 再購読が起きない状況を突く「ref 方式であること」を一意に固定するテストを追加すると、実装差の検知度が上がる。
+- **screens 兄弟の依存禁止**: 現状 screens 直下は home 1 画面。将来複数 screen になったら
+  `#/screens/**` 一律禁止を features と対称に設定するか判断。
+- **`git log --follow` の履歴断絶**: 大きな書き換えを伴う移動（HomeView 等）は git の rename 検出閾値を下回るので
+  `--follow` が途切れる。関連 PR は「pure `git mv` コミット + 書き換えコミット」の 2 段に分けると `--follow` が生きる。
