@@ -17,7 +17,8 @@
 2. **抽出器を実装**する:
    - `src/ingest/parsers/新抽出器.ts` に、`Document` を受け取って値を返す純関数として書く
    - jsdom は関数の外で構築される前提（`parsers/` の関数は `Document` を受けるだけ・パーサ側で JSDOM を構築しない）
-   - 失敗は throw ではなく Result 型/null で表現（既存 `ParseError` のパターンに合わせる）
+   - **失敗時は `ParseError` を throw する**（既存パターン。`#/ingest/parsing` の `ParseError` を投げると
+     `gameParser.ts` が `try/catch` で束ねて失敗記録に回す）
 3. **テストを隣に**（コロケーション）:
    - `新抽出器.test.ts` にフィクスチャベースのテストを書く
    - 正常系 + 欠損系 + 崩れ系を最低 3 ケース

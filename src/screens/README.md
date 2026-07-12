@@ -23,7 +23,9 @@
 
 ## 依存の許可
 
-- `#/app/**`, `#/features/**`, `#/ui/**`, `#/domain/**`, `#/data/**` を import できる。
+- `#/app/**`, `#/features/**`, `#/ui/**`, `#/domain/**`, `#/data/**` を import できる
+  （`#/data/**` は lint 上は許可。ただし通常は routes から props で降らせる **props-down** を守る。
+  screens で直読みが必要なのは prefetch や defaults の限られたケース）。
 - `#/routes/**` からは import できない（依存の向きは `routes → screens → features`）。
 
 ## 追加時の手順

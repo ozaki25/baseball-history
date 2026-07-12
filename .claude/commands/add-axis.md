@@ -13,7 +13,7 @@
 
 1. `src/domain/stats/axes.ts` を開き、既存 `AXES` の実装例を確認する:
    - `key`（`GroupKey` に足す文字列）
-   - `label`（絞り込み UI 用の日本語）
+   - `label`（クロス集計のタブ表示語。例:「球場別」「相手別」）
    - `columnLabel`（クロス集計テーブルの列見出し）
    - `valueOf(g)`（`Game` から軸の値を取り出す関数。空文字は「該当なし」扱い）
    - `labelOf(value)`（値を表示ラベルへ変換）
