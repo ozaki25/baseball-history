@@ -46,5 +46,3 @@ export function countActiveFilters(filter: GameFilter): number {
 export function isFilterActive(filter: GameFilter): boolean {
   return countActiveFilters(filter) > 0;
 }
-
-// Option / FilterOptions / deriveOptions は options.ts（同 query 内）へ分離した。
