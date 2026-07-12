@@ -50,7 +50,7 @@
   **要素固有・動的な色は inline `style`**（例: `style={{ borderColor: "var(--line)" }}`）で書く。
   クラスと inline を混在させる場合はこの基準に従う（動的値のみ inline）。
 - 勝敗バッジの色はライト/ダーク共通の固定色として `ResultBadge.tsx` に集約（`styles.css` には置かない）。
-- 取り込み専用モジュールは `src/lib/ingest/`（jsdom 依存）に隔離し、`features`/`routes` からの
+- 取り込み専用モジュールは `src/ingest/`（jsdom 依存）に隔離し、`features`/`routes` からの
   import を oxlint（`no-restricted-imports`）で禁止する。クライアントバンドルへの jsdom 混入を防ぐため。
 
 ### ディレクトリ構成と依存規則
@@ -64,11 +64,11 @@ src/
   features/      # 画面単位。{home, filters, stats, games}。薄い表示層
     <feature>/
       *.tsx      # その画面固有のコンポーネント（presentational）
-      model/     # その画面固有の純ロジック（例: home/model/derive）。※query/stats は PR7 で domain へ集約
+      model/     # その画面固有の純ロジック（例: home/model/derive）。※query/stats は後続 PR で domain へ集約
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
-  domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。game, masters, normalize, labels
-  lib/ingest/    # 取り込み専用（jsdom 依存・scripts 専用）。※PR6 で src/ingest/ へ独立予定
-  types/         # 取り込みパーサ用の型（parsing）。※PR6 で ingest/ へ移動予定
+  domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
+                 # game(列挙・型・述語)・masters・normalize・labels
+  ingest/        # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）。parsers/ と parsing.ts を含む
 ```
 
 - **依存方向**: `routes → features → { domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
@@ -77,16 +77,16 @@ src/
   これらは `.oxlintrc.json` の `no-restricted-imports` で機械的に強制する（違反 import を一時挿入して発火確認する運用）。
 - **`src/domain/` の採録基準**: React/router/DOM に依存しない純粋なドメイン（型・参照データ・純ロジック）。全レイヤーの土台で、
   何にも依存しない。個人アプリで i18n しない前提のため、表示語彙（labels）もドメイン語彙としてここに置く。
-- **`src/ui/` の採録基準**: ドメイン・`lib` に依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
+- **`src/ui/` の採録基準**: ドメインに依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
   副作用（localStorage 等）はその部品内で完結させる。domain に依存する部品は `features/` に置く。
 - **container / presentational**: `routes/*` が container（データ取得・URL 検証・`navigate` 結線）、`HomeView` 以下の
   `features/*` は presentational（props で受け、`onNavigate` コールバックで返す）。新しい画面も route に結線だけ置き、
   View は feature に置くこと。ルーター依存を feature に持ち込まない（`HomeView` の `search`/`onNavigate` seam を維持）。
 - ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる（`no-restricted-imports` は文字列マッチのため、相対パスでの
-  境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/lib/ingest/**` を
+  境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/ingest/**` を
   併記して相対パス回避も機械的に捕捉する。feature 間の横断禁止は建築規約であり、相対パス（例 `../filters/...`）は
   import 文字列に `features` を含まず文字列マッチでは原理的に捕捉できないため、上記のエイリアス規約で補完する。
-  境界は `domain/**`（最下層）・`scripts/**`（UI層非依存）・`types/**` にも適用する。テストファイル（`**/*.test.{ts,tsx}`）は
+  境界は `domain/**`（最下層）・`scripts/**`（UI層非依存）にも適用する。テストファイル（`**/*.test.{ts,tsx}`）は
   末尾 override で `no-restricted-imports` を off にして対象外（テストは境界を跨いで検証するのが正当で、クライアント
   バンドルにも含まれないため）。
 - **feature を追加するとき**（例: 5 つ目の feature）: `.oxlintrc.json` の兄弟 feature 禁止リストは negation が効かず
@@ -106,7 +106,7 @@ src/
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
 - **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/features/filters/model/filters.test.ts`、
-  `src/features/games/GameTable.test.tsx`、`src/domain/masters.test.ts`、`src/lib/ingest/parsers/teamExtractor.test.ts` など）。
+  `src/features/games/GameTable.test.tsx`、`src/domain/masters.test.ts`、`src/ingest/parsers/teamExtractor.test.ts` など）。
   実装の移動時にテストが一緒に動き、対応関係が一目で分かる。一方、**共有アセットは `src/tests/` に集約**する:
   `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
   実装の隣ではないため、`__screenshots__` ごと集約。CI ワークフローも `src/tests/vrt` を参照）。

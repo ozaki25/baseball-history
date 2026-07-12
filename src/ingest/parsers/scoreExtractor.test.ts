@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractGameScore } from "#/lib/ingest/parsers/scoreExtractor";
+import { extractGameScore } from "#/ingest/parsers/scoreExtractor";
 import { loadTestDoc, htmlToDoc, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("scoreExtractor", () => {

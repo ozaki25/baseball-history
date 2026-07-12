@@ -1,4 +1,5 @@
 import type { DatesData, Game, GameResult } from "#/domain/game";
+import { DECIDED_RESULTS } from "#/domain/game";
 import { parseGameHTML, looksCancelled } from "./parsers/gameParser";
 import { normalizeText } from "#/domain/normalize";
 import { resolveTeam, resolveStadium } from "#/domain/masters";
@@ -82,7 +83,7 @@ export function unknownGame(id: string, isoDate: string): Game {
   return placeholderGame(id, isoDate, "unknown");
 }
 
-const DECIDED = new Set<GameResult>(["win", "lose", "draw"]);
+const DECIDED = new Set<GameResult>(DECIDED_RESULTS);
 
 export interface IngestDeps {
   /** year, mmdd を受け取り HTML を返す（失敗時は throw）。呼び出し側でレート制御・URL組み立て */

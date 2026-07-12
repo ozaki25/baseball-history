@@ -1,4 +1,4 @@
-import { ParseError } from "#/types/parsing";
+import { ParseError } from "#/ingest/parsing";
 
 /**
  * 試合開催地を抽出

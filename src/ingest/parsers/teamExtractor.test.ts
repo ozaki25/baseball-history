@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractVsTeam, extractMyTeam } from "#/lib/ingest/parsers/teamExtractor";
+import { extractVsTeam, extractMyTeam } from "#/ingest/parsers/teamExtractor";
 import { loadTestDoc, htmlToDoc, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("teamExtractor", () => {

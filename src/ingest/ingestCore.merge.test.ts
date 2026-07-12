@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Game } from "#/domain/game";
-import { mergeIngest } from "#/lib/ingest/ingestCore";
+import { mergeIngest } from "#/ingest/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 const NOW = new Date("2026-07-11T00:00:00Z");

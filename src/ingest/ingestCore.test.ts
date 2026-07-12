@@ -6,7 +6,7 @@ import {
   toIsoDate,
   isFutureDate,
   withResolvedIds,
-} from "#/lib/ingest/ingestCore";
+} from "#/ingest/ingestCore";
 import { loadTestHTML, TEST_PATTERNS } from "#/tests/helpers/testHtmlLoader";
 
 describe("resultFromScores", () => {

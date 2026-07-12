@@ -1,4 +1,4 @@
-import { ParseError } from "#/types/parsing";
+import { ParseError } from "#/ingest/parsing";
 
 /**
  * Document から自チームがホームかビジターかを判定する

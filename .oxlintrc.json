@@ -19,6 +19,38 @@
   },
   "overrides": [
     {
+      "files": ["src/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/ingest/**", "**/ingest/**"],
+                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/ingest/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
+                "message": "ingest は取り込み専用モジュールです。UI 層（features/ui/routes）に依存させないでください。共有ロジックは domain/ へ。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["src/ui/**"],
       "rules": {
         "no-restricted-imports": [
@@ -26,8 +58,14 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/domain/**", "#/lib/**", "#/routes/**", "#/types/**"],
-                "message": "ui/ はドメイン非依存の再利用UIです。domain・lib・features に依存する部品は features/ に置いてください。"
+                "group": [
+                  "#/features/**",
+                  "#/domain/**",
+                  "#/routes/**",
+                  "#/ingest/**",
+                  "**/ingest/**"
+                ],
+                "message": "ui/ はドメイン非依存の再利用UIです。domain・features・ingest に依存する部品は features/ に置いてください（相対パスでの ingest 回避も禁止）。"
               }
             ]
           }
@@ -42,31 +80,8 @@
           {
             "patterns": [
               {
-                "group": [
-                  "#/features/**",
-                  "#/ui/**",
-                  "#/routes/**",
-                  "#/lib/**",
-                  "**/lib/ingest/**",
-                  "#/types/**"
-                ],
-                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest/types に依存させないでください（相対パス回避も禁止）。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/lib/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
-                "message": "lib は最下層の共有モジュールです。features/ui/routes に依存させないでください。"
+                "group": ["#/features/**", "#/ui/**", "#/routes/**", "#/ingest/**", "**/ingest/**"],
+                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest に依存させないでください（相対パス回避も禁止）。"
               }
             ]
           }
@@ -81,7 +96,7 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               }
             ]
@@ -97,7 +112,7 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
@@ -117,7 +132,7 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
@@ -141,7 +156,7 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
@@ -165,7 +180,7 @@
           {
             "patterns": [
               {
-                "group": ["#/lib/ingest/*", "#/lib/ingest/**", "**/lib/ingest/**"],
+                "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
@@ -191,22 +206,6 @@
               {
                 "group": ["#/features/**", "#/ui/**", "#/routes/**"],
                 "message": "scripts(ビルド/取り込み)はUI層に依存しないでください。共有ロジックは domain/ へ置いてください。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/types/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/features/**", "#/ui/**", "#/lib/**", "#/routes/**"],
-                "message": "types は最下層のドメイン型です。features/ui/lib/routes に依存させないでください。"
               }
             ]
           }
