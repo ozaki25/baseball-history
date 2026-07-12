@@ -106,9 +106,10 @@ export interface IngestResult {
  * - dateOnly 指定日は最優先で unknown(詳細不明)にする（取得しない／誤った既存も上書き）。
  * - 確定(win/lose/draw)は再取得せず保持（ID は再解決）。scheduled は再取得。
  * - 未来日は scheduled。過去日は取得→解析。
- * - 取得失敗・解析失敗は ingest-report に記録（games.json には入れない）。
- *   中止試合は「観戦していない」扱いのため games.json に一切載せない。
- *   万一残っていた既存レコードは、取得失敗のフォールバックとしても保持しない。
+ * - 取得失敗・解析失敗は failures に記録。既存レコードがあれば消失防止のため保持する
+ *   （その結果は次回実行で再取得される）。既存がなければ games には入れない。
+ * - 中止試合は「観戦していない」扱いのため dates.json に載せない前提。万一 dates に紛れた
+ *   場合は上記の解析失敗経路（＝ failures 記録 + 新規なら games に入れない）で扱う。
  */
 export async function mergeIngest(
   dates: DatesData,
