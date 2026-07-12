@@ -61,10 +61,10 @@ framework 非依存の中核を `domain/` に集約している:
 ```
 src/
   routes/        # ルーター結線（container）。file-based。data import / validateSearch / navigate のみ
-  features/      # 画面単位。{home, filters, stats, games}。薄い表示層
-    <feature>/
-      *.tsx      # その画面固有のコンポーネント（presentational）
-      # (model/ 現状無し。共有ドメインロジックは domain/{query,stats} に集約済み)
+  app/           # アプリ外殻。AppShell(ヘッダ・タイトル・ThemeToggle・幅制約)。画面追加時も複製されない
+  screens/       # 画面合成層（feature 横断はここのみ）。routes → screens → features
+  features/      # 画面部品（薄い表示層・兄弟 feature 依存禁止・共有は domain へ）
+                 # {filters, stats, games, scheduled}
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
   domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
                  # game(列挙・型・述語)・masters・normalize・labels・query/・stats/
@@ -73,11 +73,17 @@ src/
   ingest/        # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）。parsers/ と parsing.ts を含む
 ```
 
-- **依存方向**: `routes → { data, features } → { domain, ui }`、`ingest → domain`、`scripts → { ingest, domain }`。
-  `data/*.json` の直読みは `src/data/**` のみに機械的に制限（oxlint）。画面が増えても JSON 直読みが複製されない。
-  `domain`/`ui` は最下層で上位（features/routes/ingest）へ依存しない。`features/home` は画面合成層として他 feature の
-  **View** を横断 import してよいが、**兄弟 feature 相互のロジック import は禁止**（共有ロジックは `domain/` へ）。
-  これらは `.oxlintrc.json` の `no-restricted-imports` で機械的に強制する（違反 import を一時挿入して発火確認する運用）。
+- **依存方向**（一方向・すべて oxlint で機械強制）:
+  - `routes → { screens, data }` — routes は URL 結線と data 取得のみ、View は screens に委譲
+  - `screens → { app, features, domain, ui, data }` — 画面合成層。**feature 横断はここのみ**
+  - `app → { ui }` — アプリ外殻(AppShell 等)は最小依存
+  - `features → { domain, ui }` — 画面部品。**兄弟 feature 依存禁止・data 直依存禁止**
+  - `data → { domain }` — JSON 境界の形状ガード
+  - `ui → ∅` / `domain → ∅` — 最下層。上位のいかなる層にも依存しない
+  - `ingest → domain` / `scripts → { ingest, domain }`
+- **feature 兄弟の依存は一律禁止**: `features/**` から `#/features/**` の import は禁止（screens/ が唯一の合成層）。
+  従来の O(n²) 明示列挙が消え、feature 追加時に oxlint の編集は不要になった。
+  違反 import を一時挿入して発火確認する運用は継続する（境界の全ルールに適用）。
 - **`src/domain/` の採録基準**: React/router/DOM に依存しない純粋なドメイン（型・参照データ・純ロジック）。全レイヤーの土台で、
   何にも依存しない。個人アプリで i18n しない前提のため、表示語彙（labels）もドメイン語彙としてここに置く。
 - **`src/ui/` の採録基準**: ドメインに依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
@@ -92,9 +98,10 @@ src/
   境界は `domain/**`（最下層）・`scripts/**`（UI層非依存）にも適用する。テストファイル（`**/*.test.{ts,tsx}`）は
   末尾 override で `no-restricted-imports` を off にして対象外（テストは境界を跨いで検証するのが正当で、クライアント
   バンドルにも含まれないため）。
-- **feature を追加するとき**（例: 5 つ目の feature）: `.oxlintrc.json` の兄弟 feature 禁止リストは negation が効かず
-  明示列挙が必要なため、既存の各 feature override に新 feature を1行ずつ追記する（追記漏れは「違反 import を一時挿入して
-  oxlint が落ちる」ことで検証する）。
+- **feature を追加するとき**: 兄弟一律禁止（`#/features/**`）は既にワイルドカードで縮約されているため、`.oxlintrc.json` の
+  編集は**原則不要**。新 feature 用のディレクトリを作れば `src/features/**` override が自動適用される。相対パス回避は
+  文字列マッチでは原理的に捕捉できないため（例: `../filters/...` に `features` が含まれない）、ディレクトリ跨ぎの
+  import は必ず `#/` エイリアスを用いる規約で補完する（境界の限界として明記）。
 
 ## 3. テスト戦略
 

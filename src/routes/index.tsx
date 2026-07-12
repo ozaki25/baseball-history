@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ALL_GAMES, ALL_YEARS } from "#/data/games";
 import { validateGameSearch } from "#/domain/query/search";
-import { HomeView } from "#/features/home/HomeView";
+import { HomeView } from "#/screens/home/HomeView";
 
 export const Route = createFileRoute("/")({
   validateSearch: validateGameSearch,

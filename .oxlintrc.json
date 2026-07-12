@@ -46,8 +46,16 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/ui/**", "#/routes/**", "#/ingest/**", "**/ingest/**"],
-                "message": "data は最下層のビルド時ゲートウェイです。UI 層・ingest には依存させないでください（JSON 直読みは data 内では許可）。"
+                "group": [
+                  "#/features/**",
+                  "#/screens/**",
+                  "#/app/**",
+                  "#/ui/**",
+                  "#/routes/**",
+                  "#/ingest/**",
+                  "**/ingest/**"
+                ],
+                "message": "data は最下層のビルド時ゲートウェイです。UI 層(features/screens/app/ui/routes)・ingest には依存させないでください（JSON 直読みは data 内では許可）。"
               }
             ]
           }
@@ -62,8 +70,15 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
-                "message": "ingest は取り込み専用モジュールです。UI 層（features/ui/routes）に依存させないでください。共有ロジックは domain/ へ。"
+                "group": [
+                  "#/features/**",
+                  "#/screens/**",
+                  "#/app/**",
+                  "#/ui/**",
+                  "#/routes/**",
+                  "#/data/**"
+                ],
+                "message": "ingest は取り込み専用モジュールです。UI 層(features/screens/app/ui/routes)・data に依存させないでください。共有ロジックは domain/ へ。"
               }
             ]
           }
@@ -80,14 +95,17 @@
               {
                 "group": [
                   "#/features/**",
+                  "#/screens/**",
+                  "#/app/**",
                   "#/domain/**",
                   "#/routes/**",
+                  "#/data/**",
                   "#/ingest/**",
                   "**/ingest/**",
                   "**/data/**/*.json",
                   "**/data/**/*.json?*"
                 ],
-                "message": "ui/ はドメイン非依存の再利用UIです。domain・features・ingest・data(JSON直読み) に依存する部品は features/data に置いてください（相対パス/クエリ回避も禁止）。"
+                "message": "ui/ はドメイン非依存の再利用UIです。domain・data・features・screens・app・routes・ingest に依存する部品は features/ に置いてください（相対パス/クエリ回避も禁止）。"
               }
             ]
           }
@@ -104,14 +122,17 @@
               {
                 "group": [
                   "#/features/**",
+                  "#/screens/**",
+                  "#/app/**",
                   "#/ui/**",
                   "#/routes/**",
+                  "#/data/**",
                   "#/ingest/**",
                   "**/ingest/**",
                   "**/data/**/*.json",
                   "**/data/**/*.json?*"
                 ],
-                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。features/ui/routes/ingest/data(JSON直読み) に依存させないでください（相対パス/クエリ回避も禁止）。"
+                "message": "domain は framework 非依存の最下層（型・参照データ・純ロジック）です。上位のいかなる層(features/screens/app/ui/routes/data/ingest)にも依存させないでください（相対パス/クエリ回避も禁止）。"
               }
             ]
           }
@@ -139,7 +160,32 @@
       }
     },
     {
-      "files": ["src/features/home/**"],
+      "files": ["src/app/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "#/features/**",
+                  "#/screens/**",
+                  "#/routes/**",
+                  "#/data/**",
+                  "#/ingest/**",
+                  "**/ingest/**",
+                  "**/data/**/*.json",
+                  "**/data/**/*.json?*"
+                ],
+                "message": "app/ はアプリ全体の外殻(AppShell 等)。features/screens/routes/data/ingest には依存させないでください。"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/screens/**"],
       "rules": {
         "no-restricted-imports": [
           "error",
@@ -151,7 +197,7 @@
               },
               {
                 "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+                "message": "screens は routes に依存させないでください（依存は routes → screens → features の一方向）。"
               },
               {
                 "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
@@ -163,7 +209,7 @@
       }
     },
     {
-      "files": ["src/features/filters/**"],
+      "files": ["src/features/**"],
       "rules": {
         "no-restricted-imports": [
           "error",
@@ -174,72 +220,20 @@
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
               },
               {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+                "group": ["#/routes/**", "#/screens/**", "#/app/**"],
+                "message": "features は routes/screens/app に依存させないでください（依存は routes → app/screens → features の一方向）。"
               },
               {
                 "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
                 "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               },
               {
-                "group": ["#/features/home/**", "#/features/stats/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/features/stats/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/ingest/**", "**/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
+                "group": ["#/data/**"],
+                "message": "features は data ゲートウェイに直接依存させないでください（consuming は screens/routes の役割）。"
               },
               {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
-              },
-              {
-                "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
-                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
-              },
-              {
-                "group": ["#/features/home/**", "#/features/filters/**", "#/features/games/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "files": ["src/features/games/**"],
-      "rules": {
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["#/ingest/**", "**/ingest/**"],
-                "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
-              },
-              {
-                "group": ["#/routes/**"],
-                "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
-              },
-              {
-                "group": ["**/data/**/*.json", "**/data/**/*.json?*"],
-                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
-              },
-              {
-                "group": ["#/features/home/**", "#/features/filters/**", "#/features/stats/**"],
-                "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
+                "group": ["#/features/**"],
+                "message": "feature 兄弟の import は禁止（同一 feature 内は相対 import で完結）。画面横断の合成は screens/ の役割・共有ロジックは domain/ へ。"
               }
             ]
           }
@@ -254,8 +248,15 @@
           {
             "patterns": [
               {
-                "group": ["#/features/**", "#/ui/**", "#/routes/**"],
-                "message": "scripts(ビルド/取り込み)はUI層に依存しないでください。共有ロジックは domain/ へ置いてください。"
+                "group": [
+                  "#/features/**",
+                  "#/screens/**",
+                  "#/app/**",
+                  "#/ui/**",
+                  "#/routes/**",
+                  "#/data/**"
+                ],
+                "message": "scripts(ビルド/取り込み)はUI層・dataゲートウェイに依存しないでください。共有ロジックは domain/ へ置いてください。"
               }
             ]
           }
