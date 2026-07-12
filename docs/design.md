@@ -84,6 +84,9 @@ baseball-history/
 │  │     ├─ summary.ts    # Summary 型・summarize・groupBy（純集計）
 │  │     ├─ axes.ts       # 軸レジストリ AXES（key/label/columnLabel/valueOf/labelOf）+ AXIS_ORDER。単一定義元
 │  │     └─ rows.ts       # 表示行 buildRows（空白年パディング等）・rowLabel
+│  ├─ data/               # ビルド時データゲートウェイ（JSON 境界の形状ガード）
+│  │  └─ games.ts         # ALL_GAMES / ALL_YEARS / GAMES_GENERATED_AT。JSON 直読みはここのみ
+                          # の特権(oxlint で強制)。SSG につき不正データはビルド時 fail-fast。
 │  ├─ ingest/             # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
 │  │  ├─ ingestCore.ts    # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
 │  │  ├─ parsing.ts       # 取り込みパーサ用の型（GameInfo / ParseError）

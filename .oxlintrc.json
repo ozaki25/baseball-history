@@ -98,6 +98,10 @@
               {
                 "group": ["#/ingest/**", "**/ingest/**"],
                 "message": "ingest系(jsdom依存)はクライアントから import しないでください。取り込み専用モジュールです（相対パス回避も禁止）。"
+              },
+              {
+                "group": ["**/data/*.json"],
+                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               }
             ]
           }
@@ -118,6 +122,10 @@
               {
                 "group": ["#/routes/**"],
                 "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["**/data/*.json"],
+                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               }
             ]
           }
@@ -138,6 +146,10 @@
               {
                 "group": ["#/routes/**"],
                 "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["**/data/*.json"],
+                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               },
               {
                 "group": ["#/features/home/**", "#/features/stats/**", "#/features/games/**"],
@@ -164,6 +176,10 @@
                 "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
               },
               {
+                "group": ["**/data/*.json"],
+                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
+              },
+              {
                 "group": ["#/features/home/**", "#/features/filters/**", "#/features/games/**"],
                 "message": "feature 間の横断依存は禁止です（画面合成は features/home のみが担います）。共有ロジックは domain/ へ。"
               }
@@ -186,6 +202,10 @@
               {
                 "group": ["#/routes/**"],
                 "message": "features は routes に依存させないでください（依存は routes → features の一方向）。"
+              },
+              {
+                "group": ["**/data/*.json"],
+                "message": "data/*.json の直読みは src/data/** ゲートウェイのみの特権です。ALL_GAMES/ALL_YEARS を import してください。"
               },
               {
                 "group": ["#/features/home/**", "#/features/filters/**", "#/features/stats/**"],
