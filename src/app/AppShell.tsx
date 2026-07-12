@@ -3,8 +3,10 @@ import { ThemeToggle } from "#/ui/ThemeToggle";
 
 /**
  * アプリ全体の外殻（画面横断のヘッダ・レイアウト枠）。
- * 現状はホーム1画面だが、routes → AppShell → 各 screen という構造にすることで、
+ * 現状は screens/home の HomeView が自身を <AppShell>{...}</AppShell> で包む形。
  * 画面追加時にヘッダ・タイトル・ThemeToggle・幅制約を各 screen が複製せずに済む。
+ * 2 画面目が来た時点で __root.tsx への昇格（screens は AppShell を包まず children のみ返す）を
+ * 検討する。今 __root へ移すと VRT baseline を更新せねばならないため、必要時まで延期する。
  * DOM 出力は元の HomeView 外殻とバイト同一を維持する（VRT baseline を無更新で通す）。
  */
 export function AppShell({ children }: { children: ReactNode }) {

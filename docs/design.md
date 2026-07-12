@@ -61,7 +61,7 @@ baseball-history/
 │  └─ add-date.mjs        # 観戦日追加（バリデーション・ソート。コマンドから呼ぶ）
 ├─ src/
 │  ├─ routes/             # TanStack Start ファイルベースルーティング（container）
-│  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
+│  │  ├─ __root.tsx       # ルートレイアウト（テーマ初期化スクリプト / SW 登録。Header は AppShell が担当）
 │  │  └─ index.tsx        # データ取得・URL検証・navigate 結線 → HomeView へ委譲
 │  ├─ app/                # アプリ全体の外殻。AppShell(ヘッダ・タイトル・ThemeToggle・幅制約)
 │  ├─ screens/            # 画面合成層（feature 横断はここのみ）。routes → screens → features
