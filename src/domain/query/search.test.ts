@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  validateGameSearch,
-  searchToFilter,
-  filterToSearch,
-} from "#/features/filters/model/search";
-import { emptyFilter, type GameFilter } from "#/features/filters/model/filters";
+import { validateGameSearch, searchToFilter, filterToSearch } from "#/domain/query/search";
+import { emptyFilter, type GameFilter } from "#/domain/query/filter";
 import { resolveStadium, resolveTeam } from "#/domain/masters";
 
 describe("validateGameSearch", () => {

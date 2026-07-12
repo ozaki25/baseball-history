@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { partitionGames } from "./derive";
-import { emptyFilter } from "#/features/filters/model/filters";
+import { partitionGames } from "./partition";
+import { emptyFilter } from "#/domain/query/filter";
 import { makeGame } from "#/tests/helpers/makeGame";
 
 const games = [

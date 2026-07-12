@@ -1,6 +1,6 @@
 import type { Game } from "#/domain/game";
 import { isAttended, isScheduled, yearOf } from "#/domain/game";
-import { applyFilters, type GameFilter } from "#/features/filters/model/filters";
+import { applyFilters, type GameFilter } from "#/domain/query/filter";
 
 /**
  * ホーム画面の表示用に試合を「観戦済み(attended)」と「観戦予定(scheduled)」に分ける。

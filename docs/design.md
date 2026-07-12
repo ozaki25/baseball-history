@@ -63,10 +63,10 @@ baseball-history/
 │  ├─ routes/             # TanStack Start ファイルベースルーティング（container）
 │  │  ├─ __root.tsx       # ルートレイアウト（Header / テーマ初期化 / SW 登録）
 │  │  └─ index.tsx        # データ取得・URL検証・navigate 結線 → HomeView へ委譲
-│  ├─ features/           # 画面単位（依存は routes → features → {domain,ui} の一方向）
-│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList + model/derive.ts（予定の別枠表示ポリシー）
-│  │  ├─ filters/         # Filters / YearFilter + model/{filters,search}.ts（絞り込み・URL相互変換）※PR7でdomain/queryへ
-│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（集計・scheduled除外）※PR7でdomainへ
+│  ├─ features/           # 画面単位（依存は routes → features → {domain,ui} の一方向・薄い表示層）
+│  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
+│  │  ├─ filters/         # Filters / YearFilter（表示部品のみ・ロジックは domain/query）
+│  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（※後続 PR で domain/stats へ集約）
 │  │  └─ games/           # GameTable / ResultBadge
 │  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
 │  ├─ domain/             # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）
@@ -74,7 +74,12 @@ baseball-history/
 │  │  │                   # 述語(isScheduled/isAttended)・yearOf。単一定義元。
 │  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
 │  │  ├─ labels.ts        # ドメイン語彙（表示ラベル・日付/スコア整形・勝率整形・取得元URL。全feature/scripts共有）
-│  │  └─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
+│  │  ├─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
+│  │  └─ query/           # 絞り込み・URL・観戦/予定分割（画面横断のドメインロジック）
+│  │     ├─ filter.ts     # GameFilter 型・applyFilters・countActiveFilters・emptyFilter
+│  │     ├─ search.ts     # GameSearch(URL) 型・validateGameSearch・searchToFilter/filterToSearch
+│  │     ├─ options.ts    # deriveOptions（絞り込み選択肢を実データから生成）
+│  │     └─ partition.ts  # partitionGames（フィルタ適用結果を attended/scheduled に分割）
 │  ├─ ingest/             # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
 │  │  ├─ ingestCore.ts    # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
 │  │  ├─ parsing.ts       # 取り込みパーサ用の型（GameInfo / ParseError）

@@ -64,7 +64,7 @@ src/
   features/      # 画面単位。{home, filters, stats, games}。薄い表示層
     <feature>/
       *.tsx      # その画面固有のコンポーネント（presentational）
-      model/     # その画面固有の純ロジック（例: home/model/derive）。※query/stats は後続 PR で domain へ集約
+      model/     # その画面固有の純ロジック（現状 features/*/model は空。stats は後続 PR で domain へ集約）
   ui/            # ドメイン非依存の再利用UI（Chip, ThemeToggle, use*）。hooks も可
   domain/        # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）。
                  # game(列挙・型・述語)・masters・normalize・labels
@@ -105,7 +105,7 @@ src/
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
 | 視覚回帰(VRT)  | トップ画面（モバイル/デスクトップ）ほか主要ビュー                                                     | Vitest Browser Mode + `toMatchScreenshot`。標準環境(Docker)で baseline 比較       |
 
-- **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/features/filters/model/filters.test.ts`、
+- **テストの配置（コロケーション）**: unit/コンポーネントのテストは実装の隣に置く（`src/domain/query/filter.test.ts`、
   `src/features/games/GameTable.test.tsx`、`src/domain/masters.test.ts`、`src/ingest/parsers/teamExtractor.test.ts` など）。
   実装の移動時にテストが一緒に動き、対応関係が一目で分かる。一方、**共有アセットは `src/tests/` に集約**する:
   `helpers/`（`makeGame` 等）・`fixtures/`（パーサ用 HTML）・`setup.ts`/`setup.browser.ts`・`vrt/`（VRT は画面単位で
