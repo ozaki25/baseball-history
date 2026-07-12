@@ -25,11 +25,14 @@ function toggle<T>(list: T[], value: T): T[] {
 export function Filters({
   filter,
   options,
+  defaultYear,
   onChange,
   onReset,
 }: {
   filter: GameFilter;
   options: FilterOptions;
+  /** デフォルト状態の年（active 判定で「デフォルト = 未指定と等価」を認識するため）。 */
+  defaultYear?: string;
   onChange: (next: GameFilter) => void;
   /** 「条件をクリア」「リセット」で呼ばれる。デフォルト状態（URL 空）へ戻す責務は呼び出し側が持つ。 */
   onReset: () => void;
@@ -47,8 +50,8 @@ export function Filters({
   // 初期フォーカス移動・Escape で閉じる・Tab のフォーカストラップは汎用フックに委譲（DOM 不変）。
   useDialogA11y({ open, onClose: close, dialogRef, initialFocusRef: closeRef });
 
-  const active = isFilterActive(filter);
-  const activeCount = countActiveFilters(filter);
+  const active = isFilterActive(filter, defaultYear);
+  const activeCount = countActiveFilters(filter, defaultYear);
 
   // 表示語は HOME_AWAY_LABEL を単一定義元にする（重複ハードコードを解消）。
   const homeAwayOptions: { value: HomeAway | "all"; label: string }[] = [

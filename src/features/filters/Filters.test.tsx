@@ -18,11 +18,19 @@ const OPTIONS: FilterOptions = {
   ],
 };
 
-function setup(filter: GameFilter = emptyFilter) {
+function setup(filter: GameFilter = emptyFilter, defaultYear?: string) {
   const onChange = vi.fn();
   const onReset = vi.fn();
   const user = userEvent.setup();
-  render(<Filters filter={filter} options={OPTIONS} onChange={onChange} onReset={onReset} />);
+  render(
+    <Filters
+      filter={filter}
+      options={OPTIONS}
+      defaultYear={defaultYear}
+      onChange={onChange}
+      onReset={onReset}
+    />,
+  );
   return { onChange, onReset, user };
 }
 
@@ -181,5 +189,11 @@ describe("Filters", () => {
     // stadiums1 + opponents1 + homeAway1 = 3。バッジはトリガーの名前に含まれる。
     expect(screen.getByRole("button", { name: /絞り込み\s*3/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "条件をクリア" })).toBeInTheDocument();
+  });
+
+  it("filter.year === defaultYear（初期状態）はバッジも「条件をクリア」も出さない", () => {
+    setup({ ...emptyFilter, year: "2026" }, "2026");
+    expect(screen.queryByRole("button", { name: /絞り込み\s*\d/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "条件をクリア" })).not.toBeInTheDocument();
   });
 });

@@ -12,8 +12,8 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  // URL に year が無いときの既定年（＝今シーズン）。SSG のビルド時ではなく実行時に評価する
-  // ため、コンポーネント側で pickDefaultYear を呼ぶ（`new Date()` は user のセッションを基準に）。
+  // URL に year が無いときの既定年（＝今シーズン）。render 時に `new Date()` を評価するので、
+  // 深夜 0 時をまたいで開き直したときも正しい「今年」に追従する。
   const defaultYear = pickDefaultYear(ALL_YEARS);
   return (
     <HomeView

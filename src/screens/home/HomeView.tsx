@@ -52,7 +52,13 @@ export function HomeView({
 
       <StatsSummary games={attended} />
 
-      <Filters filter={filter} options={options} onChange={setFilter} onReset={resetFilters} />
+      <Filters
+        filter={filter}
+        options={options}
+        defaultYear={defaultYear}
+        onChange={setFilter}
+        onReset={resetFilters}
+      />
 
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold text-[var(--muted)]">

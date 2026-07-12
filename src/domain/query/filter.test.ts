@@ -109,4 +109,19 @@ describe("countActiveFilters / isFilterActive", () => {
       expect(isFilterActive(f)).toBe(countActiveFilters(f) > 0);
     }
   });
+
+  it("defaultYear と一致する year は active としない（URL 未指定と同義）", () => {
+    // filter.year === defaultYear → active に数えない
+    expect(countActiveFilters({ ...emptyFilter, year: "2026" }, "2026")).toBe(0);
+    expect(isFilterActive({ ...emptyFilter, year: "2026" }, "2026")).toBe(false);
+    // filter.year === "all"（明示的にすべて）は defaultYear と異なるので active
+    expect(countActiveFilters({ ...emptyFilter, year: "all" }, "2026")).toBe(1);
+    // filter.year が defaultYear と異なる年 → active
+    expect(countActiveFilters({ ...emptyFilter, year: "2013" }, "2026")).toBe(1);
+  });
+
+  it("defaultYear 未指定時は emptyFilter.year='all' が non-active（従来仕様維持）", () => {
+    expect(countActiveFilters(emptyFilter)).toBe(0);
+    expect(countActiveFilters(emptyFilter, undefined)).toBe(0);
+  });
 });
