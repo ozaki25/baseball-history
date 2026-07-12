@@ -15,8 +15,12 @@ describe("GAME_RESULTS / ATTENDED_RESULTS", () => {
     expect(all.sort()).toEqual(["cancelled", "draw", "lose", "scheduled", "unknown", "win"].sort());
   });
 
+  it("ATTENDED_RESULTS は勝敗チップ表示順・URL 受理順として順序ごと固定（load-bearing）", () => {
+    // 順序を並び替えると Filters のチップ表示が変わるため、順序込みで固定する。
+    expect([...ATTENDED_RESULTS]).toEqual(["win", "lose", "draw", "cancelled"]);
+  });
+
   it("ATTENDED_RESULTS は GAME_RESULTS の部分集合で scheduled/unknown を除く", () => {
-    expect([...ATTENDED_RESULTS].sort()).toEqual(["cancelled", "draw", "lose", "win"].sort());
     for (const r of ATTENDED_RESULTS) {
       expect(GAME_RESULTS).toContain(r);
       expect(r).not.toBe("scheduled");
