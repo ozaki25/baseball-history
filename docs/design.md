@@ -206,6 +206,20 @@ interface GamesData {
 - URL 検証は `domain/query/search.ts` の手書きサニタイズ（Zod 等の依存を増やさない）。
 - 「URL が状態のソース」→ ブックマーク・共有・戻る/進むが自然に機能。
 
+### year パラメータの3値 semantic
+
+`year` は URL 上で 3 通りの状態を取る:
+
+| URL         | filter.year   | 意味                                      |
+| ----------- | ------------- | ----------------------------------------- |
+| （未指定）  | `defaultYear` | デフォルト = 現在年（無ければ観戦最新年） |
+| `year=all`  | `"all"`       | 明示的に全年を表示                        |
+| `year=YYYY` | `"YYYY"`      | その年で絞り込み                          |
+
+`defaultYear` は `domain/query/defaults.ts::pickDefaultYear(allYears, now)` で決定
+（`routes/index.tsx` で計算して `HomeView` に props で渡す）。「リセット」操作は URL を空にすることで
+デフォルト状態に戻す。
+
 ## 6. 画面設計（モバイルファースト）
 
 **スマホがメイン端末**。モバイル 1 カラムで設計し、PC は広い画面を活かす拡張として上乗せする。

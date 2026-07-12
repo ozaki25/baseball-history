@@ -20,9 +20,10 @@ const OPTIONS: FilterOptions = {
 
 function setup(filter: GameFilter = emptyFilter) {
   const onChange = vi.fn();
+  const onReset = vi.fn();
   const user = userEvent.setup();
-  render(<Filters filter={filter} options={OPTIONS} onChange={onChange} />);
-  return { onChange, user };
+  render(<Filters filter={filter} options={OPTIONS} onChange={onChange} onReset={onReset} />);
+  return { onChange, onReset, user };
 }
 
 async function openDialog(user: ReturnType<typeof userEvent.setup>) {
@@ -109,11 +110,19 @@ describe("Filters", () => {
     expect(within(dialog).queryByRole("button", { name: "詳細不明" })).not.toBeInTheDocument();
   });
 
-  it("リセットボタンで emptyFilter を渡す", async () => {
-    const { onChange, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
+  it("リセットボタンで onReset を呼ぶ（onChange は呼ばない）", async () => {
+    const { onChange, onReset, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
     const dialog = await openDialog(user);
     await user.click(within(dialog).getByRole("button", { name: "リセット" }));
-    expect(onChange).toHaveBeenCalledExactlyOnceWith(emptyFilter);
+    expect(onReset).toHaveBeenCalledOnce();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("条件をクリア(トリガー横)でも onReset を呼ぶ", async () => {
+    const { onChange, onReset, user } = setup({ ...emptyFilter, stadiums: ["escon"] });
+    await user.click(screen.getByRole("button", { name: "条件をクリア" }));
+    expect(onReset).toHaveBeenCalledOnce();
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it("Escape でダイアログを閉じ、トリガーへフォーカスを返す", async () => {
