@@ -49,7 +49,7 @@
 > Router は Start に内蔵。将来的に `@tanstack/react-query` / `react-form` を足す余地はあるが、
 > 初期スコープ（静的データ・編集 UI なし）では不要。
 
-## 3. ディレクトリ構成（目標）
+## 3. ディレクトリ構成（現状）
 
 ```
 baseball-history/
@@ -96,7 +96,7 @@ baseball-history/
 │  │  ├─ parsers/         # 公式サイト HTML パーサ（Document を受け取る抽出器群）
 │  │  └─ sleepUtils.ts    # レート制御
 │  └─ styles.css          # Tailwind エントリ・デザイントークン（ライト/ダーク）
-├─ src/tests/             # Vitest（lib 単体・パーサ・コンポーネント[jsdom]）
+├─ src/tests/             # 共有アセット（helpers/fixtures/setup*.ts/vrt）。unit/component テストは実装隣に
 ├─ public/                # PWA アイコン・manifest・sw.js
 ├─ .claude/commands/add-date.md  # 観戦日追加コマンド（Claude 経由の登録口）
 ├─ .github/workflows/     # ci.yml / ingest.yml
@@ -128,8 +128,10 @@ interface Game {
 }
 ```
 
-> **列挙の単一定義元**: `GAME_RESULTS` / `ATTENDED_RESULTS`(勝敗軸に載る4値) / `DECIDED_RESULTS`(勝敗確定3値) を
-> `domain/game.ts` で `as const satisfies readonly GameResult[]` として定義。値追加漏れはコンパイルエラー化される。
+> **列挙の単一定義元**: `domain/game.ts` に `GAME_RESULTS`（`as const`。ここから `GameResult` 型を導出）、
+> `ATTENDED_RESULTS`（勝敗軸に載る4値）と `DECIDED_RESULTS`（勝敗確定3値）を
+> `as const satisfies readonly GameResult[]` で定義。集計軸も `domain/stats/axes.ts` の
+> `AXES: Record<GroupKey, Axis>` + `AXIS_ORDER` に単一定義元化し、値追加漏れをコンパイルエラー化する。
 >
 > **date-only.json**: 現行サイトで取得できない古い試合を「詳細不明(unknown)」として日付のみ残す。
 > ingest は該当日を fetch せず `unknown` で保存。集計は観戦数に含めるが勝敗軸には数えない。
@@ -294,15 +296,19 @@ npm run ingest -- --force # 全再取得
 npm run ingest -- --year 2026
 ```
 
-## 8. 集計ロジック（`stats.ts`）
+## 8. 集計ロジック（`domain/stats/`）
 
 - 純関数として実装（入力: `Game[]` → 出力: 集計オブジェクト）。テスト容易。
 - **`scheduled`（観戦予定）は集計対象から除外**（実績ではないため）。
-- 提供:
-  - `summarize(games)` → `{ total, win, lose, draw, cancelled, winRate }`
-    （勝率は中止・予定を除いた分母で算出）
-  - `groupBy(games, key)` → 軸別（球場/相手/年度/HV）の集計配列
-- 表示側は集計結果を受け取るだけ（ロジックと描画を分離）。
+- **`unknown`（詳細不明）** は観戦数(`attended`)に含めるが、勝率の分母および相手/球場/主催の
+  軸別集計には数えない（値が空のため自然に除外。年度別軸には観戦数として現れる）。
+- 提供（`domain/stats/*` に分離）:
+  - `summary.ts`: `summarize(games): Summary` → `{ attended, win, lose, draw, cancelled, winRate }`
+    （勝率は中止・予定・詳細不明を除いた分母で算出。該当なしは `null`）
+  - `summary.ts`: `groupBy(games, key)` → 軸別集計配列（値抽出は `AXES[key].valueOf` 経由）
+  - `axes.ts`: **軸レジストリ** `AXES` と `AXIS_ORDER`（軸追加時の同期漏れをコンパイルエラー化）
+  - `rows.ts`: `buildRows` / `rowLabel`（表示行の空白年パディング等）
+- 表示側は集計結果と AXES メタデータを受け取るだけ（ロジックと描画を分離）。
 
 ## 9. PWA 設計
 
@@ -328,7 +334,7 @@ npm run ingest -- --year 2026
 
 ## 11. 旧資産の撤去方針
 
-- 削除: `next.config.ts`・Next 関連依存・`src/app/*`・旧 `HomeClient` 等・旧設計ドキュメント
+- 削除: `next.config.ts`・Next 関連依存・旧 Next.js App Router の `src/app/*`（現在の `src/app/AppShell.tsx` とは無関係）・旧 `HomeClient` 等・旧設計ドキュメント
   （`PROJECT_REQUIREMENTS.md` / `FUNCTIONAL_DESIGN.md` / `DETAILED_DESIGN.md`）。
 - 流用: `src/lib/parsers/*`（→ 現 `src/ingest/parsers/`）・`src/tests/fixtures/*`・`scripts/add-date.mjs`・`COLOR_PALETTE.md`。
 - 置換: ルーティング/エントリ（Next App Router → TanStack Start）、パッケージ管理（npm → pnpm）、Lint/Format（ESLint/Prettier → oxlint/oxfmt）。

@@ -14,20 +14,24 @@
 > **バージョン方針**: 依存は実装着手時に `npm view <pkg> version` 等で最新を確認して採用する。
 > 知識ベースで古い版を選ばない。TypeScript 7 など新しい世代は互換を実地確認してから固定する。
 
-### pnpm scripts（目標）
+### pnpm scripts（現状。詳細は `package.json`）
 
 ```jsonc
 {
-  "dev": "vite dev", // TanStack Start（Vite 基盤）
-  "build": "vite build",
-  "start": "node .output/server/index.mjs",
+  "dev": "vite dev --port 3000",
+  "build": "vite build", // SSG プリレンダー含む
+  "preview": "vite preview --port 3000",
+  "generate-routes": "tsr generate", // TanStack Router のルート生成
   "lint": "oxlint",
   "lint:fix": "oxlint --fix",
-  "format": "oxfmt --write .",
+  "format": "oxfmt .",
   "format:check": "oxfmt --check .",
-  "typecheck": "tsc --noEmit",
-  "test": "vitest --run",
-  "test:watch": "vitest",
+  "typecheck": "tsr generate && tsc --noEmit",
+  "test": "vitest run --project unit", // unit/component（jsdom）
+  "test:watch": "vitest --project unit",
+  "test:coverage": "vitest run --project unit --coverage",
+  "test:visual": "vitest run --project vrt", // VRT 比較
+  "test:visual:update": "node scripts/vrt-guard.mjs && vitest run --project vrt --update", // 標準環境のみ
   "ingest": "tsx scripts/ingest.ts",
   "add-date": "node scripts/add-date.mjs",
   "prepare": "husky",
@@ -40,7 +44,7 @@
 - **oxlint**（Lint）＋ **oxfmt**（Format）で oxc に統一（`pnpm lint` / `pnpm format`）。
   - oxfmt は 0.x のため整形挙動が更新で変わりうる。CI で `format:check` を回し差分を検知。
 - **Husky + lint-staged**: コミット前に対象ファイルへ `oxlint --fix` / `oxfmt --write`。
-- 純関数（`stats.ts` / `filters.ts` / `parsers/*`）に単体テストを付ける。
+- 純関数（`domain/stats/*` / `domain/query/*` / `ingest/parsers/*`）に単体テストを付ける。
 
 ### スタイリング規約
 
@@ -88,9 +92,11 @@ src/
   何にも依存しない。個人アプリで i18n しない前提のため、表示語彙（labels）もドメイン語彙としてここに置く。
 - **`src/ui/` の採録基準**: ドメインに依存しない再利用可能なUI**部品（コンポーネントおよび hooks）**。
   副作用（localStorage 等）はその部品内で完結させる。domain に依存する部品は `features/` に置く。
-- **container / presentational**: `routes/*` が container（データ取得・URL 検証・`navigate` 結線）、`HomeView` 以下の
-  `features/*` は presentational（props で受け、`onNavigate` コールバックで返す）。新しい画面も route に結線だけ置き、
-  View は feature に置くこと。ルーター依存を feature に持ち込まない（`HomeView` の `search`/`onNavigate` seam を維持）。
+- **container / composition / presentational**: `routes/*` が container（データ取得・URL 検証・`navigate` 結線）、
+  `screens/*` が合成層（HomeView 等・**feature 横断はここのみ**）、`features/*` は presentational な画面部品
+  （props で受け、`onNavigate` コールバックで返す）。新しい画面は route に結線だけ置き、**View（合成）は
+  `screens/` に、部品は `features/` に**置く。ルーター依存は feature に持ち込まない（screen の `search`/`onNavigate`
+  seam を維持）。
 - ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる（`no-restricted-imports` は文字列マッチのため、相対パスでの
   境界回避を規約で防ぐ）。なお **ingest 禁止だけは安全規則**（jsdom のクライアント混入防止）なので、`**/ingest/**` を
   併記して相対パス回避も機械的に捕捉する。feature 間の横断禁止は建築規約であり、相対パス（例 `../filters/...`）は
@@ -113,8 +119,8 @@ src/
 | 種別           | 対象                                                                                                  | 手段                                                                              |
 | -------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | 単体           | パーサ（team/score/location/home/gameParser）                                                         | 既存 6 フィクスチャ（勝/負×H/V・引分・サヨナラ）を流用                            |
-| 単体           | 集計 `stats.ts`（勝率・軸別集計）                                                                     | 代表データで期待値検証                                                            |
-| 単体           | 絞り込み `filters.ts`・URL スキーマ                                                                   | 条件→抽出結果、URL 相互変換                                                       |
+| 単体           | 集計 `domain/stats/*`（勝率・軸別集計・軸レジストリ）                                                 | 代表データで期待値検証                                                            |
+| 単体           | 絞り込み `domain/query/*`（filter/search/options/partition）・URL スキーマ                            | 条件→抽出結果、URL 相互変換                                                       |
 | 単体           | 取り込み中核 `ingestCore.ts`（IO 注入）                                                               | scheduled/確定/失敗保持/中止/self-heal を網羅                                     |
 | 単体           | 安定ID `masters.ts`（表記ゆれ束ね・衝突検知）                                                         | alias 解決＋実データ ID 整合の回帰テスト                                          |
 | コンポーネント | ThemeToggle / YearFilter / Filters / StatsSummary / GameTable / CrossStats / ScheduledList / HomeView | Testing Library（jsdom）。アクセシブルなロール/名前で照会し、実装詳細に依存しない |
@@ -231,8 +237,13 @@ jobs:
   Claude に「取り込みを回して」と頼む（または Actions の Run workflow）。
 - ローカル `pnpm ingest` もフォールバックとして利用可能。
 
-> データ源はスクレイピングのみ。手編集・override は行わない。取得できない試合は
-> リトライで拾い直すか、`dates.json` から外す運用とする。
+> **データ源はスクレイピングのみ**（試合内容の手入力・値の override は行わない）。取得失敗・解析失敗は
+> `ingest-report.json` に記録され、再実行でリトライされる。
+>
+> **例外: 現行サイトで取得できない古い試合**は `data/date-only.json` に日付を挙げると、ingest は
+> それらを fetch せず `result: "unknown"` として**日付のみ**保存する（詳細値は捏造しない・
+> 「詳細を持たないことの宣言」であり値の override ではない）。集計では観戦数に含めるが勝敗軸には
+> 数えず、年度別軸では観戦数として現れる。
 
 ## 8. 実装フェーズ（ステップごとに確認）
 
@@ -264,8 +275,9 @@ jobs:
 
 ## 10. 次のアクション
 
-- 論点はすべて確定済み（要件 §7）。**フェーズ 1（足場）着手待ち**。
-- 実装着手時に各依存の最新版をレジストリで確認してから固定する。
+- **フェーズ 1〜7（scaffold → 完成確認）は完了済み**（§8 参照）。以降の中規模改善は §11 backlog に集約。
+- 次に着手するのは backlog から優先度・関連箇所を選んで拾う運用。実装着手時に各依存の最新版を
+  レジストリで確認してから固定するルール（§1）は維持する。
 
 ## 11. 未対応の backlog（Fable レビューの後回し可指摘）
 
