@@ -46,65 +46,45 @@
 
 ## 3. ディレクトリ構成と層の依存
 
-### 3.1 ツリー
+### 3.1 全体ツリー
 
 ```
 baseball-history/
-├─ data/
-│  ├─ dates.json           # 観戦日（取り込み入力・事前登録もここ）
-│  ├─ date-only.json       # 「詳細不明(unknown)」として日付のみ残す試合
-│  └─ games.json           # 取り込みの生成物（アプリのソース・コミット対象）
-├─ scripts/
-│  ├─ ingest.ts            # dates + 公式サイト → games.json 生成（tsx 実行）
-│  ├─ add-date.mjs         # 観戦日追加（バリデーション・ソート。/add-date コマンドから呼ぶ）
-│  └─ vrt-guard.mjs        # baseline 更新を標準環境以外でブロック
+├─ data/                   # dates.json（観戦日入力）/ date-only.json（詳細不明宣言）/ games.json（取り込み生成物）
+├─ scripts/                # ingest.ts（取り込み実行）/ add-date.mjs（観戦日追加）/ vrt-guard.mjs
 ├─ src/
-│  ├─ routes/              # TanStack Start ファイルベースルーティング
-│  │  ├─ __root.tsx        # ルートレイアウト（テーマ初期化 / SW 登録）
-│  │  └─ index.tsx         # データ取得・URL 検証・navigate 結線 → screen へ委譲
-│  ├─ app/                 # アプリ全体の外殻。AppShell（ヘッダ・タイトル・ThemeToggle・幅制約）
-│  ├─ screens/             # 画面合成層。routes → screens → features
-│  │  └─ home/             # HomeView
-│  ├─ features/            # 画面部品（薄い表示層）
-│  │  ├─ filters/          # Filters / YearFilter
-│  │  ├─ stats/            # StatsSummary / CrossStats
-│  │  ├─ games/            # GameTable / ResultBadge
-│  │  └─ scheduled/        # ScheduledList
-│  ├─ ui/                  # ドメイン非依存の再利用UI（Chip / ThemeToggle / hooks）
-│  ├─ domain/              # framework 非依存のドメイン中核（最下層）
-│  │  ├─ game.ts           # Game 型・列挙・述語・yearOf（単一定義元）
-│  │  ├─ masters.ts        # チーム/球場の安定ID・別名解決
-│  │  ├─ labels.ts         # 表示ラベル・日付/スコア/勝率整形・取得元URL
-│  │  ├─ normalize.ts      # 最小限の正規化（NFKC・空白畳み込み）
-│  │  ├─ query/            # 絞り込み・URL・観戦/予定分割
-│  │  │  ├─ filter.ts      # GameFilter・applyFilters・countActiveFilters・emptyFilter
-│  │  │  ├─ search.ts      # GameSearch(URL)・validateGameSearch・searchToFilter/filterToSearch
-│  │  │  ├─ options.ts     # deriveOptions（絞り込み選択肢を実データから生成）
-│  │  │  └─ partition.ts   # partitionGames（attended/scheduled 分割）
-│  │  └─ stats/            # 集計
-│  │     ├─ summary.ts     # Summary 型・summarize・groupBy
-│  │     ├─ axes.ts        # 軸レジストリ AXES / AXIS_ORDER（単一定義元）
-│  │     └─ rows.ts        # buildRows / rowLabel（表示行の空白年パディング）
-│  ├─ data/                # ビルド時データゲートウェイ（JSON 境界の形状ガード）
-│  │  └─ games.ts          # ALL_GAMES / ALL_YEARS / GAMES_GENERATED_AT
-│                          # JSON 直読みはここのみの特権（oxlint で強制）。
-│                          # SSG につき不正データはビルド時 fail-fast。
-│  ├─ ingest/              # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
-│  │  ├─ ingestCore.ts     # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
-│  │  ├─ parsing.ts        # パーサ用の型（GameInfo / ParseError）
-│  │  ├─ parsers/          # 公式サイト HTML パーサ（Document を受け取る抽出器群）
-│  │  └─ sleepUtils.ts     # レート制御
+│  ├─ routes/              # URL エントリポイント
+│  ├─ app/                 # アプリ全体の外殻（AppShell）
+│  ├─ screens/             # 画面合成層
+│  ├─ features/            # 画面部品
+│  ├─ ui/                  # ドメイン非依存の再利用 UI
+│  ├─ domain/              # ドメイン中核（最下層）
+│  ├─ data/                # ビルド時データゲートウェイ
+│  ├─ ingest/              # 取り込み専用
+│  ├─ tests/               # 共有アセット（helpers/fixtures/setup*.ts/vrt）
 │  └─ styles.css           # Tailwind エントリ・デザイントークン
-├─ src/tests/              # 共有アセット（helpers/fixtures/setup*.ts/vrt）
-│                          # unit/component テストは実装隣にコロケーション
 ├─ public/                 # PWA アイコン・manifest・sw.js
-├─ .claude/commands/       # Claude コマンド（/add-date）
+├─ .claude/commands/       # Claude コマンド（各フォルダの追加スキル）
 ├─ .github/workflows/      # ci.yml / ingest.yml / vrt.yml
 ├─ vite.config.ts          # TanStack Start / Vite / Vitest 設定
 ├─ .oxlintrc.json          # 層の禁止ルール（単一定義元）
 ├─ CLAUDE.md               # Claude Code セッション用の一次案内
 └─ docs/                   # requirements.md / design.md / development.md
 ```
+
+**各 `src/` サブディレクトリの「役割・属するもの・属さないもの・依存の許可・追加時の手順」は
+それぞれの `README.md`（Charter）が単一定義元**。ここでは概要と一次リンクのみ示す。
+
+| フォルダ        | 役割                                 | Charter                                               | 追加スキル                                                                                                                                               |
+| --------------- | ------------------------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/routes/`   | URL エントリ・data 取得・URL 検証    | [`src/routes/README.md`](../src/routes/README.md)     | [`/add-screen`](../.claude/commands/add-screen.md)                                                                                                       |
+| `src/app/`      | アプリ全体の外殻                     | [`src/app/README.md`](../src/app/README.md)           | —（直接編集）                                                                                                                                            |
+| `src/screens/`  | 画面合成層（feature 横断はここのみ） | [`src/screens/README.md`](../src/screens/README.md)   | [`/add-screen`](../.claude/commands/add-screen.md)                                                                                                       |
+| `src/features/` | 画面部品（1 フォルダ = 1 feature）   | [`src/features/README.md`](../src/features/README.md) | [`/add-feature`](../.claude/commands/add-feature.md)                                                                                                     |
+| `src/ui/`       | ドメイン非依存の再利用 UI            | [`src/ui/README.md`](../src/ui/README.md)             | —（直接編集）                                                                                                                                            |
+| `src/domain/`   | ドメイン中核（型・純ロジック）       | [`src/domain/README.md`](../src/domain/README.md)     | [`/add-domain`](../.claude/commands/add-domain.md) / [`/add-axis`](../.claude/commands/add-axis.md) / [`/add-filter`](../.claude/commands/add-filter.md) |
+| `src/data/`     | JSON 境界のゲートウェイ              | [`src/data/README.md`](../src/data/README.md)         | —（稀）                                                                                                                                                  |
+| `src/ingest/`   | HTML → Game の変換（オフライン）     | [`src/ingest/README.md`](../src/ingest/README.md)     | [`/add-parser`](../.claude/commands/add-parser.md)                                                                                                       |
 
 ### 3.2 層の依存（不変条件）
 

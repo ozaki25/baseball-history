@@ -10,14 +10,27 @@
 
 ## まず開くもの
 
-| 目的                             | 一次情報                                                       |
-| -------------------------------- | -------------------------------------------------------------- |
-| プロダクトが何を作るのか         | [`docs/requirements.md`](docs/requirements.md)                 |
-| どう構造化されているか           | [`docs/design.md`](docs/design.md)                             |
-| どう開発・テスト・デプロイするか | [`docs/development.md`](docs/development.md)                   |
-| 使える依存とスクリプト           | [`package.json`](package.json)                                 |
-| 層の禁止ルール                   | [`.oxlintrc.json`](.oxlintrc.json)                             |
-| 観戦日を追加するコマンド         | [`.claude/commands/add-date.md`](.claude/commands/add-date.md) |
+| 目的                             | 一次情報                                       |
+| -------------------------------- | ---------------------------------------------- |
+| プロダクトが何を作るのか         | [`docs/requirements.md`](docs/requirements.md) |
+| どう構造化されているか           | [`docs/design.md`](docs/design.md)             |
+| どう開発・テスト・デプロイするか | [`docs/development.md`](docs/development.md)   |
+| 各フォルダの役割・追加の手引き   | 各 `src/<folder>/README.md`（Charter）         |
+| 使える依存とスクリプト           | [`package.json`](package.json)                 |
+| 層の禁止ルール                   | [`.oxlintrc.json`](.oxlintrc.json)             |
+
+### フォルダの一次案内（Charter）
+
+コードを触るときは、対象フォルダの `README.md` を最初に読むこと。役割・属するもの・属さないもの・依存の許可・追加手順がまとまっている。
+
+- [`src/domain/README.md`](src/domain/README.md) — ドメイン中核（型・純ロジック）
+- [`src/data/README.md`](src/data/README.md) — JSON 境界のゲートウェイ
+- [`src/ingest/README.md`](src/ingest/README.md) — 取り込み専用
+- [`src/ui/README.md`](src/ui/README.md) — ドメイン非依存の再利用 UI
+- [`src/app/README.md`](src/app/README.md) — アプリ全体の外殻
+- [`src/features/README.md`](src/features/README.md) — 画面部品
+- [`src/screens/README.md`](src/screens/README.md) — 画面合成層
+- [`src/routes/README.md`](src/routes/README.md) — URL エントリポイント
 
 ## アーキテクチャの要点（1 分で）
 
@@ -70,8 +83,17 @@ data/dates.json  ──(push)──▶  GitHub Actions(ingest)  ──▶  data/
 
 ## Claude コマンド
 
-- **`/add-date`** — 観戦日を `data/dates.json` に追加して push（→ ingest が自動起動）。
-  詳細は [`.claude/commands/add-date.md`](.claude/commands/add-date.md)。
+コードを追加するときは対応するスキルから入る。各スキルの実体は `.claude/commands/*.md`。
+
+| スキル         | 用途                                               |
+| -------------- | -------------------------------------------------- |
+| `/add-date`    | 観戦日を `data/dates.json` に追加して push         |
+| `/add-domain`  | `src/domain/` に型・述語・純関数を追加             |
+| `/add-feature` | `src/features/` に新しい feature area を追加       |
+| `/add-screen`  | 新しい screen + route wire を追加                  |
+| `/add-axis`    | クロス集計の軸を 1 本追加（`AXES` + `AXIS_ORDER`） |
+| `/add-filter`  | URL 絞り込み軸を 1 本追加                          |
+| `/add-parser`  | ingest の HTML 抽出器を追加                        |
 
 ## ブランチと commit
 

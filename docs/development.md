@@ -45,40 +45,30 @@
 
 ### 層と依存規則
 
-ディレクトリ構成と依存グラフは [`design.md` §3](design.md#3-ディレクトリ構成と層の依存) が唯一の定義元。
+**各フォルダの役割・追加時の手順は `src/<folder>/README.md`（Charter）が単一定義元**。
+ディレクトリ構成の一覧と依存グラフは [`design.md` §3](design.md#3-ディレクトリ構成と層の依存)、
 機械強制は [`.oxlintrc.json`](../.oxlintrc.json) の `no-restricted-imports` overrides。
 
-**不変条件**:
+不変条件のダイジェスト（詳細は各 README へ）:
 
 - **routes は URL 結線と data 取得のみ**。View 合成は screens に委譲する（features/ui/app へ直接 import しない）。
 - **screens が唯一の合成層**。feature 横断はここのみ。
-- **feature 兄弟の依存は一律禁止**（`#/features/**` を features 内から import しない）。
-  共有ロジックは domain へ、画面横断の合成は screens へ。
-- **data の JSON 直読みは data ゲートウェイのみの特権**（他層は `ALL_GAMES` / `ALL_YEARS` を import）。
-- **domain / ui は最下層**（上位のいかなる層にも依存しない）。
-- **ingest はクライアントに import しない**（jsdom 混入防止・安全規則。相対パス回避も `**/ingest/**` で機械捕捉）。
+- **feature 兄弟の依存は一律禁止**。共有ロジックは domain へ、画面横断の合成は screens へ。
+- **data の JSON 直読みは data ゲートウェイのみの特権**。
+- **domain / ui は最下層**。上位のいかなる層にも依存しない。
+- **ingest はクライアントに import しない**（jsdom 混入防止・安全規則）。
 
-### container / composition / presentational（linter で強制されない規約）
+コードを追加するときは、対応する Charter とスキルから入る:
 
-- **routes（container）**: データ取得・URL 検証・`navigate` 結線のみ。View を描かない。
-- **screens（composition）**: 画面合成層。feature 横断はここのみ。
-- **features（presentational）**: 画面部品。**props で受け、`onNavigate` コールバックで返す**。
-  ルーター依存を feature に持ち込まない（screen の `search` / `onNavigate` seam を維持）。
-  新しい画面は route に結線だけ置き、View（合成）は screens、部品は features に置く。
-
-### `src/ui/` の採録基準
-
-- ドメインに依存しない再利用可能な UI 部品（コンポーネント / hooks）。
-- **副作用（`localStorage` 等）は部品内で完結**させる（親に漏らさない）。
-- **domain に依存する部品は `features/` に置く**（`ui/` ではない）。
-- 表示語彙（`labels.ts`）は `domain/` に置く（個人アプリで i18n しない前提のため、
-  表示ラベルもドメイン語彙として扱う）。
-
-### 新しい feature を追加するとき
-
-`.oxlintrc.json` の編集は**原則不要**。feature 兄弟一律禁止（`#/features/**`）は既にワイルドカードで
-縮約されているため、`src/features/新feature/` ディレクトリを作れば `src/features/**` override が自動適用される。
-（相対パス回避は文字列マッチでは原理的に捕捉できないため、ディレクトリ跨ぎの import は必ず `#/` エイリアスを用いる規約で補完する。）
+| やること                           | 場所                                           | スキル                                               |
+| ---------------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
+| 新しいドメイン概念                 | `src/domain/`                                  | [`/add-domain`](../.claude/commands/add-domain.md)   |
+| 新しい feature area                | `src/features/新/`                             | [`/add-feature`](../.claude/commands/add-feature.md) |
+| 新しい screen（+ route wire）      | `src/screens/新/` + `src/routes/新.tsx`        | [`/add-screen`](../.claude/commands/add-screen.md)   |
+| 新しい集計軸                       | `src/domain/stats/axes.ts`                     | [`/add-axis`](../.claude/commands/add-axis.md)       |
+| 新しい絞り込み軸（URL パラメータ） | `src/domain/query/*` + `src/features/filters/` | [`/add-filter`](../.claude/commands/add-filter.md)   |
+| 新しい HTML パーサ                 | `src/ingest/parsers/新.ts`                     | [`/add-parser`](../.claude/commands/add-parser.md)   |
+| 新しい観戦日                       | `data/dates.json`                              | [`/add-date`](../.claude/commands/add-date.md)       |
 
 ### 層追加時のチェックリスト
 
