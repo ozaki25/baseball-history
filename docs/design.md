@@ -67,6 +67,7 @@ baseball-history/
 │  │  ├─ home/            # HomeView（画面合成）/ ScheduledList
 │  │  ├─ filters/         # Filters / YearFilter（表示部品のみ・ロジックは domain/query）
 │  │  ├─ stats/           # StatsSummary / CrossStats + model/stats.ts（※後続 PR で domain/stats へ集約）
+│  │  ├─ stats/           # StatsSummary / CrossStats（表示部品のみ・ロジックは domain/stats）
 │  │  └─ games/           # GameTable / ResultBadge
 │  ├─ ui/                 # ドメイン非依存の再利用UI（Chip / ThemeToggle / use*。hooks も可）
 │  ├─ domain/             # framework非依存のドメイン中核（React/router/jsdom ゼロ・最下層）
@@ -75,11 +76,15 @@ baseball-history/
 │  │  ├─ masters.ts       # チーム/球場の安定ID・別名解決（表記ゆれの束ね）
 │  │  ├─ labels.ts        # ドメイン語彙（表示ラベル・日付/スコア整形・勝率整形・取得元URL。全feature/scripts共有）
 │  │  ├─ normalize.ts     # 最小限の正規化（NFKC・空白畳み込み）
-│  │  └─ query/           # 絞り込み・URL・観戦/予定分割（画面横断のドメインロジック）
-│  │     ├─ filter.ts     # GameFilter 型・applyFilters・countActiveFilters・emptyFilter
-│  │     ├─ search.ts     # GameSearch(URL) 型・validateGameSearch・searchToFilter/filterToSearch
-│  │     ├─ options.ts    # deriveOptions（絞り込み選択肢を実データから生成）
-│  │     └─ partition.ts  # partitionGames（フィルタ適用結果を attended/scheduled に分割）
+│  │  ├─ query/           # 絞り込み・URL・観戦/予定分割（画面横断のドメインロジック）
+│  │  │  ├─ filter.ts     # GameFilter 型・applyFilters・countActiveFilters・emptyFilter
+│  │  │  ├─ search.ts     # GameSearch(URL) 型・validateGameSearch・searchToFilter/filterToSearch
+│  │  │  ├─ options.ts    # deriveOptions（絞り込み選択肢を実データから生成）
+│  │  │  └─ partition.ts  # partitionGames（フィルタ適用結果を attended/scheduled に分割）
+│  │  └─ stats/           # 集計（画面横断のドメインロジック）
+│  │     ├─ summary.ts    # Summary 型・summarize・groupBy（純集計）
+│  │     ├─ axes.ts       # 軸レジストリ AXES（key/label/columnLabel/valueOf/labelOf）+ AXIS_ORDER。単一定義元
+│  │     └─ rows.ts       # 表示行 buildRows（空白年パディング等）・rowLabel
 │  ├─ ingest/             # 取り込み専用（jsdom 依存・scripts のみが呼ぶ）
 │  │  ├─ ingestCore.ts    # 取り込み中核（IO 注入の純関数 mergeIngest ほか）
 │  │  ├─ parsing.ts       # 取り込みパーサ用の型（GameInfo / ParseError）
