@@ -61,7 +61,7 @@ export interface Game {
   stadium: string;
   /** 球場の安定ID */
   stadiumId: string;
-  /** 主催/ビジター。中止・予定など不明な場合は null */
+  /** ホーム/ビジター。中止・予定など不明な場合は null */
   homeAway: HomeAway | null;
   result: GameResult;
   score: {

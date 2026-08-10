@@ -69,12 +69,12 @@ describe("CrossStats", () => {
     expect(within(panel).getByRole("rowheader", { name: "千葉ロッテ" })).toBeInTheDocument();
   });
 
-  it("主催/ビジタータブは日本語ラベルで表示する", async () => {
+  it("ホーム/ビジタータブは日本語ラベルで表示する", async () => {
     const user = userEvent.setup();
     render(<CrossStats games={GAMES} />);
-    await user.click(screen.getByRole("tab", { name: "主催/ビジター" }));
+    await user.click(screen.getByRole("tab", { name: "ホーム/ビジター" }));
     const panel = screen.getByRole("tabpanel");
-    expect(within(panel).getByRole("rowheader", { name: "主催" })).toBeInTheDocument();
+    expect(within(panel).getByRole("rowheader", { name: "ホーム" })).toBeInTheDocument();
   });
 
   it("データが無ければ「データなし」を表示", () => {

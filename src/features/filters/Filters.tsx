@@ -140,7 +140,7 @@ export function Filters({
                 />
               </Section>
 
-              <Section title="主催 / ビジター">
+              <Section title="ホーム / ビジター">
                 {homeAwayOptions.map((o) => (
                   <Chip
                     key={o.value}

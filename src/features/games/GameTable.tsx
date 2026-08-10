@@ -40,7 +40,7 @@ const columns = [
     cell: (c) => c.getValue() || <span className="text-[var(--faint)]">—</span>,
   }),
   columnHelper.accessor("homeAway", {
-    header: "主催/V",
+    header: "ホーム/V",
     cell: (c) => {
       const v = c.getValue();
       return <span className="text-[var(--muted)]">{v ? HOME_AWAY_LABEL[v] : "—"}</span>;
@@ -173,15 +173,11 @@ export function GameTable({ games }: { games: Game[] }) {
                     {formatDateJa(g.date)}
                     <ExternalLink size={12} aria-hidden />
                   </span>
-                  <span className="text-base font-medium">
-                    {g.opponent || "—"}
-                    {g.homeAway && (
-                      <span className="ml-1.5 text-sm text-[var(--faint)]">
-                        {HOME_AWAY_LABEL[g.homeAway]}
-                      </span>
-                    )}
+                  <span className="text-base font-medium">{g.opponent || "—"}</span>
+                  <span className="text-sm text-[var(--faint)]">
+                    {g.homeAway && `${HOME_AWAY_LABEL[g.homeAway]} · `}
+                    {g.stadium || "—"}
                   </span>
-                  <span className="text-sm text-[var(--faint)]">{g.stadium || "—"}</span>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                   <span className="tnum text-lg font-bold">{formatScore(g)}</span>
