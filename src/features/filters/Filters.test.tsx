@@ -74,7 +74,7 @@ describe("Filters", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith({ ...emptyFilter, year: "2024" });
   });
 
-  it("主催/ビジターチップは単一値として置き換える", async () => {
+  it("ホーム/ビジターチップは単一値として置き換える", async () => {
     const { onChange, user } = setup();
     const dialog = await openDialog(user);
     await user.click(within(dialog).getByRole("button", { name: "ビジター" }));

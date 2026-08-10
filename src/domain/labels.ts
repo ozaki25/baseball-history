@@ -9,7 +9,7 @@ export const RESULT_LABEL: Record<GameResult, string> = {
 };
 
 export const HOME_AWAY_LABEL: Record<HomeAway, string> = {
-  home: "主催",
+  home: "ホーム",
   away: "ビジター",
 };
 

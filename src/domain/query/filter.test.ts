@@ -82,7 +82,7 @@ describe("countActiveFilters / isFilterActive", () => {
     expect(isFilterActive(emptyFilter)).toBe(false);
   });
 
-  it("年度・主催は各1、球場/相手/勝敗は選択数を数える", () => {
+  it("年度・ホームは各1、球場/相手/勝敗は選択数を数える", () => {
     expect(countActiveFilters({ ...emptyFilter, year: "2025" })).toBe(1);
     expect(countActiveFilters({ ...emptyFilter, homeAway: "home" })).toBe(1);
     expect(countActiveFilters({ ...emptyFilter, stadiums: ["a", "b"] })).toBe(2);

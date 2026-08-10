@@ -38,7 +38,7 @@ describe("AXES 各軸のメタデータ（タブ表示語・列ヘッダは load
     stadium: { label: "球場別", columnLabel: "球場" },
     opponent: { label: "相手別", columnLabel: "相手" },
     year: { label: "年度別", columnLabel: "年度" },
-    homeAway: { label: "主催/ビジター", columnLabel: "主催/ビジター" },
+    homeAway: { label: "ホーム/ビジター", columnLabel: "ホーム/ビジター" },
   };
   for (const k of AXIS_ORDER) {
     it(`${k}: label と columnLabel が固定`, () => {
@@ -92,7 +92,7 @@ describe("AXES.labelOf（軸を取り違えない）", () => {
   });
 
   it("homeAway は日本語、year はキーそのまま", () => {
-    expect(AXES.homeAway.labelOf("home")).toBe("主催");
+    expect(AXES.homeAway.labelOf("home")).toBe("ホーム");
     expect(AXES.homeAway.labelOf("away")).toBe("ビジター");
     expect(AXES.year.labelOf("2025")).toBe("2025");
   });

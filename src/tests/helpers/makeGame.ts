@@ -4,7 +4,7 @@ import { resolveTeam, resolveStadium } from "#/domain/masters";
 /**
  * テスト用の Game を組み立てる。opponent/stadium から安定IDを解決するので、
  * 実データと同じ ID 束ね（集計・絞り込み）の挙動を再現できる。
- * 既定は「主催・勝ち」。overrides で必要な項目だけ差し替える。
+ * 既定は「ホーム・勝ち」。overrides で必要な項目だけ差し替える。
  */
 export function makeGame(overrides: Partial<Game> = {}): Game {
   const opponent = overrides.opponent ?? "千葉ロッテ";

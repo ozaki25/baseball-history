@@ -31,7 +31,7 @@ export function applyFilters(games: Game[], filter: GameFilter): Game[] {
 
 /**
  * 有効な絞り込み条件の数（絞り込みバッジの数値と一致させるための単一の定義元）。
- * 年度・主催/ビジターは選択で 1、球場・相手・勝敗は選択数を数える。
+ * 年度・ホーム/ビジターは選択で 1、球場・相手・勝敗は選択数を数える。
  *
  * 「デフォルト状態と一致する年」は active としない（URL 未指定と semantic 同一のため）。
  *  - defaultYear 指定時: `filter.year === defaultYear` は non-active（URL 未指定と同じ）

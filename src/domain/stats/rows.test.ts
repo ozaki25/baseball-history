@@ -20,8 +20,8 @@ function game(partial: Partial<Game> & { result: GameResult; date: string }): Ga
 }
 
 describe("rowLabel", () => {
-  it("主催/ビジターは日本語、年度はそのまま、未知キーはフォールバック", () => {
-    expect(rowLabel("homeAway", "home")).toBe("主催");
+  it("ホーム/ビジターは日本語、年度はそのまま、未知キーはフォールバック", () => {
+    expect(rowLabel("homeAway", "home")).toBe("ホーム");
     expect(rowLabel("homeAway", "away")).toBe("ビジター");
     expect(rowLabel("year", "2025")).toBe("2025");
     expect(rowLabel("stadium", "__unknown__")).toBe("__unknown__");

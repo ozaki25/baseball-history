@@ -55,8 +55,8 @@ export const AXES = {
   },
   homeAway: {
     key: "homeAway",
-    label: "主催/ビジター",
-    columnLabel: "主催/ビジター",
+    label: "ホーム/ビジター",
+    columnLabel: "ホーム/ビジター",
     valueOf: (g) => g.homeAway, // null（予定など）は集計から除外
     labelOf: (k) => HOME_AWAY_LABEL[k as keyof typeof HOME_AWAY_LABEL] ?? k,
   },
