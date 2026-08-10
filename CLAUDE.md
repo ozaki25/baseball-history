@@ -120,7 +120,9 @@ data/dates.json  ──(push)──▶  GitHub Actions(ingest)  ──▶  data/
 
 - **バージョン番号を docs に書かない**（`package.json` が単一定義元）。
 - **層の禁止ルールを docs に書かない**（`.oxlintrc.json` が単一定義元。docs は不変条件を語る）。
-- **ホーム/ビジター → 主催/ビジター**（ドメイン語彙。`domain/game.ts` / `domain/labels.ts`）。
+- **ホーム/ビジターの語を使う**（`主催` は使わない。`domain/game.ts` / `domain/labels.ts` が単一定義元）。
+- **対戦相手名の直後に「ホーム/ビジター」を続けて書かない**（「オリックス ホーム」のように名詞を隣接させると
+  対戦相手側の状態と誤読される。`GameTable.tsx` のモバイルカードは球場行にまとめて分離している）。
 - **「override」の語は避ける**（`date-only.json` は値の上書きではない）。
 
 ## 依存関係を破ろうとするときの手順

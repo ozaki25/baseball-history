@@ -70,12 +70,12 @@ describe("GameTable", () => {
     expect(tableRows()[2]).toHaveTextContent("2025.6.15");
   });
 
-  it("詳細不明(unknown)試合は主催/V・球場・対戦相手・スコアが全て — 表示", () => {
+  it("詳細不明(unknown)試合はホーム/V・球場・対戦相手・スコアが全て — 表示", () => {
     render(<GameTable games={[GAMES[2]!]} />);
-    // 列順: 日付 / 対戦相手 / 主催V / 球場 / 結果 / スコア
+    // 列順: 日付 / 対戦相手 / ホームV / 球場 / 結果 / スコア
     const cells = within(tableRows()[0]!).getAllByRole("cell");
     expect(cells[1]).toHaveTextContent("—"); // 対戦相手（空）
-    expect(cells[2]).toHaveTextContent("—"); // 主催/V（homeAway=null）
+    expect(cells[2]).toHaveTextContent("—"); // ホーム/V（homeAway=null）
     expect(cells[3]).toHaveTextContent("—"); // 球場（空）
     expect(cells[5]).toHaveTextContent("—"); // スコア（null）
   });
@@ -97,6 +97,32 @@ describe("GameTable", () => {
     expect(items).toHaveLength(3);
     expect(within(list).getByText("千葉ロッテ")).toBeInTheDocument();
     expect(within(list).getByText("5 - 1")).toBeInTheDocument();
+  });
+
+  it("モバイルカードはホーム/ビジターを対戦相手名から分離し、球場と並べて示す", () => {
+    const homeGame = makeGame({
+      id: "h",
+      date: "2025-04-01",
+      opponent: "オリックス",
+      stadium: "エスコンフィールド",
+      homeAway: "home",
+    });
+    const awayGame = makeGame({
+      id: "a",
+      date: "2025-04-02",
+      opponent: "オリックス",
+      stadium: "京セラドーム大阪",
+      homeAway: "away",
+    });
+    render(<GameTable games={[homeGame, awayGame]} />);
+    const list = screen.getByRole("list");
+    // 対戦相手名の要素にはホーム/ビジターの語を含めない
+    for (const el of within(list).getAllByText("オリックス")) {
+      expect(el).toHaveTextContent("オリックス");
+      expect(el.textContent).toBe("オリックス");
+    }
+    expect(within(list).getByText("ホーム · エスコンフィールド")).toBeInTheDocument();
+    expect(within(list).getByText("ビジター · 京セラドーム大阪")).toBeInTheDocument();
   });
 
   it("unknown(詳細不明) は日付リンクと『詳細不明』を表示し他は —", () => {
