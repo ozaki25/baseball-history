@@ -121,8 +121,11 @@ describe("GameTable", () => {
       expect(el).toHaveTextContent("オリックス");
       expect(el.textContent).toBe("オリックス");
     }
-    expect(within(list).getByText("ホーム · エスコンフィールド")).toBeInTheDocument();
-    expect(within(list).getByText("ビジター · 京セラドーム大阪")).toBeInTheDocument();
+    // ホーム/ビジターはバッジ（対戦相手名とは別要素）として球場と並ぶ
+    expect(within(list).getByText("ホーム")).toBeInTheDocument();
+    expect(within(list).getByText("ビジター")).toBeInTheDocument();
+    expect(within(list).getByText("エスコンフィールド")).toBeInTheDocument();
+    expect(within(list).getByText("京セラドーム大阪")).toBeInTheDocument();
   });
 
   it("unknown(詳細不明) は日付リンクと『詳細不明』を表示し他は —", () => {

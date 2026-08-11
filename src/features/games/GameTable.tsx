@@ -8,7 +8,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink } from "lucide-react";
-import type { Game } from "#/domain/game";
+import type { Game, HomeAway } from "#/domain/game";
 import { formatDateJa, formatScore, gameSourceUrl, HOME_AWAY_LABEL } from "#/domain/labels";
 import { ResultBadge } from "./ResultBadge";
 
@@ -30,6 +30,24 @@ function SourceDate({ date }: { date: string }) {
   );
 }
 
+/** ホーム/ビジターの淡い塗りバッジ（勝敗バッジと見分けられるよう、ソリッドではなく tint にする）。 */
+function HomeAwayBadge({ value }: { value: HomeAway }) {
+  const isHome = value === "home";
+  return (
+    <span
+      className="inline-flex items-center px-1.5 py-0.5 text-xs font-bold whitespace-nowrap"
+      style={{
+        color: isHome ? "var(--brand)" : "var(--muted)",
+        background: isHome
+          ? "color-mix(in srgb, var(--brand) 14%, transparent)"
+          : "color-mix(in srgb, var(--line-strong) 40%, transparent)",
+      }}
+    >
+      {HOME_AWAY_LABEL[value]}
+    </span>
+  );
+}
+
 const columns = [
   columnHelper.accessor("date", {
     header: "日付",
@@ -43,7 +61,7 @@ const columns = [
     header: "ホーム/V",
     cell: (c) => {
       const v = c.getValue();
-      return <span className="text-[var(--muted)]">{v ? HOME_AWAY_LABEL[v] : "—"}</span>;
+      return v ? <HomeAwayBadge value={v} /> : <span className="text-[var(--faint)]">—</span>;
     },
   }),
   columnHelper.accessor("stadium", {
@@ -158,20 +176,8 @@ export function GameTable({ games }: { games: Game[] }) {
       >
         {rows.map((row, i) => {
           const g = row.original;
-          const accentColor =
-            g.homeAway === "home"
-              ? "var(--brand)"
-              : g.homeAway === "away"
-                ? "var(--line-strong)"
-                : "transparent";
           return (
-            <li
-              key={row.id}
-              style={{
-                ...(i > 0 && { borderTop: "1px solid var(--line)" }),
-                borderLeft: `3px solid ${accentColor}`,
-              }}
-            >
+            <li key={row.id} style={i > 0 ? { borderTop: "1px solid var(--line)" } : undefined}>
               {/* カード全体を取得元（公式サイト）へのリンクにする */}
               <a
                 href={gameSourceUrl(g.date)}
@@ -180,14 +186,14 @@ export function GameTable({ games }: { games: Game[] }) {
                 title="公式サイトの試合結果ページを開く"
                 className="flex items-center gap-3 px-3 py-2.5"
               >
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-0.5">
                   <span className="tnum inline-flex items-center gap-1 text-sm text-[var(--muted)]">
                     {formatDateJa(g.date)}
                     <ExternalLink size={12} aria-hidden />
                   </span>
                   <span className="text-base font-medium">{g.opponent || "—"}</span>
-                  <span className="text-sm text-[var(--faint)]">
-                    {g.homeAway && `${HOME_AWAY_LABEL[g.homeAway]} · `}
+                  <span className="flex items-center gap-1.5 text-sm text-[var(--faint)]">
+                    {g.homeAway && <HomeAwayBadge value={g.homeAway} />}
                     {g.stadium || "—"}
                   </span>
                 </div>
