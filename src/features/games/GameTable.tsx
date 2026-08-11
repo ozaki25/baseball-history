@@ -158,8 +158,20 @@ export function GameTable({ games }: { games: Game[] }) {
       >
         {rows.map((row, i) => {
           const g = row.original;
+          const accentColor =
+            g.homeAway === "home"
+              ? "var(--brand)"
+              : g.homeAway === "away"
+                ? "var(--line-strong)"
+                : "transparent";
           return (
-            <li key={row.id} style={i > 0 ? { borderTop: "1px solid var(--line)" } : undefined}>
+            <li
+              key={row.id}
+              style={{
+                ...(i > 0 && { borderTop: "1px solid var(--line)" }),
+                borderLeft: `3px solid ${accentColor}`,
+              }}
+            >
               {/* カード全体を取得元（公式サイト）へのリンクにする */}
               <a
                 href={gameSourceUrl(g.date)}
