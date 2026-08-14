@@ -50,10 +50,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # 実行中に他の push で main が進んだ場合（non-fast-forward）に一度だけ追従して push する。
+          push_data() {
+            git push || (git pull --rebase --autostash && git push)
+          }
           git add data/games.json data/ingest-report.json
           if git diff --staged --quiet; then
             echo "変更なし"
           else
             git commit -m "chore(data): 取り込み結果を更新"
-            git push
+            push_data
           fi
