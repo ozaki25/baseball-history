@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T17:55:35.962Z",
+  "generatedAt": "2026-08-14T15:29:53.793Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -1581,6 +1581,48 @@
       "score": {
         "fighters": 5,
         "opponent": 9
+      }
+    },
+    {
+      "id": "2026-08-11",
+      "date": "2026-08-11",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 0,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2026-08-12",
+      "date": "2026-08-12",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2026-08-13",
+      "date": "2026-08-13",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 8,
+        "opponent": 2
       }
     }
   ]
