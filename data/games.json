@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T15:44:58.342Z",
+  "generatedAt": "2026-09-20T04:10:16.485Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -1623,6 +1623,76 @@
       "score": {
         "fighters": 8,
         "opponent": 2
+      }
+    },
+    {
+      "id": "2026-09-19",
+      "date": "2026-09-19",
+      "opponent": "オリックス",
+      "opponentId": "orix",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 7
+      }
+    },
+    {
+      "id": "2026-09-21",
+      "date": "2026-09-21",
+      "opponent": "",
+      "opponentId": "",
+      "stadium": "",
+      "stadiumId": "",
+      "homeAway": null,
+      "result": "scheduled",
+      "score": {
+        "fighters": null,
+        "opponent": null
+      }
+    },
+    {
+      "id": "2026-09-22",
+      "date": "2026-09-22",
+      "opponent": "",
+      "opponentId": "",
+      "stadium": "",
+      "stadiumId": "",
+      "homeAway": null,
+      "result": "scheduled",
+      "score": {
+        "fighters": null,
+        "opponent": null
+      }
+    },
+    {
+      "id": "2026-09-23",
+      "date": "2026-09-23",
+      "opponent": "",
+      "opponentId": "",
+      "stadium": "",
+      "stadiumId": "",
+      "homeAway": null,
+      "result": "scheduled",
+      "score": {
+        "fighters": null,
+        "opponent": null
+      }
+    },
+    {
+      "id": "2026-09-24",
+      "date": "2026-09-24",
+      "opponent": "",
+      "opponentId": "",
+      "stadium": "",
+      "stadiumId": "",
+      "homeAway": null,
+      "result": "scheduled",
+      "score": {
+        "fighters": null,
+        "opponent": null
       }
     }
   ]
