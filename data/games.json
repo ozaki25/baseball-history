@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T13:16:56.761Z",
+  "generatedAt": "2026-09-24T17:52:02.229Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -1094,6 +1094,62 @@
       }
     },
     {
+      "id": "2017-04-20",
+      "date": "2017-04-20",
+      "opponent": "オリックス",
+      "opponentId": "orix",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 8
+      }
+    },
+    {
+      "id": "2017-05-12",
+      "date": "2017-05-12",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 15,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2017-05-13",
+      "date": "2017-05-13",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 11,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2017-05-14",
+      "date": "2017-05-14",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 2
+      }
+    },
+    {
       "id": "2017-06-08",
       "date": "2017-06-08",
       "opponent": "広島",
@@ -1150,6 +1206,118 @@
       }
     },
     {
+      "id": "2017-07-03",
+      "date": "2017-07-03",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 11
+      }
+    },
+    {
+      "id": "2017-07-04",
+      "date": "2017-07-04",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 4
+      }
+    },
+    {
+      "id": "2017-09-07",
+      "date": "2017-09-07",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2018-04-06",
+      "date": "2018-04-06",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2018-04-07",
+      "date": "2018-04-07",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 9,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2018-04-08",
+      "date": "2018-04-08",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2018-05-15",
+      "date": "2018-05-15",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 2,
+        "opponent": 0
+      }
+    },
+    {
+      "id": "2018-05-16",
+      "date": "2018-05-16",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 1,
+        "opponent": 0
+      }
+    },
+    {
       "id": "2018-07-20",
       "date": "2018-07-20",
       "opponent": "福岡ソフトバンク",
@@ -1192,6 +1360,34 @@
       }
     },
     {
+      "id": "2018-08-22",
+      "date": "2018-08-22",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 6,
+        "opponent": 9
+      }
+    },
+    {
+      "id": "2018-08-23",
+      "date": "2018-08-23",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 6
+      }
+    },
+    {
       "id": "2018-09-15",
       "date": "2018-09-15",
       "opponent": "オリックス",
@@ -1231,6 +1427,48 @@
       "score": {
         "fighters": 4,
         "opponent": 2
+      }
+    },
+    {
+      "id": "2019-04-05",
+      "date": "2019-04-05",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2019-04-06",
+      "date": "2019-04-06",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 16
+      }
+    },
+    {
+      "id": "2019-04-07",
+      "date": "2019-04-07",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 4
       }
     },
     {
@@ -1329,6 +1567,90 @@
       "score": {
         "fighters": 3,
         "opponent": 7
+      }
+    },
+    {
+      "id": "2019-08-13",
+      "date": "2019-08-13",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2019-08-14",
+      "date": "2019-08-14",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 9
+      }
+    },
+    {
+      "id": "2019-08-15",
+      "date": "2019-08-15",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 0,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2019-09-10",
+      "date": "2019-09-10",
+      "opponent": "千葉ロッテ",
+      "opponentId": "lotte",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 10
+      }
+    },
+    {
+      "id": "2019-09-11",
+      "date": "2019-09-11",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 3
+      }
+    },
+    {
+      "id": "2019-09-12",
+      "date": "2019-09-12",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "東京ドーム",
+      "stadiumId": "tokyo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 2
       }
     },
     {
