@@ -46,18 +46,18 @@ describe("buildRows", () => {
     game({ result: "win", date: "2025-05-01" }),
   ];
 
-  it("年度別は記録の無い年度も0件で末尾に年降順で明示する（空白年を隠さない）", () => {
+  it("年度別は年の降順で並べる。記録の無い年度も0件で明示する（空白年を隠さない）", () => {
     const rows = buildRows(sample, "year", ["2026", "2025", "2024", "2013"]);
-    // 実データ年(2025→2件, 2026→1件)が先、空白年(2024,2013)が末尾に年降順
-    expect(rows.map((r) => r.key)).toEqual(["2025", "2026", "2024", "2013"]);
+    // 観戦数(2025→2件, 2026→1件)に関わらず年の降順
+    expect(rows.map((r) => r.key)).toEqual(["2026", "2025", "2024", "2013"]);
     const y2024 = rows.find((r) => r.key === "2024")!;
     expect(y2024.attended).toBe(0);
     expect(y2024.winRate).toBeNull();
   });
 
-  it("years が空なら実データの年度のみ（空白年の補完なし）", () => {
+  it("years が空なら実データの年度のみ（空白年の補完なし）を年降順で返す", () => {
     const rows = buildRows(sample, "year", []);
-    expect(new Set(rows.map((r) => r.key))).toEqual(new Set(["2025", "2026"]));
+    expect(rows.map((r) => r.key)).toEqual(["2026", "2025"]);
   });
 
   it("年度以外の軸では years 引数を無視する", () => {

@@ -6,20 +6,17 @@ import { groupBy, type GroupRow } from "./summary";
 const EMPTY_ROW = { attended: 0, win: 0, lose: 0, draw: 0, winRate: null };
 
 /**
- * 表示行を作る。年度別のときは記録の無い年度も「データなし(0件)」として明示する
- * （要件: 空白年を隠さない）。空年度は末尾に年降順で並べる。
+ * 表示行を作る。年度別は年の降順（新しい年が先）で並べる。記録の無い年度も
+ * 「データなし(0件)」として明示する（要件: 空白年を隠さない）。
  * ラベル解決は AXES[tab].labelOf に一元化されている。
  */
 export function buildRows(games: Game[], tab: GroupKey, years: string[] = []): GroupRow[] {
   // groupBy の既定 labelOf は AXES[tab].labelOf なので第3引数は省略できる。
   const rows = groupBy(games, tab);
-  if (tab !== "year" || years.length === 0) return rows;
+  if (tab !== "year") return rows;
   const present = new Set(rows.map((r) => r.key));
-  const empties = years
-    .filter((y) => !present.has(y))
-    .sort((a, b) => b.localeCompare(a))
-    .map((y) => ({ key: y, ...EMPTY_ROW }));
-  return [...rows, ...empties];
+  const empties = years.filter((y) => !present.has(y)).map((y) => ({ key: y, ...EMPTY_ROW }));
+  return [...rows, ...empties].sort((a, b) => b.key.localeCompare(a.key));
 }
 
 /**
