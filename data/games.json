@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T13:05:24.970Z",
+  "generatedAt": "2026-09-24T13:16:56.761Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -1091,6 +1091,244 @@
       "score": {
         "fighters": 10,
         "opponent": 4
+      }
+    },
+    {
+      "id": "2017-06-08",
+      "date": "2017-06-08",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2017-06-09",
+      "date": "2017-06-09",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2017-06-10",
+      "date": "2017-06-10",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2017-06-11",
+      "date": "2017-06-11",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2018-07-20",
+      "date": "2018-07-20",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 6,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2018-07-21",
+      "date": "2018-07-21",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2018-07-22",
+      "date": "2018-07-22",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 7,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2018-09-15",
+      "date": "2018-09-15",
+      "opponent": "オリックス",
+      "opponentId": "orix",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 0,
+        "opponent": 10
+      }
+    },
+    {
+      "id": "2018-09-16",
+      "date": "2018-09-16",
+      "opponent": "オリックス",
+      "opponentId": "orix",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 4,
+        "opponent": 8
+      }
+    },
+    {
+      "id": "2018-09-17",
+      "date": "2018-09-17",
+      "opponent": "オリックス",
+      "opponentId": "orix",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2019-04-27",
+      "date": "2019-04-27",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2019-04-28",
+      "date": "2019-04-28",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 0
+      }
+    },
+    {
+      "id": "2019-04-29",
+      "date": "2019-04-29",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 6,
+        "opponent": 9
+      }
+    },
+    {
+      "id": "2019-06-13",
+      "date": "2019-06-13",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "draw",
+      "score": {
+        "fighters": 2,
+        "opponent": 2
+      }
+    },
+    {
+      "id": "2019-06-14",
+      "date": "2019-06-14",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 4
+      }
+    },
+    {
+      "id": "2019-06-15",
+      "date": "2019-06-15",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 5,
+        "opponent": 8
+      }
+    },
+    {
+      "id": "2019-06-16",
+      "date": "2019-06-16",
+      "opponent": "巨人",
+      "opponentId": "giants",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 7
       }
     },
     {
