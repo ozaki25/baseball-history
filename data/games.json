@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T12:34:50.386Z",
+  "generatedAt": "2026-09-24T13:05:24.970Z",
   "games": [
     {
       "id": "2006-06-02",
@@ -1007,6 +1007,216 @@
       "score": {
         "fighters": 8,
         "opponent": 0
+      }
+    },
+    {
+      "id": "2016-10-22",
+      "date": "2016-10-22",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "マツダスタジアム",
+      "stadiumId": "mazda",
+      "homeAway": "away",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2016-10-23",
+      "date": "2016-10-23",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "マツダスタジアム",
+      "stadiumId": "mazda",
+      "homeAway": "away",
+      "result": "lose",
+      "score": {
+        "fighters": 1,
+        "opponent": 5
+      }
+    },
+    {
+      "id": "2016-10-25",
+      "date": "2016-10-25",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 4,
+        "opponent": 3
+      }
+    },
+    {
+      "id": "2016-10-26",
+      "date": "2016-10-26",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2016-10-27",
+      "date": "2016-10-27",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "札幌ドーム",
+      "stadiumId": "sapporo-dome",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2016-10-29",
+      "date": "2016-10-29",
+      "opponent": "広島",
+      "opponentId": "carp",
+      "stadium": "マツダスタジアム",
+      "stadiumId": "mazda",
+      "homeAway": "away",
+      "result": "win",
+      "score": {
+        "fighters": 10,
+        "opponent": 4
+      }
+    },
+    {
+      "id": "2023-04-28",
+      "date": "2023-04-28",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2023-04-29",
+      "date": "2023-04-29",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 3,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2023-04-30",
+      "date": "2023-04-30",
+      "opponent": "福岡ソフトバンク",
+      "opponentId": "softbank",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "win",
+      "score": {
+        "fighters": 5,
+        "opponent": 1
+      }
+    },
+    {
+      "id": "2023-07-11",
+      "date": "2023-07-11",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 3
+      }
+    },
+    {
+      "id": "2023-07-12",
+      "date": "2023-07-12",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 3,
+        "opponent": 4
+      }
+    },
+    {
+      "id": "2023-07-13",
+      "date": "2023-07-13",
+      "opponent": "楽天イーグルス",
+      "opponentId": "rakuten",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 3
+      }
+    },
+    {
+      "id": "2023-09-08",
+      "date": "2023-09-08",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 0,
+        "opponent": 6
+      }
+    },
+    {
+      "id": "2023-09-09",
+      "date": "2023-09-09",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 2,
+        "opponent": 7
+      }
+    },
+    {
+      "id": "2023-09-10",
+      "date": "2023-09-10",
+      "opponent": "埼玉西武",
+      "opponentId": "seibu",
+      "stadium": "エスコンフィールド",
+      "stadiumId": "escon",
+      "homeAway": "home",
+      "result": "lose",
+      "score": {
+        "fighters": 0,
+        "opponent": 10
       }
     },
     {
